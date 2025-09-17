@@ -11,5 +11,5 @@ public class QuestionModel {
     UUID testId; // chave estrangeira
     String answer;
     List<String> options;
-    String right;
+    String correctOptio;
 }

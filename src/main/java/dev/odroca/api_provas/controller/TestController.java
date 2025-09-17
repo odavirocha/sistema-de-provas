@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.odroca.api_provas.dto.TestRequestDTO;
 import dev.odroca.api_provas.dto.TestResponseDTO;
+import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ public class TestController {
 
     @PostMapping("/create-test")
     public TestResponseDTO postMethodName(@RequestBody TestRequestDTO test) {
-        return testService.createTest(test);
+        TestEntity testEntity = new TestEntity();
+        testEntity.setName(test.getName());
+        return testService.createTest(testEntity);
     }
     
 
