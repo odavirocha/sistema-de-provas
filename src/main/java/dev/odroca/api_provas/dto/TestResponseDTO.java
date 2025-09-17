@@ -10,6 +10,7 @@ import lombok.Data;
 public class TestResponseDTO {
     
     private UUID testId;
+    private String name;
     private List<QuestionModel> questions;
     
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 public class TestModel {
 
     private UUID testId;
+    private String name;
     private List<QuestionModel> questions;
     
 }

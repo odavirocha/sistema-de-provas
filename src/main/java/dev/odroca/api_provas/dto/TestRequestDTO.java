@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public class TestRequestDTO {
     
+    private String name;
     private List<QuestionModel> questions;
 
 }
