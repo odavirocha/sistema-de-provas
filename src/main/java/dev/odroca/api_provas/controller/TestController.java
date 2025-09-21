@@ -3,6 +3,8 @@ package dev.odroca.api_provas.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.odroca.api_provas.dto.QuestionRequestDTO;
+import dev.odroca.api_provas.dto.QuestionResponseDTO;
 import dev.odroca.api_provas.dto.TestRequestDTO;
 import dev.odroca.api_provas.dto.TestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
@@ -21,10 +23,17 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/create-test")
-    public TestResponseDTO postMethodName(@RequestBody TestRequestDTO test) {
+    public TestResponseDTO createTest(@RequestBody TestRequestDTO test) {
+
         TestEntity testEntity = new TestEntity();
         testEntity.setName(test.getName());
+
         return testService.createTest(testEntity);
+    }
+    
+    @PostMapping("/create-question")
+    public QuestionResponseDTO createQuestion(@RequestBody QuestionRequestDTO question) {
+        return testService.createQuestion(question.getTestId(), question.getQuestion());
     }
     
 
