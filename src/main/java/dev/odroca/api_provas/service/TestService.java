@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import dev.odroca.api_provas.dto.QuestionModelDTO;
 import dev.odroca.api_provas.dto.QuestionRequestDTO;
 import dev.odroca.api_provas.dto.QuestionResponseDTO;
+import dev.odroca.api_provas.dto.QuestionsRequestDTO;
+import dev.odroca.api_provas.dto.QuestionsResponseDTO;
 import dev.odroca.api_provas.dto.TestRequestDTO;
 import dev.odroca.api_provas.dto.TestResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
@@ -89,6 +91,16 @@ public class TestService {
         );
     }
     
-    // public QuestionsResponseDTO createQuestions() {}
+    public QuestionsResponseDTO createQuestions(QuestionsRequestDTO questionsModel) {
+        int totalQuestions = 0;
+
+        // Transforma cada questão em uma entidade QuestionModelDTO
+        for (QuestionModelDTO question : questionsModel.getQuestions()) {
+            createQuestion(questionsModel.getTestId(), question);
+            totalQuestions++;
+        }
+
+        return new QuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
+    }
 
 }

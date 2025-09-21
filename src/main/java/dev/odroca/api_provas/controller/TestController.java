@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.odroca.api_provas.dto.QuestionRequestDTO;
 import dev.odroca.api_provas.dto.QuestionResponseDTO;
+import dev.odroca.api_provas.dto.QuestionsRequestDTO;
+import dev.odroca.api_provas.dto.QuestionsResponseDTO;
 import dev.odroca.api_provas.dto.TestRequestDTO;
 import dev.odroca.api_provas.dto.TestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
@@ -34,6 +36,11 @@ public class TestController {
     @PostMapping("/create-question")
     public QuestionResponseDTO createQuestion(@RequestBody QuestionRequestDTO question) {
         return testService.createQuestion(question.getTestId(), question.getQuestion());
+    }
+    
+    @PostMapping("create-questions")
+    public QuestionsResponseDTO createQuestions(@RequestBody QuestionsRequestDTO questions) {
+        return testService.createQuestions(questions);        
     }
     
 
