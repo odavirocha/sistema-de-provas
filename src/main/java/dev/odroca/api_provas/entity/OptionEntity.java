@@ -26,7 +26,7 @@ public class OptionEntity {
     @Setter
     @Getter
     @JoinColumn(name = "is_correct")
-    private boolean isCorrect;
+    private Boolean isCorrect;
 
     @ManyToOne
     @JoinColumn(name = "question_id")

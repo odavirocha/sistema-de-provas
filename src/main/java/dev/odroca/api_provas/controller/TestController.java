@@ -11,6 +11,7 @@ import dev.odroca.api_provas.dto.TestRequestDTO;
 import dev.odroca.api_provas.dto.TestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/create-test")
-    public TestResponseDTO createTest(@RequestBody TestRequestDTO test) {
+    public TestResponseDTO createTest(@RequestBody @Valid TestRequestDTO test) {
 
         TestEntity testEntity = new TestEntity();
         testEntity.setName(test.getName());
@@ -34,12 +35,12 @@ public class TestController {
     }
     
     @PostMapping("/create-question")
-    public QuestionResponseDTO createQuestion(@RequestBody QuestionRequestDTO question) {
+    public QuestionResponseDTO createQuestion(@RequestBody @Valid QuestionRequestDTO question) {
         return testService.createQuestion(question.getTestId(), question.getQuestion());
     }
     
     @PostMapping("create-questions")
-    public QuestionsResponseDTO createQuestions(@RequestBody QuestionsRequestDTO questions) {
+    public QuestionsResponseDTO createQuestions(@RequestBody @Valid QuestionsRequestDTO questions) {
         return testService.createQuestions(questions);        
     }
     

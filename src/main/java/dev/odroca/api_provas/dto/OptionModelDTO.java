@@ -1,12 +1,16 @@
 package dev.odroca.api_provas.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class OptionModelDTO {
+
+    @NotBlank(message = "O campo 'value' não pode estar em branco.")
     String value;
-    @JsonProperty("isCorrect") // por alguma caralha motivo o lombok tira o get e deixa somente isCorrect bugando o set do Jackson(deserializador JSON)
-    boolean isCorrect;
+
+    @NotNull(message = "O campo 'isCorrect' não pode ser nulo.")
+    Boolean isCorrect;
+
 }

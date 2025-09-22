@@ -2,6 +2,9 @@ package dev.odroca.api_provas.dto;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +12,10 @@ import lombok.Getter;
 @Getter
 public class QuestionModelDTO {
 
+    @NotBlank(message = "O campo 'question' não pode estar em branco.")
     private String question;
-    private List<OptionModelDTO> options;
+    
+    @NotEmpty(message = "O campo 'options' não pode ser vazio.")
+    private List<@Valid OptionModelDTO> options;
     
 }
