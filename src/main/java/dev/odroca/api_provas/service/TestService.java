@@ -7,13 +7,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import dev.odroca.api_provas.dto.QuestionModelDTO;
-import dev.odroca.api_provas.dto.QuestionResponseDTO;
-import dev.odroca.api_provas.dto.QuestionsRequestDTO;
-import dev.odroca.api_provas.dto.QuestionsResponseDTO;
-import dev.odroca.api_provas.dto.TestResponseDTO;
+import dev.odroca.api_provas.dto.UpdateQuestionRequestDTO;
+import dev.odroca.api_provas.dto.UpdateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.CreateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.CreateQuestionsRequestDTO;
+import dev.odroca.api_provas.dto.CreateQuestionsResponseDTO;
+import dev.odroca.api_provas.dto.CreateTestResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
@@ -28,11 +31,11 @@ public class TestService {
         this.questionRepository = questionRepository;
     }
 
-    public TestResponseDTO createTest(TestEntity test) {
+    public CreateTestResponseDTO createTest(TestEntity test) {
 
         TestEntity saved = testRepository.save(test);
         
-        TestResponseDTO response = new TestResponseDTO();
+        CreateTestResponseDTO response = new CreateTestResponseDTO();
 
         response.setTestId(saved.getId());
         response.setName(saved.getName());
@@ -40,7 +43,7 @@ public class TestService {
         return response;
     }
 
-    public QuestionResponseDTO createQuestion(UUID testId, QuestionModelDTO questionModel) {
+    public CreateQuestionResponseDTO createQuestion(UUID testId, QuestionModelDTO questionModel) {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         
@@ -65,7 +68,7 @@ public class TestService {
         .map(option -> option.getId())
         .orElse(null);
         
-        return new QuestionResponseDTO(
+        return new CreateQuestionResponseDTO(
             saved.getId(),
             saved.getQuestion(),
             saved.getOptions().size(),
@@ -74,7 +77,7 @@ public class TestService {
         );
     }
     
-    public QuestionsResponseDTO createQuestions(QuestionsRequestDTO questionsModel) {
+    public CreateQuestionsResponseDTO createQuestions(CreateQuestionsRequestDTO questionsModel) {
         int totalQuestions = 0;
 
         // Transforma cada questão em uma entidade QuestionModelDTO
@@ -83,7 +86,17 @@ public class TestService {
             totalQuestions++;
         }
 
-        return new QuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
+        return new CreateQuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
+    }
+
+    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO questionUpdate) {
+
+        QuestionEntity question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
+
+        
+
+
+        return new UpdateQuestionResponseDTO();
     }
 
 }

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class QuestionsRequestDTO {
+public class CreateQuestionsRequestDTO {
 
     @NotNull(message = "O campo 'testId' não pode ser nulo.")
     UUID testId;

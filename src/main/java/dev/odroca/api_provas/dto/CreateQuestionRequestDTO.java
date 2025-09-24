@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class QuestionRequestDTO {
+public class CreateQuestionRequestDTO {
 
-    @NotNull(message = "O nome não pode ser nulo!")
+    @NotNull(message = "O campo 'testId' não pode ser nulo!")
     UUID testId;
 
-    @NotNull(message = "O nome não pode ser nulo!")
+    @NotNull(message = "O campo 'question' não pode ser nulo!")
     QuestionModelDTO question;
 
 }

@@ -7,10 +7,12 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class QuestionsResponseDTO {
+public class CreateQuestionResponseDTO {
 
     UUID id;
-    int totalQuestions;
+    String question;
+    int totalOptions;
+    UUID correctOptionId;
     String message;
     
 }
