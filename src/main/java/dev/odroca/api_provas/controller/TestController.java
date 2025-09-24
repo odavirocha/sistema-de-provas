@@ -25,7 +25,7 @@ public class TestController {
     @Autowired
     private TestService testService;
 
-    @PostMapping("/create-test")
+    @PostMapping("/test")
     public TestResponseDTO createTest(@RequestBody @Valid TestRequestDTO test) {
 
         TestEntity testEntity = new TestEntity();
@@ -34,12 +34,12 @@ public class TestController {
         return testService.createTest(testEntity);
     }
     
-    @PostMapping("/create-question")
+    @PostMapping("/questions")
     public QuestionResponseDTO createQuestion(@RequestBody @Valid QuestionRequestDTO question) {
         return testService.createQuestion(question.getTestId(), question.getQuestion());
     }
     
-    @PostMapping("create-questions")
+    @PostMapping("/questions/batch")
     public QuestionsResponseDTO createQuestions(@RequestBody @Valid QuestionsRequestDTO questions) {
         return testService.createQuestions(questions);        
     }
