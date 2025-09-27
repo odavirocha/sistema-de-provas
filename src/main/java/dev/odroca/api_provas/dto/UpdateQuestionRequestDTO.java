@@ -1,10 +1,19 @@
 package dev.odroca.api_provas.dto;
 
-import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+
+@Getter
 public class UpdateQuestionRequestDTO {
 
-    @NotNull(message = "O campo 'question' não pode ser nulo!")
-    QuestionModelDTO question;
+    @NotBlank(message = "O campo 'question' não pode estar em branco.")
+    private String question;
+    
+    @NotEmpty(message = "O campo 'options' não pode ser vazio.")
+    private List<@Valid UpdateOptionModelDTO> options;
     
 }

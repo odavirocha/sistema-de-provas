@@ -10,12 +10,12 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class QuestionModelDTO {
+public class CreateQuestionModelDTO {
 
     @NotBlank(message = "O campo 'question' não pode estar em branco.")
     private String question;
     
     @NotEmpty(message = "O campo 'options' não pode ser vazio.")
-    private List<@Valid OptionModelDTO> options;
+    private List<@Valid CreateOptionModelDTO> options;
     
 }

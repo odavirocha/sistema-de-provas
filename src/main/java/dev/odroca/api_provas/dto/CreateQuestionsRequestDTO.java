@@ -15,6 +15,6 @@ public class CreateQuestionsRequestDTO {
     UUID testId;
 
     @NotEmpty(message = "O campo 'questions' não pode estar vazia.")
-    List<@Valid QuestionModelDTO> questions;
+    List<@Valid CreateQuestionModelDTO> questions;
     
 }

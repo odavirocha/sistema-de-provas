@@ -12,6 +12,6 @@ public class CreateQuestionRequestDTO {
     UUID testId;
 
     @NotNull(message = "O campo 'question' não pode ser nulo!")
-    QuestionModelDTO question;
+    CreateQuestionModelDTO question;
 
 }

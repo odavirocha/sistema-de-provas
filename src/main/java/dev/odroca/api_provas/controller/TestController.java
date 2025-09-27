@@ -14,11 +14,11 @@ import dev.odroca.api_provas.dto.UpdateQuestionResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,7 +51,7 @@ public class TestController {
     }
     
     @PutMapping("/questions/{questionId}")
-    public UpdateQuestionResponseDTO editQuestion(@PathParam("questionId") UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
+    public UpdateQuestionResponseDTO editQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
         return testService.updateQuestion(questionId, questionUpdate);
     }
 

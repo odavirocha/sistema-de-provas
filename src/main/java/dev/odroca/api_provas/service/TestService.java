@@ -6,18 +6,21 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import dev.odroca.api_provas.dto.QuestionModelDTO;
+import dev.odroca.api_provas.dto.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.UpdateQuestionRequestDTO;
 import dev.odroca.api_provas.dto.UpdateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.CreateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.CreateQuestionsRequestDTO;
 import dev.odroca.api_provas.dto.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.dto.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.UpdateOptionModelDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.exception.OptionNotFoundExcetion;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
+import dev.odroca.api_provas.repository.OptionRepository;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -25,10 +28,12 @@ import dev.odroca.api_provas.repository.TestRepository;
 public class TestService {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
+    private final OptionRepository optionRepository;
 
-    public TestService(TestRepository testRepository, QuestionRepository questionRepository) {
+    public TestService(TestRepository testRepository, QuestionRepository questionRepository, OptionRepository optionRepository) {
         this.testRepository = testRepository;
         this.questionRepository = questionRepository;
+        this.optionRepository = optionRepository;
     }
 
     public CreateTestResponseDTO createTest(TestEntity test) {
@@ -43,7 +48,7 @@ public class TestService {
         return response;
     }
 
-    public CreateQuestionResponseDTO createQuestion(UUID testId, QuestionModelDTO questionModel) {
+    public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         
@@ -81,7 +86,7 @@ public class TestService {
         int totalQuestions = 0;
 
         // Transforma cada questão em uma entidade QuestionModelDTO
-        for (QuestionModelDTO question : questionsModel.getQuestions()) {
+        for (CreateQuestionModelDTO question : questionsModel.getQuestions()) {
             createQuestion(questionsModel.getTestId(), question);
             totalQuestions++;
         }
@@ -92,11 +97,21 @@ public class TestService {
     public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO questionUpdate) {
 
         QuestionEntity question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
-
         
+        System.out.println(questionUpdate.getQuestion());
+        question.setQuestion(questionUpdate.getQuestion());
 
+        List<OptionEntity> currentOptions = question.getOptions();
 
-        return new UpdateQuestionResponseDTO();
+        // ficou muito fei esse fori
+        for (int i = 0; i < currentOptions.size(); i++) {
+            currentOptions.get(i).setValue(questionUpdate.getOptions().get(i).getValue());
+            currentOptions.get(i).setIsCorrect(questionUpdate.getOptions().get(i).getIsCorrect());
+        }
+        
+        QuestionEntity saved = questionRepository.save(question);
+
+        return new UpdateQuestionResponseDTO(saved.getId(), "Questão modificada com sucesso!");
     }
 
 }
