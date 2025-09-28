@@ -19,7 +19,7 @@ import dev.odroca.api_provas.dto.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.dto.GetQuestionModelDTO;
 import dev.odroca.api_provas.dto.UpdateQuestionRequestDTO;
 import dev.odroca.api_provas.dto.UpdateQuestionResponseDTO;
-import dev.odroca.api_provas.service.TestService;
+import dev.odroca.api_provas.service.QuestionService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -27,26 +27,26 @@ import jakarta.validation.Valid;
 public class QuestionController {
 
     @Autowired
-    private TestService testService;
+    private QuestionService questionService;
         
     @PostMapping("/questions")
     public CreateQuestionResponseDTO createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
-        return testService.createQuestion(question.getTestId(), question.getQuestion());
+        return questionService.createQuestion(question.getTestId(), question.getQuestion());
     }
     
     @PostMapping("/questions/batch")
     public CreateQuestionsResponseDTO createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions) {
-        return testService.createQuestions(questions);        
+        return questionService.createQuestions(questions);        
     }
     
     @PutMapping("/questions/{questionId}")
     public UpdateQuestionResponseDTO editQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
-        return testService.updateQuestion(questionId, questionUpdate);
+        return questionService.updateQuestion(questionId, questionUpdate);
     }
 
     @GetMapping("questions/{testId}")
     public List<GetQuestionModelDTO> getAllQuestionsForTest(@PathVariable UUID testId) {
-        return testService.getAllQuestionsForTest(testId);
+        return questionService.getAllQuestionsForTest(testId);
     }
     
 }
