@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +32,9 @@ public class QuestionController {
     private QuestionService questionService;
         
     @PostMapping("/questions")
-    public CreateQuestionResponseDTO createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
-        return questionService.createQuestion(question.getTestId(), question.getQuestion());
+    public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
+        CreateQuestionResponseDTO response = questionService.createQuestion(question.getTestId(), question.getQuestion());
+        return new ResponseEntity<CreateQuestionResponseDTO>(response, HttpStatus.CREATED);
     }
     
     @PostMapping("/questions/batch")
