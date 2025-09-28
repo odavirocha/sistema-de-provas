@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.odroca.api_provas.dto.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.UpdateQuestionRequestDTO;
@@ -13,49 +14,47 @@ import dev.odroca.api_provas.dto.CreateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.CreateQuestionsRequestDTO;
 import dev.odroca.api_provas.dto.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.dto.CreateTestResponseDTO;
-import dev.odroca.api_provas.dto.UpdateOptionModelDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.exception.OptionNotFoundExcetion;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
-import dev.odroca.api_provas.repository.OptionRepository;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class TestService {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
-    private final OptionRepository optionRepository;
 
-    public TestService(TestRepository testRepository, QuestionRepository questionRepository, OptionRepository optionRepository) {
+    public TestService(TestRepository testRepository, QuestionRepository questionRepository) {
         this.testRepository = testRepository;
         this.questionRepository = questionRepository;
-        this.optionRepository = optionRepository;
     }
 
+    @Transactional
     public CreateTestResponseDTO createTest(TestEntity test) {
-
+        
         TestEntity saved = testRepository.save(test);
         
         CreateTestResponseDTO response = new CreateTestResponseDTO();
-
+        
         response.setTestId(saved.getId());
         response.setName(saved.getName());
-
+        
         return response;
     }
-
+    
+    @Transactional
     public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
-
+        
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.getQuestion());
-
+        
         List<OptionEntity> optionEntities = questionModel.getOptions().stream().map(option -> {
             OptionEntity optionEntity = new OptionEntity();
             optionEntity.setValue(option.getValue());
@@ -66,7 +65,7 @@ public class TestService {
         
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
-
+        
         UUID correctionOptionId = saved.getOptions().stream()
         .filter(option -> option.getIsCorrect())
         .findFirst()
@@ -79,21 +78,23 @@ public class TestService {
             saved.getOptions().size(),
             correctionOptionId,
             "Questão criada com sucesso!"
-        );
-    }
-    
+            );
+        }
+        
+    @Transactional
     public CreateQuestionsResponseDTO createQuestions(CreateQuestionsRequestDTO questionsModel) {
         int totalQuestions = 0;
-
+        
         // Transforma cada questão em uma entidade QuestionModelDTO
         for (CreateQuestionModelDTO question : questionsModel.getQuestions()) {
             createQuestion(questionsModel.getTestId(), question);
             totalQuestions++;
         }
-
+        
         return new CreateQuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
     }
-
+    
+    @Transactional
     public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO questionUpdate) {
 
         QuestionEntity question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
@@ -111,7 +112,7 @@ public class TestService {
         
         QuestionEntity saved = questionRepository.save(question);
 
-        return new UpdateQuestionResponseDTO(saved.getId(), "Questão modificada com sucesso!");
+        return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
     }
 
 }
