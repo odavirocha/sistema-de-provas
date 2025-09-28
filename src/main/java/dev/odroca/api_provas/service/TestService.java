@@ -14,9 +14,12 @@ import dev.odroca.api_provas.dto.CreateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.CreateQuestionsRequestDTO;
 import dev.odroca.api_provas.dto.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.dto.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.GetOptionModelDTO;
+import dev.odroca.api_provas.dto.GetQuestionModelDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.repository.QuestionRepository;
@@ -70,7 +73,7 @@ public class TestService {
         .filter(option -> option.getIsCorrect())
         .findFirst()
         .map(option -> option.getId())
-        .orElse(null);
+        .orElseThrow(() -> new CorrectOptionNotFoundException());
         
         return new CreateQuestionResponseDTO(
             saved.getId(),
@@ -99,7 +102,6 @@ public class TestService {
 
         QuestionEntity question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
         
-        System.out.println(questionUpdate.getQuestion());
         question.setQuestion(questionUpdate.getQuestion());
 
         List<OptionEntity> currentOptions = question.getOptions();
@@ -112,7 +114,29 @@ public class TestService {
         
         QuestionEntity saved = questionRepository.save(question);
 
+        saved.getOptions().stream()
+        .filter(option -> option.getIsCorrect())
+        .findFirst()
+        .orElseThrow(() -> new CorrectOptionNotFoundException());
+
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
+    }
+
+    public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
+
+        TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+
+        List<GetQuestionModelDTO> questions = test.getQuestions().stream().map(question -> new GetQuestionModelDTO(
+            question.getId(), 
+            question.getQuestion(), 
+            question.getOptions().stream().map(option -> new GetOptionModelDTO(
+                option.getId(), 
+                option.getValue(), 
+                option.getIsCorrect()
+                )).collect(Collectors.toList())
+            )).collect(Collectors.toList());
+        
+        return questions;
     }
 
 }

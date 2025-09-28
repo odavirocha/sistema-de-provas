@@ -16,16 +16,16 @@ import lombok.Setter;
 @Entity
 @Table(name = "option_table")
 @Setter
+@Getter
 public class OptionEntity {
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
     private UUID id;
 
+
     private String value;
 
-    @Getter
     @JoinColumn(name = "is_correct")
     private Boolean isCorrect;
 
