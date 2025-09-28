@@ -3,8 +3,8 @@ package dev.odroca.api_provas.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.odroca.api_provas.dto.CreateTestRequestDTO;
-import dev.odroca.api_provas.dto.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
+import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
 import jakarta.validation.Valid;

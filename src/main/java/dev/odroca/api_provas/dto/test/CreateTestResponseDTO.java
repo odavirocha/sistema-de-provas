@@ -1,4 +1,4 @@
-package dev.odroca.api_provas.dto;
+package dev.odroca.api_provas.dto.test;
 
 import java.util.UUID;
 

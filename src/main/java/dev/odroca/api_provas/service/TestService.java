@@ -3,7 +3,7 @@ package dev.odroca.api_provas.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dev.odroca.api_provas.dto.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -29,6 +29,4 @@ public class TestService {
         return response;
     }
     
-    
-
 }

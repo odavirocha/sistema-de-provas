@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.odroca.api_provas.dto.CreateQuestionRequestDTO;
-import dev.odroca.api_provas.dto.CreateQuestionResponseDTO;
-import dev.odroca.api_provas.dto.CreateQuestionsRequestDTO;
-import dev.odroca.api_provas.dto.CreateQuestionsResponseDTO;
-import dev.odroca.api_provas.dto.GetQuestionModelDTO;
-import dev.odroca.api_provas.dto.UpdateQuestionRequestDTO;
-import dev.odroca.api_provas.dto.UpdateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.question.CreateQuestionRequestDTO;
+import dev.odroca.api_provas.dto.question.CreateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.question.GetQuestionModelDTO;
+import dev.odroca.api_provas.dto.question.UpdateQuestionRequestDTO;
+import dev.odroca.api_provas.dto.question.UpdateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.questions.CreateQuestionsRequestDTO;
+import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.service.QuestionService;
 import jakarta.validation.Valid;
 

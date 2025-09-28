@@ -1,12 +1,10 @@
-package dev.odroca.api_provas.dto;
+package dev.odroca.api_provas.dto.question;
 
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 @AllArgsConstructor
-// @Data
 public class UpdateQuestionResponseDTO {
 
     UUID questionId;
