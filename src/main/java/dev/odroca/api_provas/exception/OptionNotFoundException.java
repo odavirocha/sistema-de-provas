@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class OptionNotFoundExcetion extends RuntimeException {
+public class OptionNotFoundException extends RuntimeException {
     
-    public OptionNotFoundExcetion(UUID optionId) {
+    public OptionNotFoundException(UUID optionId) {
         super("Opção não encontrada com ID: " + optionId);
     }
 

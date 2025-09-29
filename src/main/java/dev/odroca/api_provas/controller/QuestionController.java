@@ -31,25 +31,28 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
         
-    @PostMapping("/questions")
+    @PostMapping("")
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
         CreateQuestionResponseDTO response = questionService.createQuestion(question.getTestId(), question.getQuestion());
         return new ResponseEntity<CreateQuestionResponseDTO>(response, HttpStatus.CREATED);
     }
     
-    @PostMapping("/questions/batch")
-    public CreateQuestionsResponseDTO createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions) {
-        return questionService.createQuestions(questions);        
+    @PostMapping("/batch")
+    public ResponseEntity<CreateQuestionsResponseDTO> createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions) {
+        CreateQuestionsResponseDTO response = questionService.createQuestions(questions);        
+        return new ResponseEntity<CreateQuestionsResponseDTO>(response, HttpStatus.OK);
     }
     
-    @PutMapping("/questions/{questionId}")
-    public UpdateQuestionResponseDTO editQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
-        return questionService.updateQuestion(questionId, questionUpdate);
+    @PutMapping("/{questionId}")
+    public ResponseEntity<UpdateQuestionResponseDTO> editQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
+        UpdateQuestionResponseDTO response = questionService.updateQuestion(questionId, questionUpdate);
+        return new ResponseEntity<UpdateQuestionResponseDTO>(response, HttpStatus.OK);
     }
 
-    @GetMapping("questions/{testId}")
-    public List<GetQuestionModelDTO> getAllQuestionsForTest(@PathVariable UUID testId) {
-        return questionService.getAllQuestionsForTest(testId);
+    @GetMapping("/{testId}")
+    public ResponseEntity<List<GetQuestionModelDTO>> getAllQuestionsForTest(@PathVariable UUID testId) {
+        List<GetQuestionModelDTO> response = questionService.getAllQuestionsForTest(testId);
+        return new ResponseEntity<List<GetQuestionModelDTO>>(response, HttpStatus.OK);
     }
     
 }
