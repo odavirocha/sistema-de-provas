@@ -21,6 +21,7 @@ import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
+import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -31,11 +32,13 @@ public class QuestionService {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
     private final OptionMapper optionMapper;
+    private final QuestionMapper questionMapper;
     
-    public QuestionService(TestRepository testRepository, QuestionRepository questionRepository, OptionMapper optionMapper) {
+    public QuestionService(TestRepository testRepository, QuestionRepository questionRepository, OptionMapper optionMapper, QuestionMapper questionMapper) {
         this.testRepository = testRepository;
         this.questionRepository = questionRepository;
         this.optionMapper = optionMapper;
+        this.questionMapper = questionMapper;
     }
 
     @Transactional
@@ -109,23 +112,9 @@ public class QuestionService {
     public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        
+        List<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
 
-        // List<GetQuestionModelDTO> questions = test.getQuestions().stream().map(question -> new GetQuestionModelDTO(
-        //     question.getId(), 
-        //     question.getQuestion(), 
-        //     question.getOptions().stream().map(option -> new GetOptionModelDTO(
-        //         option.getId(), 
-        //         option.getValue(), 
-        //         option.getIsCorrect()
-        //         )).collect(Collectors.toList())
-        //     )).collect(Collectors.toList());
-        
-        List<GetQuestionModelDTO> questions = test.getQuestions().stream().map(question -> new GetQuestionModelDTO(
-        question.getId(), 
-        question.getQuestion(),
-        optionMapper.toDtoList(question.getOptions())
-        )).collect(Collectors.toList());
-        
         return questions;
     }
 
