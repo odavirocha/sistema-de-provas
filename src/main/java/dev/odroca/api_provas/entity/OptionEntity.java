@@ -23,7 +23,6 @@ public class OptionEntity {
     @Setter(AccessLevel.NONE)
     private UUID id;
 
-
     private String value;
 
     @JoinColumn(name = "is_correct")

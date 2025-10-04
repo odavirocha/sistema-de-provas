@@ -3,6 +3,7 @@ package dev.odroca.api_provas.controller;
 import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,6 +39,13 @@ public class ApplicationControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleCorrectOptionNotFoundException(CorrectOptionNotFoundException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "NotFound", 404);
+    }
+    
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
+        String defaultMessage = ex.getBindingResult().getFieldErrors().stream().findFirst().map(FieldError -> FieldError.getDefaultMessage()).orElse("Erro de validação");
+        return new ErrorResponse(defaultMessage, LocalDateTime.now().toString(), "BadRequest", 400);
     }
     
 }

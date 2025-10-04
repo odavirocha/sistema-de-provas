@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dev.odroca.api_provas.dto.option.GetOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.question.GetQuestionModelDTO;
@@ -21,6 +20,7 @@ import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
+import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -30,10 +30,12 @@ public class QuestionService {
     
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
+    private final OptionMapper optionMapper;
     
-    public QuestionService(TestRepository testRepository, QuestionRepository questionRepository) {
+    public QuestionService(TestRepository testRepository, QuestionRepository questionRepository, OptionMapper optionMapper) {
         this.testRepository = testRepository;
         this.questionRepository = questionRepository;
+        this.optionMapper = optionMapper;
     }
 
     @Transactional
@@ -44,14 +46,9 @@ public class QuestionService {
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.getQuestion());
-        
-        List<OptionEntity> optionEntities = questionModel.getOptions().stream().map(option -> {
-            OptionEntity optionEntity = new OptionEntity();
-            optionEntity.setValue(option.getValue());
-            optionEntity.setIsCorrect(option.getIsCorrect());
-            optionEntity.setQuestion(questionEntity);
-            return optionEntity;
-        }).collect(Collectors.toList());
+
+        List<OptionEntity> optionEntities = optionMapper.toEntityList(questionModel.getOptions());
+        optionEntities.forEach(option -> option.setQuestion(questionEntity));
         
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
@@ -113,15 +110,21 @@ public class QuestionService {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
 
+        // List<GetQuestionModelDTO> questions = test.getQuestions().stream().map(question -> new GetQuestionModelDTO(
+        //     question.getId(), 
+        //     question.getQuestion(), 
+        //     question.getOptions().stream().map(option -> new GetOptionModelDTO(
+        //         option.getId(), 
+        //         option.getValue(), 
+        //         option.getIsCorrect()
+        //         )).collect(Collectors.toList())
+        //     )).collect(Collectors.toList());
+        
         List<GetQuestionModelDTO> questions = test.getQuestions().stream().map(question -> new GetQuestionModelDTO(
-            question.getId(), 
-            question.getQuestion(), 
-            question.getOptions().stream().map(option -> new GetOptionModelDTO(
-                option.getId(), 
-                option.getValue(), 
-                option.getIsCorrect()
-                )).collect(Collectors.toList())
-            )).collect(Collectors.toList());
+        question.getId(), 
+        question.getQuestion(),
+        optionMapper.toDtoList(question.getOptions())
+        )).collect(Collectors.toList());
         
         return questions;
     }
