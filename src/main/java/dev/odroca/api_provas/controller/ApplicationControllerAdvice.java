@@ -13,9 +13,24 @@ import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.error.ErrorResponse;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestControllerAdvice
 public class ApplicationControllerAdvice {
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleGenericError(Exception e) {
+        
+        log.error("Erro inesperado: " + e);
+
+        return new ErrorResponse(
+            "Erro inesperado ao processar sua solicitação. Tente novamente mais tarde.", 
+            LocalDateTime.now().toString(), 
+            "InternalServerError", 
+            500);
+    }
     
     @ExceptionHandler(TestNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
