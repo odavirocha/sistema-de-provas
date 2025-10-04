@@ -31,7 +31,7 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
         
-    @PostMapping("")
+    @PostMapping("/")
     public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
         CreateQuestionResponseDTO response = questionService.createQuestion(question.getTestId(), question.getQuestion());
         return new ResponseEntity<CreateQuestionResponseDTO>(response, HttpStatus.CREATED);

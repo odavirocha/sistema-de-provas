@@ -2,6 +2,7 @@ package dev.odroca.api_provas.service;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +15,14 @@ import dev.odroca.api_provas.repository.TestRepository;
 @Service
 @Transactional(readOnly = true)
 public class TestService {
-    private final TestRepository testRepository;
 
-    public TestService(TestRepository testRepository) {
-        this.testRepository = testRepository;
-    }
+    @Autowired
+    private TestRepository testRepository;
 
     @Transactional
     public CreateTestResponseDTO createTest(TestEntity test) {
+        
+        if (test.getName() == null) 
         
         TestEntity saved = testRepository.save(test);
         

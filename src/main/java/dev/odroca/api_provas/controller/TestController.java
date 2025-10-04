@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/test")
 public class TestController {
 
     @Autowired
     private TestService testService;
 
-    @PostMapping("/test")
+    @PostMapping("/")
     public CreateTestResponseDTO createTest(@RequestBody @Valid CreateTestRequestDTO test) {
 
         TestEntity testEntity = new TestEntity();
@@ -36,7 +36,7 @@ public class TestController {
         return testService.createTest(testEntity);
     }
 
-    @DeleteMapping("/test/{testId}")
+    @DeleteMapping("/{testId}")
     public DeleteTestResponseDTO deleteTest(@PathVariable UUID testId) {
         return testService.deleteTest(testId);
     }
