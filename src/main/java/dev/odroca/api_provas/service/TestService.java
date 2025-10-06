@@ -22,8 +22,6 @@ public class TestService {
     @Transactional
     public CreateTestResponseDTO createTest(TestEntity test) {
         
-        if (test.getName() == null) 
-        
         TestEntity saved = testRepository.save(test);
         
         return new CreateTestResponseDTO(saved.getId(), saved.getName());

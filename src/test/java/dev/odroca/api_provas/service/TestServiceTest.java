@@ -2,12 +2,12 @@ package dev.odroca.api_provas.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.exception.TestNullNameException;
 import dev.odroca.api_provas.repository.TestRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,24 +26,32 @@ public class TestServiceTest {
 
     @Mock
     private TestRepository testRepository;
-
+    
     @InjectMocks
     private TestService testService;
     
     @Test
-    @DisplayName("Should create test successfully when everything is OK")
+    @DisplayName("Deve criar uma prova quando tudo estiver OK.")
     void testCreateTest() {
+        
+        // Entidade criada no controller
+        TestEntity controllerEntity = new TestEntity();
+        controllerEntity.setName("Prova de teste 1");
+        
+        // Entidade criada no service após salvar -- que vem como retorno do .save()
+        TestEntity serviceEntity = new TestEntity();
+        serviceEntity.setName(controllerEntity.getName());
+        ReflectionTestUtils.setField(serviceEntity, "id", UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7"));
 
-        // Entidade do controller
-        TestEntity entity = new TestEntity();
-        entity.setName("Prova de teste 1");
-        when(testRepository.save(any(TestEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        CreateTestResponseDTO result = testService.createTest(entity);
+        when(testRepository.save(any(TestEntity.class))).thenReturn(serviceEntity);
+        CreateTestResponseDTO result = testService.createTest(controllerEntity);
 
         assertNotNull(result);
+        assertNotNull(result.getTestId());
+        assertNotNull(result.getName());
+        assertEquals(UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7"), result.getTestId());
         assertEquals("Prova de teste 1", result.getName());
-        verify(testRepository, times(1)).save(any(TestEntity.class));
+        verify(testRepository, times(1)).save(controllerEntity);
 
     }
 
