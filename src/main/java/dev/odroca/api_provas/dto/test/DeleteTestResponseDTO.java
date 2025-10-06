@@ -1,13 +1,13 @@
 package dev.odroca.api_provas.dto.test;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class DeleteTestResponseDTO {
     
-    UUID id;
+    String id;
     String message;
 
 }

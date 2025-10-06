@@ -34,7 +34,7 @@ public class TestService {
 
         testRepository.deleteById(id);
 
-        return new DeleteTestResponseDTO(id, "Prova deletada com sucesso!");
+        return new DeleteTestResponseDTO(id.toString(), "Prova deletada com sucesso!");
     }
     
 }

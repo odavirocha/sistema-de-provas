@@ -3,6 +3,7 @@ package dev.odroca.api_provas.service;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +29,14 @@ import dev.odroca.api_provas.repository.TestRepository;
 @Transactional(readOnly = true)
 public class QuestionService {
     
-    private final TestRepository testRepository;
-    private final QuestionRepository questionRepository;
-    private final OptionMapper optionMapper;
-    private final QuestionMapper questionMapper;
-    
-    public QuestionService(TestRepository testRepository, QuestionRepository questionRepository, OptionMapper optionMapper, QuestionMapper questionMapper) {
-        this.testRepository = testRepository;
-        this.questionRepository = questionRepository;
-        this.optionMapper = optionMapper;
-        this.questionMapper = questionMapper;
-    }
+    @Autowired
+    private TestRepository testRepository;
+    @Autowired
+    private QuestionRepository questionRepository;
+    @Autowired
+    private OptionMapper optionMapper;
+    @Autowired
+    private QuestionMapper questionMapper;
 
     @Transactional
     public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {

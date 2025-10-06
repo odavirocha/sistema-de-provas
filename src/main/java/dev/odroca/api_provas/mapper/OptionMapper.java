@@ -13,6 +13,7 @@ import dev.odroca.api_provas.entity.OptionEntity;
 public interface OptionMapper {
 
     @Mapping(target = "question", ignore = true)
+    @Mapping(target = "id", ignore = true)
     OptionEntity toEntity(CreateOptionModelDTO createOptionModelDTO);
 
     GetOptionModelDTO toDto(OptionEntity optionEntity);
