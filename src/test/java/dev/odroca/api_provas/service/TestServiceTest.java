@@ -18,7 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.repository.TestRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,8 +53,26 @@ public class TestServiceTest {
         assertNotNull(result.getName());
         assertEquals(UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7"), result.getTestId());
         assertEquals("Prova de teste 1", result.getName());
+
         verify(testRepository, times(1)).save(controllerEntity);
 
+    }
+
+    @Test
+    @DisplayName("Deve deletar uma prova quando tudo estiver OK.")
+    void testDeleteTest() {
+
+        UUID id = UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7");
+        when(testRepository.existsById(id)).thenReturn(true);
+
+        DeleteTestResponseDTO result = testService.deleteTest(id);
+
+        assertNotNull(result);
+        assertNotNull(result.getId());
+        assertEquals("a35a647b-6a7d-4cdc-b92e-87c5be376ee7", result.getId()); // Deve ser string para serializar no JSON
+        
+        verify(testRepository, times(1)).existsById(id);
+        verify(testRepository, times(1)).deleteById(id);
     }
 
 }
