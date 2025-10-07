@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -70,7 +71,8 @@ public class TestServiceTest {
 
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals("a35a647b-6a7d-4cdc-b92e-87c5be376ee7", result.getId()); // Deve ser string para serializar no JSON
+        assertEquals(id.toString(), result.getId()); // Deve ser string para serializar no JSON
+        assertEquals("Prova deletada com sucesso!", result.getMessage());
 
         verify(testRepository, times(1)).existsById(id);
         verify(testRepository, times(1)).deleteById(id);
@@ -81,9 +83,12 @@ public class TestServiceTest {
     void testDeleteExceptionTest() {
 
         UUID id = UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7");
-        when(testRepository.existsById(id)).thenThrow(TestNotFoundException.class);
+        when(testRepository.existsById(id)).thenReturn(false);
 
         assertThrows(TestNotFoundException.class, () -> testService.deleteTest(id));
+
+        verify(testRepository, times(1)).existsById(id);
+        verify(testRepository, never()).deleteById(any());
     }
 
 }

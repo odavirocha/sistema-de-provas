@@ -29,7 +29,7 @@ public class TestService {
 
     @Transactional
     public DeleteTestResponseDTO deleteTest(UUID id) {
-
+        
         if (!testRepository.existsById(id)) throw new TestNotFoundException(id);
 
         testRepository.deleteById(id);
