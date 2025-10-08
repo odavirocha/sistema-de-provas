@@ -37,6 +37,7 @@ public class QuestionController {
         return new ResponseEntity<CreateQuestionResponseDTO>(response, HttpStatus.CREATED);
     }
     
+    // testar a resposta de quando envia mais de uma questão
     @PostMapping("/batch")
     public ResponseEntity<CreateQuestionsResponseDTO> createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions) {
         CreateQuestionsResponseDTO response = questionService.createQuestions(questions);        

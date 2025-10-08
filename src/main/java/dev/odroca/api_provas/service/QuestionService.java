@@ -65,8 +65,8 @@ public class QuestionService {
             saved.getOptions().size(),
             correctionOptionId,
             "Questão criada com sucesso!"
-            );
-        }
+        );
+    }
         
     @Transactional
     public CreateQuestionsResponseDTO createQuestions(CreateQuestionsRequestDTO questionsModel) {
