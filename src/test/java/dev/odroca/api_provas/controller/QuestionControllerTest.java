@@ -2,6 +2,7 @@ package dev.odroca.api_provas.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -128,8 +129,8 @@ public class QuestionControllerTest {
         questionEntity.setOptions(optionEntities);
         when(questionRepository.save(any(QuestionEntity.class))).thenThrow(CorrectOptionNotFoundException.class);
 
-        questionService.createQuestion(testId, question);
-
+        assertThrows(CorrectOptionNotFoundException.class, () -> questionService.createQuestion(testId, question));
+        
         verify(optionMapper).toEntityList(options);
         verify(questionRepository).save(any(QuestionEntity.class));
         verifyNoMoreInteractions(questionRepository);
