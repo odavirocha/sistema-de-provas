@@ -2,6 +2,7 @@ package dev.odroca.api_provas.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,10 @@ public class QuestionService {
 
         List<OptionEntity> optionEntities = optionMapper.toEntityList(questionModel.getOptions());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
+
+        if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
+            throw new CorrectOptionNotFoundException();
+        };
         
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
@@ -56,8 +61,8 @@ public class QuestionService {
         UUID correctionOptionId = saved.getOptions().stream()
         .filter(option -> option.getIsCorrect())
         .findFirst()
-        .map(option -> option.getId())
-        .orElseThrow(() -> new CorrectOptionNotFoundException());
+        .get()
+        .getId();
         
         return new CreateQuestionResponseDTO(
             saved.getId(),

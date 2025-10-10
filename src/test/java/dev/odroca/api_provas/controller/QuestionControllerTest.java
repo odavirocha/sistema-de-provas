@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +30,7 @@ import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
+import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
@@ -58,10 +60,8 @@ public class QuestionControllerTest {
         CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2?", options);
         
         for (Integer i = 0; i < 5; i++) {
-
             Boolean isCorrect = (i == 4);
             options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
-
         }
 
         TestEntity testEntity = new TestEntity();
@@ -94,9 +94,28 @@ public class QuestionControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar uma exeção quando não tiver uma resposta correta.")
-    void testCreateQuestionTestNotFound() {
+    @DisplayName("Deve retornar TestNotFoundException quando achar o ID da prova no banco de dados.")
+    void testCreateQuestionTestNotFoundException() {
         
+        UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
+        List<CreateOptionModelDTO> options = new ArrayList<>();
+        
+        for (Integer i = 0; i < 5; i++) {
+            Boolean isCorrect = (i == 4);
+            options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
+        }
+
+        CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2", options);
+
+        when(testRepository.findById(testId)).thenReturn(Optional.empty());
+
+        assertThrows(TestNotFoundException.class, () -> {
+            questionService.createQuestion(testId, question);
+        });
+        
+        verify(testRepository).findById(testId);
+        verifyNoMoreInteractions(optionMapper);
+        verifyNoMoreInteractions(questionRepository);
     }
 
     @Test
@@ -105,11 +124,12 @@ public class QuestionControllerTest {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         List<CreateOptionModelDTO> options = new ArrayList<>();
-        CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2?", options);
-
+        
         for (Integer i = 0; i < 5; i++) {
             options.add(new CreateOptionModelDTO(i.toString(), false));
         }
+
+        CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2?", options);
 
         TestEntity testEntity = new TestEntity();
         when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
@@ -117,23 +137,19 @@ public class QuestionControllerTest {
         List<OptionEntity> optionEntities = options.stream().map(option -> {
             OptionEntity optionEntity = new OptionEntity();
             ReflectionTestUtils.setField(optionEntity, "id", UUID.randomUUID());
-            option.setValue(option.getValue());
-            option.setIsCorrect(false);
+            optionEntity.setValue(option.getValue());
+            optionEntity.setIsCorrect(false);
             return optionEntity;
         }).collect(Collectors.toList());
         when(optionMapper.toEntityList(options)).thenReturn(optionEntities);
         
-        QuestionEntity questionEntity = new QuestionEntity();
-        ReflectionTestUtils.setField(questionEntity, "id", testId);
-        questionEntity.setQuestion("Qual é a soma de 2+2?");
-        questionEntity.setOptions(optionEntities);
-        when(questionRepository.save(any(QuestionEntity.class))).thenThrow(CorrectOptionNotFoundException.class);
-
-        assertThrows(CorrectOptionNotFoundException.class, () -> questionService.createQuestion(testId, question));
+        assertThrows(CorrectOptionNotFoundException.class, () -> {
+            questionService.createQuestion(testId, question);
+        });
         
+        verify(testRepository).findById(testId);
         verify(optionMapper).toEntityList(options);
-        verify(questionRepository).save(any(QuestionEntity.class));
-        verifyNoMoreInteractions(questionRepository);
+        verifyNoInteractions(questionRepository);
     }
 
     @Test
