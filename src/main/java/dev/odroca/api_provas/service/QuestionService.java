@@ -2,7 +2,6 @@ package dev.odroca.api_provas.service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +38,8 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
+
+    // TENHO QUE CRIAR: Verificar se tem mais de uma resposta correta!
     @Transactional
     public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
         

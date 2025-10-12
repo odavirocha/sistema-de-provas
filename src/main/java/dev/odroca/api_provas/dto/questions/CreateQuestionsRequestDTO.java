@@ -7,8 +7,10 @@ import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class CreateQuestionsRequestDTO {
 
