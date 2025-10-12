@@ -198,6 +198,24 @@ public class QuestionControllerTest {
     @DisplayName("Deve retornar TestNotFoundException quando não achar o ID da prova no banco de dados.")
     void testCreateQuestionsTestNotFoundException() {
 
+        UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
+
+        List<CreateOptionModelDTO> options = new ArrayList<>();
+        for (Integer i = 0; i < 5; i++) {
+            Boolean isCorrect = (i == 4);
+            options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
+        }
+
+        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        questions.add(new CreateQuestionModelDTO("1+1", options));
+        questions.add(new CreateQuestionModelDTO("8-4", options));
+
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+
+        assertThrows(TestNotFoundException.class, () -> {
+            questionService.createQuestions(questionsModel);
+        });
+
     }
 
     @Test
