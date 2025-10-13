@@ -1,11 +1,10 @@
-package dev.odroca.api_provas.controller;
+package dev.odroca.api_provas.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -42,10 +41,9 @@ import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
-import dev.odroca.api_provas.service.QuestionService;
 
 @ExtendWith(MockitoExtension.class)
-public class QuestionControllerTest {
+public class QuestionServiceTest {
 
     @Spy
     @InjectMocks
@@ -62,7 +60,7 @@ public class QuestionControllerTest {
 
     @Test
     @DisplayName("Deve criar uma questão quando tudo estiver OK.")
-    void testCreateQuestionSuccessful() {
+    void createQuestionSuccessful() {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         List<CreateOptionModelDTO> options = new ArrayList<>();
@@ -104,7 +102,7 @@ public class QuestionControllerTest {
 
     @Test
     @DisplayName("Deve retornar TestNotFoundException quando não achar o ID da prova no banco de dados.")
-    void testCreateQuestionTestNotFoundException() {
+    void createQuestionTestNotFoundException() {
         
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         List<CreateOptionModelDTO> options = new ArrayList<>();
@@ -129,7 +127,7 @@ public class QuestionControllerTest {
 
     @Test
     @DisplayName("Deve retornar CorrectOptionNotFoundException quando não tiver uma resposta correta.")
-    void testCreateQuestionCorrectOptionNotFoundException() {
+    void createQuestionCorrectOptionNotFoundException() {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         List<CreateOptionModelDTO> options = new ArrayList<>();
@@ -163,7 +161,7 @@ public class QuestionControllerTest {
 
     @Test
     @DisplayName("Deve criar duas questões quando tudo estiver OK")
-    void testCreateQuestionsSuccessful() {
+    void createQuestionsSuccessful() {
         int totalQuestions = 2;
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
 
@@ -196,7 +194,7 @@ public class QuestionControllerTest {
 
     @Test
     @DisplayName("Deve retornar TestNotFoundException quando não achar o ID da prova no banco de dados.")
-    void testCreateQuestionsTestNotFoundException() {
+    void createQuestionsTestNotFoundException() {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
 
@@ -207,8 +205,8 @@ public class QuestionControllerTest {
         }
 
         List<CreateQuestionModelDTO> questions = new ArrayList<>();
-        questions.add(new CreateQuestionModelDTO("1+1", options));
-        questions.add(new CreateQuestionModelDTO("8-4", options));
+        questions.add(new CreateQuestionModelDTO("1+1?", options));
+        questions.add(new CreateQuestionModelDTO("6-4?", options));
 
         CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
 
@@ -220,13 +218,29 @@ public class QuestionControllerTest {
 
     @Test
     @DisplayName("Deve retornar CorrectOptionNotFoundException quando tiver uma resposta correta.")
-    void testCreateQuestionsCorrectOptionNotFoundException() {
+    void createQuestionsCorrectOptionNotFoundException() {
 
+        UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
+
+        TestEntity testEntity = new TestEntity();
+        ReflectionTestUtils.setField(testEntity, "id", testId);
+        when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
+        
         List<CreateOptionModelDTO> options = new ArrayList<>();
         for (Integer i = 0; i < 5; i++) {
             options.add(new CreateOptionModelDTO(i.toString(), false));
         }
 
+        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        questions.add(new CreateQuestionModelDTO("1+1?", options));
+        questions.add(new CreateQuestionModelDTO("6-4?", options));
+
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+
+        assertThrows(CorrectOptionNotFoundException.class, () -> {
+            questionService.createQuestions(questionsModel);
+        });
+        
     }
 
     @Test
