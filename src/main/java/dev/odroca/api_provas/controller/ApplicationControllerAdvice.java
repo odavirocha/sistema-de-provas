@@ -12,6 +12,7 @@ import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.error.ErrorResponse;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
+import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.TestNullNameException;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +68,12 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(TestNullNameException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleTestNameNullException(TestNullNameException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
+    }
+    
+    @ExceptionHandler(MultipleCorrectOptionsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleTestNameNullException(MultipleCorrectOptionsException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
     }
     

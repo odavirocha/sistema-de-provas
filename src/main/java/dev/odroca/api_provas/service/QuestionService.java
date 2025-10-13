@@ -56,7 +56,6 @@ public class QuestionService {
             throw new CorrectOptionNotFoundException();
         };
         
-        // TENHO QUE TESTAR: Se está bloqueando mais de uma opção correta, mudar o test success disso e criar o de erro.
         long listOptionsSize = optionEntities.stream().filter(option -> option.getIsCorrect()).count();
         if ( listOptionsSize > 1 ) {
             throw new MultipleCorrectOptionsException();
