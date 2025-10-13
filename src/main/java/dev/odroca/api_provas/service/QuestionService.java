@@ -18,6 +18,7 @@ import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
+import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
@@ -39,7 +40,6 @@ public class QuestionService {
     private QuestionMapper questionMapper;
 
 
-    // TENHO QUE CRIAR: Verificar se tem mais de uma resposta correta!
     @Transactional
     public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
         
@@ -48,12 +48,18 @@ public class QuestionService {
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.getQuestion());
-
+        
         List<OptionEntity> optionEntities = optionMapper.toEntityList(questionModel.getOptions());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
-
+        
         if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
             throw new CorrectOptionNotFoundException();
+        };
+        
+        // TENHO QUE TESTAR: Se está bloqueando mais de uma opção correta, mudar o test success disso e criar o de erro.
+        long listOptionsSize = optionEntities.stream().filter(option -> option.getIsCorrect()).count();
+        if ( listOptionsSize > 1 ) {
+            throw new MultipleCorrectOptionsException();
         };
         
         questionEntity.setOptions(optionEntities);

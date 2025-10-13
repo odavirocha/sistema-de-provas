@@ -244,12 +244,12 @@ public class QuestionServiceTest {
     }
 
     @Test
-    void testEditQuestion() {
+    void editQuestion() {
 
     }
 
     @Test
-    void testGetAllQuestionsForTest() {
+    void getAllQuestionsForTest() {
 
     }
 
