@@ -37,6 +37,7 @@ import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
+import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.repository.QuestionRepository;
@@ -122,6 +123,40 @@ public class QuestionServiceTest {
         
         verify(testRepository).findById(testId);
         verifyNoMoreInteractions(optionMapper);
+        verifyNoMoreInteractions(questionRepository);
+    }
+
+    @Test
+    @DisplayName("Deve retornar MultipleCorrectOptionsException quando há mais de uma resposta correta.")
+    void createQuestionMultipleCorrectOptionsException() {
+
+        UUID testId = UUID.randomUUID();
+        List<CreateOptionModelDTO> options = new ArrayList<>();
+        CreateQuestionModelDTO question = new CreateQuestionModelDTO( "Qual é a opção 2?", options);
+
+        options.add(new CreateOptionModelDTO("Opção 1!", false));  
+        options.add(new CreateOptionModelDTO("Opção 2!", true));
+        options.add(new CreateOptionModelDTO("Opção 3!", true));
+
+
+        TestEntity testEntity = new TestEntity();
+        when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
+
+        List<OptionEntity> optionEntities = options.stream().map(option -> {
+            OptionEntity optionEntity = new OptionEntity();
+            ReflectionTestUtils.setField(optionEntity, "id", UUID.randomUUID());
+            optionEntity.setValue(option.getValue());
+            optionEntity.setIsCorrect(option.getIsCorrect());
+            return optionEntity;
+        }).collect(Collectors.toList());
+        when(optionMapper.toEntityList(options)).thenReturn(optionEntities);
+
+        assertThrows(MultipleCorrectOptionsException.class, () -> {
+            questionService.createQuestion(testId, question);
+        });
+
+        verify(testRepository).findById(testId);
+        verify(optionMapper).toEntityList(options);
         verifyNoMoreInteractions(questionRepository);
     }
 
