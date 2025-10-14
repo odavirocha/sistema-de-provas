@@ -101,6 +101,15 @@ public class QuestionService {
 
         List<OptionEntity> currentOptions = question.getOptions();
 
+        if (questionUpdate.getOptions().stream().noneMatch(option -> option.getIsCorrect())) {
+            throw new CorrectOptionNotFoundException();
+        };
+
+        long listLimit = questionUpdate.getOptions().stream().filter(option -> option.getIsCorrect()).count();
+        if (listLimit > 1) {
+            throw new MultipleCorrectOptionsException();
+        }
+
         // ficou muito fei esse fori
         for (int i = 0; i < currentOptions.size(); i++) {
             currentOptions.get(i).setValue(questionUpdate.getOptions().get(i).getValue());
@@ -108,11 +117,6 @@ public class QuestionService {
         }
         
         QuestionEntity saved = questionRepository.save(question);
-
-        saved.getOptions().stream()
-        .filter(option -> option.getIsCorrect())
-        .findFirst()
-        .orElseThrow(() -> new CorrectOptionNotFoundException());
 
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
     }

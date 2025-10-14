@@ -307,7 +307,20 @@ public class QuestionServiceTest {
     }
 
     @Test
-    void editQuestion() {
+    @DisplayName("") 
+    void updateQuestionSuccessful() {
+
+    }
+
+    @Test
+    @DisplayName("") 
+    void updateQuestionQuestionNotFoundException() {
+
+    }
+
+    @Test
+    @DisplayName("") 
+    void updateQuestionCorrectOptionNotFoundException() {
 
     }
 
