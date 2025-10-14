@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -246,6 +245,35 @@ public class QuestionServiceTest {
         CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
 
         assertThrows(TestNotFoundException.class, () -> {
+            questionService.createQuestions(questionsModel);
+        });
+
+    }
+
+    @Test
+    @DisplayName("Deve retornar MultipleCorrectOptionsException quando tiver mais de uma opção correta.")
+    void createQuestionsMultipleCorrectOptionsException() {
+
+        UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
+        
+        List<CreateOptionModelDTO> optionsWrong = new ArrayList<>();
+        optionsWrong.add(new CreateOptionModelDTO("Opção 1", true));
+        optionsWrong.add(new CreateOptionModelDTO("Opção 2", true));
+        optionsWrong.add(new CreateOptionModelDTO("Opção 3", false));
+        
+        List<CreateOptionModelDTO> optionsCorrect = new ArrayList<>();
+        optionsCorrect.add(new CreateOptionModelDTO("Opção 1", true));
+        optionsCorrect.add(new CreateOptionModelDTO("Opção 2", false));
+        optionsCorrect.add(new CreateOptionModelDTO("Opção 3", false));
+        
+
+        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        questions.add(new CreateQuestionModelDTO("Questão 1?", optionsWrong));
+        questions.add(new CreateQuestionModelDTO("Questão 2?", optionsCorrect));
+
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+
+        assertThrows(MultipleCorrectOptionsException.class, () -> {
             questionService.createQuestions(questionsModel);
         });
 
