@@ -1,6 +1,5 @@
 package dev.odroca.api_provas.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -23,6 +22,7 @@ import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
+import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
@@ -107,35 +107,40 @@ public class QuestionService {
         // Atualiza o enunciado
         question.setQuestion(questionUpdate.getQuestion());
 
-        // Verifica se em questionUpdate foi enviado pelo menos uma resposta correta.
         if (questionUpdate.getOptions().stream().noneMatch(option -> option.getIsCorrect())) {
             throw new CorrectOptionNotFoundException();
         }
 
-        // Verifica sem em questionUpdate foi enviado mais de uma resposta correta.
         long listLimit = questionUpdate.getOptions().stream().filter(option -> option.getIsCorrect()).count();
         if (listLimit > 1) {
             throw new MultipleCorrectOptionsException();
         }
 
         // Opções no banco de dados!
-        List<OptionEntity> currentOptions = question.getOptions();
+        List<OptionEntity> databaseOptions = question.getOptions();
 
         // Guarda somente os IDs de quem tem ID
         Set<UUID> idsFromRequest = questionUpdate.getOptions().stream()
             .map(option -> option.getOptionId())
             .filter(id -> id != null)
             .collect(Collectors.toSet());
+
+        for (UUID id : idsFromRequest) {
+            optionRepository.findById(id);
+        }
+
+        List<OptionEntity> optionsThatExist = optionRepository.findAllById(idsFromRequest);
+
+        if (optionsThatExist.size() != idsFromRequest.size()) {
+            throw new OptionNotFoundException();
+        }
         
         // Entidades que não existem no banco de dados são armazenados
-        List<OptionEntity> entitiesToDelete = currentOptions.stream()
+        List<OptionEntity> entitiesToDelete = databaseOptions.stream()
             .filter(option -> !idsFromRequest.contains(option.getId()))
             .collect(Collectors.toList());
 
-        // Deleta as entidades que não estão na lista de update
-        for (OptionEntity optionEntity : entitiesToDelete) {
-            optionRepository.delete(optionEntity);
-        }
+        optionRepository.deleteAll(entitiesToDelete);
 
         question.getOptions().removeAll(entitiesToDelete);
 
