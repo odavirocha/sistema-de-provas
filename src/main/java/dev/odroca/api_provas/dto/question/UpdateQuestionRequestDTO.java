@@ -6,8 +6,10 @@ import dev.odroca.api_provas.dto.option.UpdateOptionModelDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class UpdateQuestionRequestDTO {
 

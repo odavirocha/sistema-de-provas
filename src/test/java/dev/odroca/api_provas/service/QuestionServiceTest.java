@@ -28,8 +28,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.odroca.api_provas.dto.option.CreateOptionModelDTO;
+import dev.odroca.api_provas.dto.option.UpdateOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.question.UpdateQuestionRequestDTO;
+import dev.odroca.api_provas.dto.question.UpdateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsRequestDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
@@ -307,20 +310,50 @@ public class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("") 
+    @DisplayName("Deve editar a questão quando tudo estiver OK.") 
     void updateQuestionSuccessful() {
 
+        UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+
+        List<UpdateOptionModelDTO> options = new ArrayList<>();
+        for (Integer i = 0; i < 5; i++) {
+            Boolean isCorrect = (i == 4);
+            UpdateOptionModelDTO optionEntity = new UpdateOptionModelDTO();
+            optionEntity.setValue(i.toString());
+            optionEntity.setIsCorrect(isCorrect);
+            options.add(optionEntity);
+        }
+
+        UpdateQuestionRequestDTO question = new UpdateQuestionRequestDTO("2+2?", options);
+
+        QuestionEntity questionEntity = new QuestionEntity();
+        when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
+
+        QuestionEntity questionUpdate = new QuestionEntity();
+        ReflectionTestUtils.setField(questionUpdate, "id", UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144"));
+        when(questionRepository.save(any(QuestionEntity.class))).thenReturn(questionUpdate);
+
+        UpdateQuestionResponseDTO result = questionService.updateQuestion(questionId, question);
+        assertNotNull(result);
+        assertEquals(questionId, result.getQuestionId());
+        verify(questionRepository, times(1)).save(questionEntity);
     }
 
     @Test
-    @DisplayName("") 
+    @DisplayName("Deve retornar QuestionNotFoundException quando não achar a resposta que as opções estão atribuidas.") 
     void updateQuestionQuestionNotFoundException() {
 
     }
 
     @Test
-    @DisplayName("") 
+    @DisplayName("Deve retornar CorrectOptionNotFoundException quando não tiver uma resposta correta.") 
     void updateQuestionCorrectOptionNotFoundException() {
+
+    }
+
+    @Test
+    @DisplayName("Deve retornar MultipleCorrectOptionsException quando existir mais uma resposta correta.") 
+    void updateQuestionMultipleCorrectOptionsException() {
 
     }
 

@@ -4,12 +4,11 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class UpdateOptionModelDTO {
     
-    @NotNull(message = "O campo 'optionId' não pode ser nulo.")
     UUID optionId;
     
     @NotBlank(message = "O campo 'value' não pode ser vazio.")

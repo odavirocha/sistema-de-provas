@@ -45,7 +45,7 @@ public class QuestionController {
     }
     
     @PutMapping("/{questionId}")
-    public ResponseEntity<UpdateQuestionResponseDTO> editQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
+    public ResponseEntity<UpdateQuestionResponseDTO> updateQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
         UpdateQuestionResponseDTO response = questionService.updateQuestion(questionId, questionUpdate);
         return new ResponseEntity<UpdateQuestionResponseDTO>(response, HttpStatus.OK);
     }
