@@ -56,7 +56,7 @@ public class QuestionService {
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.getQuestion());
         
-        List<OptionEntity> optionEntities = optionMapper.toEntityList(questionModel.getOptions());
+        List<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.getOptions());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
         
         if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
@@ -121,34 +121,50 @@ public class QuestionService {
         // Opções no banco de dados!
         List<OptionEntity> currentOptions = question.getOptions();
 
-        // Limpa os elementos e guarda somente os IDs
+        // Guarda somente os IDs de quem tem ID
         Set<UUID> idsFromRequest = questionUpdate.getOptions().stream()
             .map(option -> option.getOptionId())
             .filter(id -> id != null)
             .collect(Collectors.toSet());
         
-        // IDs que não existem no banco de dados são armazenados
-        List<UUID> idsToDelete = currentOptions.stream()
-            .map(option -> option.getId())
-            .filter(id -> !idsFromRequest.contains(id))
-            .collect(Collectors.toList());
-        
         // Entidades que não existem no banco de dados são armazenados
         List<OptionEntity> entitiesToDelete = currentOptions.stream()
-            .filter(option -> idsToDelete.contains(option.getId()))
+            .filter(option -> !idsFromRequest.contains(option.getId()))
             .collect(Collectors.toList());
 
-        // Deleta os IDs que não estão na lista de update
-        for (UUID id : idsToDelete) {
-            optionRepository.deleteById(id);
+        // Deleta as entidades que não estão na lista de update
+        for (OptionEntity optionEntity : entitiesToDelete) {
+            optionRepository.delete(optionEntity);
         }
 
-        // Remove de question a entidade que não foi atualizada
         question.getOptions().removeAll(entitiesToDelete);
 
+        // Atualiza as questões que já existiam
         for (Integer i = 0; i < question.getOptions().size(); i++) {
             question.getOptions().get(i).setIsCorrect(questionUpdate.getOptions().get(i).getIsCorrect());
             question.getOptions().get(i).setValue(questionUpdate.getOptions().get(i).getValue());
+        }
+
+        List<OptionEntity> newOptions = questionUpdate.getOptions().stream()
+            .filter(option -> option.getOptionId() == null)
+            .map(option -> {
+                OptionEntity optionEntity = new OptionEntity();
+                optionEntity.setQuestion(question);
+                optionEntity.setValue(option.getValue());
+                optionEntity.setIsCorrect(option.getIsCorrect());
+                return optionEntity;
+            })
+            .collect(Collectors.toList());
+
+        question.getOptions().addAll(newOptions);
+
+        List<UpdateOptionModelDTO> existingsIds = questionUpdate.getOptions().stream()
+        .filter(option -> idsFromRequest.contains(option.getOptionId()))
+        .collect(Collectors.toList());
+
+        for (Integer i = 0; i < existingsIds.size(); i++) {
+            question.getOptions().get(i).setValue(existingsIds.get(i).getValue());
+            question.getOptions().get(i).setIsCorrect(existingsIds.get(i).getIsCorrect());
         }
         
         QuestionEntity saved = questionRepository.save(question);

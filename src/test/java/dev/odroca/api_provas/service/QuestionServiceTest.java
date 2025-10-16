@@ -84,7 +84,7 @@ public class QuestionServiceTest {
             optionEntity.setIsCorrect(option.getIsCorrect());
             return optionEntity;
         }).collect(Collectors.toList());
-        when(optionMapper.toEntityList(options)).thenReturn(optionEntities);
+        when(optionMapper.createDtoToEntityList(options)).thenReturn(optionEntities);
 
         QuestionEntity questionEntity = new QuestionEntity();
         ReflectionTestUtils.setField(questionEntity, "id", testId);
@@ -98,7 +98,7 @@ public class QuestionServiceTest {
         assertEquals(questionEntity.getQuestion(), result.getQuestion());
         assertEquals(optionEntities.size(), result.getTotalOptions());
         verify(testRepository).findById(testId);
-        verify(optionMapper).toEntityList(options);
+        verify(optionMapper).createDtoToEntityList(options);
         verify(questionRepository).save(any(QuestionEntity.class));
 
     }
@@ -151,14 +151,14 @@ public class QuestionServiceTest {
             optionEntity.setIsCorrect(option.getIsCorrect());
             return optionEntity;
         }).collect(Collectors.toList());
-        when(optionMapper.toEntityList(options)).thenReturn(optionEntities);
+        when(optionMapper.createDtoToEntityList(options)).thenReturn(optionEntities);
 
         assertThrows(MultipleCorrectOptionsException.class, () -> {
             questionService.createQuestion(testId, question);
         });
 
         verify(testRepository).findById(testId);
-        verify(optionMapper).toEntityList(options);
+        verify(optionMapper).createDtoToEntityList(options);
         verifyNoMoreInteractions(questionRepository);
     }
 
@@ -185,14 +185,14 @@ public class QuestionServiceTest {
             optionEntity.setIsCorrect(false);
             return optionEntity;
         }).collect(Collectors.toList());
-        when(optionMapper.toEntityList(options)).thenReturn(optionEntities);
+        when(optionMapper.createDtoToEntityList(options)).thenReturn(optionEntities);
         
         assertThrows(CorrectOptionNotFoundException.class, () -> {
             questionService.createQuestion(testId, question);
         });
         
         verify(testRepository).findById(testId);
-        verify(optionMapper).toEntityList(options);
+        verify(optionMapper).createDtoToEntityList(options);
         verifyNoInteractions(questionRepository);
     }
 
