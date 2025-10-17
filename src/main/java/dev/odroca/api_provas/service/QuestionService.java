@@ -1,7 +1,6 @@
 package dev.odroca.api_provas.service;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -100,34 +99,27 @@ public class QuestionService {
     }
     
     @Transactional
-    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO questionUpdate) {
+    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
 
-        QuestionEntity question = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
+        QuestionEntity databaseQuestion = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
         
         // Atualiza o enunciado
-        question.setQuestion(questionUpdate.getQuestion());
+        databaseQuestion.setQuestion(requestQuestion.getQuestion());
 
-        if (questionUpdate.getOptions().stream().noneMatch(option -> option.getIsCorrect())) {
+        if (requestQuestion.getOptions().stream().noneMatch(option -> option.getIsCorrect())) {
             throw new CorrectOptionNotFoundException();
         }
 
-        long listLimit = questionUpdate.getOptions().stream().filter(option -> option.getIsCorrect()).count();
+        long listLimit = requestQuestion.getOptions().stream().filter(option -> option.getIsCorrect()).count();
         if (listLimit > 1) {
             throw new MultipleCorrectOptionsException();
         }
 
-        // Opções no banco de dados!
-        List<OptionEntity> databaseOptions = question.getOptions();
-
         // Guarda somente os IDs de quem tem ID
-        Set<UUID> idsFromRequest = questionUpdate.getOptions().stream()
+        List<UUID> idsFromRequest = requestQuestion.getOptions().stream()
             .map(option -> option.getOptionId())
             .filter(id -> id != null)
-            .collect(Collectors.toSet());
-
-        for (UUID id : idsFromRequest) {
-            optionRepository.findById(id);
-        }
+            .collect(Collectors.toList());
 
         List<OptionEntity> optionsThatExist = optionRepository.findAllById(idsFromRequest);
 
@@ -136,43 +128,43 @@ public class QuestionService {
         }
         
         // Entidades que não existem no banco de dados são armazenados
-        List<OptionEntity> entitiesToDelete = databaseOptions.stream()
+        List<OptionEntity> entitiesToDelete = databaseQuestion.getOptions().stream()
             .filter(option -> !idsFromRequest.contains(option.getId()))
             .collect(Collectors.toList());
 
         optionRepository.deleteAll(entitiesToDelete);
 
-        question.getOptions().removeAll(entitiesToDelete);
+        databaseQuestion.getOptions().removeAll(entitiesToDelete);
 
         // Atualiza as questões que já existiam
-        for (Integer i = 0; i < question.getOptions().size(); i++) {
-            question.getOptions().get(i).setIsCorrect(questionUpdate.getOptions().get(i).getIsCorrect());
-            question.getOptions().get(i).setValue(questionUpdate.getOptions().get(i).getValue());
+        for (Integer i = 0; i < databaseQuestion.getOptions().size(); i++) {
+            databaseQuestion.getOptions().get(i).setIsCorrect(requestQuestion.getOptions().get(i).getIsCorrect());
+            databaseQuestion.getOptions().get(i).setValue(requestQuestion.getOptions().get(i).getValue());
         }
 
-        List<OptionEntity> newOptions = questionUpdate.getOptions().stream()
+        List<OptionEntity> newOptions = requestQuestion.getOptions().stream()
             .filter(option -> option.getOptionId() == null)
             .map(option -> {
                 OptionEntity optionEntity = new OptionEntity();
-                optionEntity.setQuestion(question);
+                optionEntity.setQuestion(databaseQuestion);
                 optionEntity.setValue(option.getValue());
                 optionEntity.setIsCorrect(option.getIsCorrect());
                 return optionEntity;
             })
             .collect(Collectors.toList());
 
-        question.getOptions().addAll(newOptions);
+        databaseQuestion.getOptions().addAll(newOptions);
 
-        List<UpdateOptionModelDTO> existingsIds = questionUpdate.getOptions().stream()
+        List<UpdateOptionModelDTO> existingsIds = requestQuestion.getOptions().stream()
         .filter(option -> idsFromRequest.contains(option.getOptionId()))
         .collect(Collectors.toList());
 
         for (Integer i = 0; i < existingsIds.size(); i++) {
-            question.getOptions().get(i).setValue(existingsIds.get(i).getValue());
-            question.getOptions().get(i).setIsCorrect(existingsIds.get(i).getIsCorrect());
+            databaseQuestion.getOptions().get(i).setValue(existingsIds.get(i).getValue());
+            databaseQuestion.getOptions().get(i).setIsCorrect(existingsIds.get(i).getIsCorrect());
         }
         
-        QuestionEntity saved = questionRepository.save(question);
+        QuestionEntity saved = questionRepository.save(databaseQuestion);
 
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
     }

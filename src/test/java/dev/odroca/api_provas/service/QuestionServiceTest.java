@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -42,6 +44,7 @@ import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
+import dev.odroca.api_provas.repository.OptionRepository;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -57,6 +60,9 @@ public class QuestionServiceTest {
 
     @Mock
     QuestionRepository questionRepository;
+
+    @Mock
+    OptionRepository optionRepository;
 
     @Mock
     OptionMapper optionMapper;
@@ -313,30 +319,159 @@ public class QuestionServiceTest {
     @DisplayName("Deve editar a questão quando tudo estiver OK.") 
     void updateQuestionSuccessful() {
 
+        // Parâmetro do updateQuestion
         UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
 
-        List<UpdateOptionModelDTO> options = new ArrayList<>();
+        // Parâmetro do updateQuestion
+        UpdateQuestionRequestDTO questionUpdate = new UpdateQuestionRequestDTO("Enunciado: 1+1?", null);
+                
+        List<UUID> idsFromRequest = List.of(
+            UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
+            UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
+            UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
+            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30"),
+            UUID.fromString("3c9bac11-8019-4630-838a-b8621cb90686")
+        );
+
+        List<UpdateOptionModelDTO> optionsForQuestionUpdate = new ArrayList<>();
+
         for (Integer i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
-            UpdateOptionModelDTO optionEntity = new UpdateOptionModelDTO();
-            optionEntity.setValue(i.toString());
-            optionEntity.setIsCorrect(isCorrect);
-            options.add(optionEntity);
+            UpdateOptionModelDTO optionModelDTO = new UpdateOptionModelDTO();
+
+            ReflectionTestUtils.setField(optionModelDTO, "optionId", idsFromRequest.get(i));
+            optionModelDTO.setValue(i.toString());
+            optionModelDTO.setIsCorrect(isCorrect);
+
+            optionsForQuestionUpdate.add(optionModelDTO);
         }
 
-        UpdateQuestionRequestDTO question = new UpdateQuestionRequestDTO("2+2?", options);
+        // Adiciona List<UpdateOptionModelDTO> optionsForQuestionUpdate dentro do campo options
+        ReflectionTestUtils.setField(questionUpdate, "options", optionsForQuestionUpdate);
 
-        QuestionEntity questionEntity = new QuestionEntity();
-        when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
+        // FindById(questionId)
+        QuestionEntity databaseQuestion = new QuestionEntity();
 
-        QuestionEntity questionUpdate = new QuestionEntity();
-        ReflectionTestUtils.setField(questionUpdate, "id", UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144"));
-        when(questionRepository.save(any(QuestionEntity.class))).thenReturn(questionUpdate);
+        ReflectionTestUtils.setField(databaseQuestion, "id", questionId);
 
-        UpdateQuestionResponseDTO result = questionService.updateQuestion(questionId, question);
+        List<OptionEntity> optionsForDatabaseQuestion = new ArrayList<>();
+
+        for (Integer i = 0; i < 5; i++) {
+            Boolean isCorrect = (i == 4);
+            OptionEntity optionEntity = new OptionEntity();
+
+            ReflectionTestUtils.setField(optionEntity, "id", idsFromRequest.get(i));
+            optionEntity.setValue(i.toString());
+            optionEntity.setIsCorrect(isCorrect);
+
+            optionsForDatabaseQuestion.add(optionEntity);
+        }
+
+        List<OptionEntity> optionsThatExist = List.of(
+            new OptionEntity(), 
+            new OptionEntity(), 
+            new OptionEntity(), 
+            new OptionEntity() , 
+            new OptionEntity()
+        );
+        
+        // Adiciona List<OptionEntity> optionsForDatabaseQuestion dentro do campo options
+        ReflectionTestUtils.setField(databaseQuestion, "options", optionsForDatabaseQuestion);
+        
+        when(questionRepository.findById(questionId)).thenReturn(Optional.of(databaseQuestion));
+        when(optionRepository.findAllById(idsFromRequest)).thenReturn(optionsThatExist);
+        when(questionRepository.save(databaseQuestion)).thenReturn(databaseQuestion);
+
+        UpdateQuestionResponseDTO result = questionService.updateQuestion(questionId, questionUpdate);
+
         assertNotNull(result);
         assertEquals(questionId, result.getQuestionId());
-        verify(questionRepository, times(1)).save(questionEntity);
+        
+        verify(optionRepository, never()).deleteAll(anyList()); // Requets sem nenhum nulo, nenhuma opção deve ser deletada
+    }
+
+    @Test
+    @DisplayName("Deve dar sucesso quando enviar pelo menos um ID nulo no request.") 
+    void updateQuestionQuestionSuccessfulIdNull() {
+
+        UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+
+        UpdateQuestionRequestDTO questionUpdate = new UpdateQuestionRequestDTO("1+1?", null);
+
+        List<UUID> idsFromRequest = List.of(
+            UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
+            UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
+            UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
+            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
+        );
+
+        List<UpdateOptionModelDTO> optionsForQuestionUpdate = new ArrayList<>();
+
+        for (Integer i = 0; i < 5; i++) {
+            Boolean isCorrect = (i == 3);
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO();
+            
+            if (i < 4) {
+                ReflectionTestUtils.setField(option, "optionId", idsFromRequest.get(i)); // Seta o ID ou nulo.
+            } else {
+                ReflectionTestUtils.setField(option, "optionId", null); // Seta o ID ou nulo.
+            }
+
+            option.setIsCorrect(isCorrect);
+            option.setValue(i.toString());
+
+            optionsForQuestionUpdate.add(option);
+        }
+
+        // Adiciona List<UpdateOptionModelDTO> optionsForQuestionUpdate dentro do campo options
+        ReflectionTestUtils.setField(questionUpdate, "options", optionsForQuestionUpdate);
+
+        QuestionEntity databaseQuestion = new QuestionEntity();
+        
+        ReflectionTestUtils.setField(databaseQuestion, "id", questionId);
+        
+        databaseQuestion.setQuestion("1+1");
+
+        List<OptionEntity> entitesToDelete = new ArrayList<>();
+        OptionEntity optionToDelete = new OptionEntity();
+
+        ReflectionTestUtils.setField(optionToDelete, "id", UUID.fromString("3c9bac11-8019-4630-838a-b8621cb90686"));
+        optionToDelete.setIsCorrect(false);
+        optionToDelete.setValue("5");
+
+        entitesToDelete.add(optionToDelete);
+
+        List<OptionEntity> optionsThatExist = new ArrayList<>();
+
+        for (Integer i = 0; i < 4; i++) {
+            
+            Boolean isCorrect = (i == 3 );
+            OptionEntity option = new OptionEntity();
+
+            ReflectionTestUtils.setField(option, "id", idsFromRequest.get(i));
+            option.setIsCorrect(isCorrect);
+            option.setValue(i.toString());
+            
+            optionsThatExist.add(option);
+        }
+        
+        List<OptionEntity> databaseOptions = new ArrayList<>();
+        
+        databaseOptions.addAll(optionsThatExist);
+        databaseOptions.add(optionToDelete);
+
+        databaseQuestion.setOptions(databaseOptions);
+
+        when(questionRepository.findById(questionId)).thenReturn(Optional.of(databaseQuestion));
+        when(optionRepository.findAllById(idsFromRequest)).thenReturn(optionsThatExist);
+        when(questionRepository.save(databaseQuestion)).thenReturn(databaseQuestion);
+
+        UpdateQuestionResponseDTO result = questionService.updateQuestion(questionId, questionUpdate);
+
+        assertNotNull(result);
+        assertEquals(questionId, result.getQuestionId());
+        
+        verify(optionRepository).deleteAll(anyList());
     }
 
     @Test
