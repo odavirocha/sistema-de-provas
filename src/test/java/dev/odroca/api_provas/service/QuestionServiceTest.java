@@ -492,9 +492,35 @@ public class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar CorrectOptionNotFoundException quando não tiver uma resposta correta.") 
+    @DisplayName("Deve retornar CorrectOptionNotFoundException quando não tiver nenhuma resposta correta.") 
     void updateQuestionCorrectOptionNotFoundException() {
 
+        UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+
+        UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("1+1", null);
+
+        List<UpdateOptionModelDTO> options = new ArrayList<>();
+
+        for (Integer i = 0; i < 5; i++) {
+            
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO();
+            option.setIsCorrect(false);
+            option.setValue(i.toString());
+            options.add(option);
+        }
+
+        ReflectionTestUtils.setField(requestQuestion, "options", options);
+
+        QuestionEntity questionEntity = new QuestionEntity();
+        ReflectionTestUtils.setField(questionEntity, "id", questionId);
+        questionEntity.setQuestion("2+2");
+        questionEntity.setOptions(new ArrayList<>());
+
+        when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
+        
+        assertThrows(CorrectOptionNotFoundException.class, () -> {
+            questionService.updateQuestion(questionId, requestQuestion);
+        });
     }
 
     @Test
