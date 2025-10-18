@@ -507,6 +507,7 @@ public class QuestionServiceTest {
             option.setIsCorrect(false);
             option.setValue(i.toString());
             options.add(option);
+
         }
 
         ReflectionTestUtils.setField(requestQuestion, "options", options);
@@ -527,6 +528,33 @@ public class QuestionServiceTest {
     @DisplayName("Deve retornar MultipleCorrectOptionsException quando existir mais uma resposta correta.") 
     void updateQuestionMultipleCorrectOptionsException() {
 
+        UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+
+        UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("1+1", null);
+        
+        List<UpdateOptionModelDTO> options = new ArrayList<>();
+
+        for (Integer i = 0; i < 5; i++) {
+            
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO();
+            option.setIsCorrect(true);
+            option.setValue(i.toString());
+            options.add(option);
+
+        }
+
+        ReflectionTestUtils.setField(requestQuestion, "options", options);
+        
+        QuestionEntity questionEntity = new QuestionEntity();
+        ReflectionTestUtils.setField(questionEntity, "id", questionId);
+        questionEntity.setQuestion("1+2");
+        questionEntity.setOptions(new ArrayList<>());
+
+        when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
+    
+        assertThrows(MultipleCorrectOptionsException.class, () -> {
+            questionService.updateQuestion(questionId, requestQuestion);
+        });  
     }
 
     @Test
