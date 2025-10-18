@@ -564,7 +564,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    void getAllQuestionsForTest() {
+    @DisplayName("Deve dar sucesso quando tudo estiver OK")
+    void getAllQuestionsForTestSuccessful() {
 
         UUID testId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
         
@@ -628,6 +629,20 @@ public class QuestionServiceTest {
         List<GetQuestionModelDTO> result = questionService.getAllQuestionsForTest(testId);
 
         assertEquals(questionsConverted, result);
+    }
+
+    @Test
+    @DisplayName("Deve retornar TestNotFoundException quando tudo não achar uma prova.")
+    void getAllQuestionsForTestTestNotFoundException() {
+
+        UUID testId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+
+        when(testRepository.findById(testId)).thenReturn(Optional.empty());
+
+        assertThrows(TestNotFoundException.class, () -> {
+            questionService.getAllQuestionsForTest(testId);
+        });
+        
     }
 
 }
