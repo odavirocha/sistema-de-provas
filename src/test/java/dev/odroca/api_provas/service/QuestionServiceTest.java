@@ -42,6 +42,7 @@ import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
+import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.repository.OptionRepository;
@@ -478,6 +479,16 @@ public class QuestionServiceTest {
     @DisplayName("Deve retornar QuestionNotFoundException quando não achar a resposta que as opções estão atribuidas.") 
     void updateQuestionQuestionNotFoundException() {
 
+        UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+        
+        UpdateQuestionRequestDTO questionRequestDTO = new UpdateQuestionRequestDTO();
+
+        when(questionRepository.findById(questionId)).thenReturn(Optional.empty());
+
+        assertThrows(QuestionNotFoundException.class, () -> {
+            questionService.updateQuestion(questionId, questionRequestDTO);
+        });
+        
     }
 
     @Test
