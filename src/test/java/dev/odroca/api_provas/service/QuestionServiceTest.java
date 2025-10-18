@@ -30,9 +30,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.odroca.api_provas.dto.option.CreateOptionModelDTO;
+import dev.odroca.api_provas.dto.option.GetOptionModelDTO;
 import dev.odroca.api_provas.dto.option.UpdateOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.question.GetQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionRequestDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsRequestDTO;
@@ -45,6 +47,7 @@ import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
+import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.OptionRepository;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
@@ -64,6 +67,9 @@ public class QuestionServiceTest {
 
     @Mock
     OptionRepository optionRepository;
+
+    @Mock
+    QuestionMapper questionMapper;
 
     @Mock
     OptionMapper optionMapper;
@@ -560,6 +566,68 @@ public class QuestionServiceTest {
     @Test
     void getAllQuestionsForTest() {
 
+        UUID testId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+        
+        TestEntity databaseTest = new TestEntity();
+        List<QuestionEntity> questions = new ArrayList<>();
+        List<OptionEntity> options = new ArrayList<>();
+        List<UUID> idsFromRequest = List.of(
+            UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
+            UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
+            UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
+            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30"),
+            UUID.fromString("3c9bac11-8019-4630-838a-b8621cb90686")
+        );
+
+        ReflectionTestUtils.setField(databaseTest, "id", testId);
+        ReflectionTestUtils.setField(databaseTest, "name", "Prova de teste 01");
+        ReflectionTestUtils.setField(databaseTest, "questions", questions);
+
+        for (Integer i = 0; i < 5; i++) {
+
+            OptionEntity optionEntity = new OptionEntity();
+            Boolean isCorrect = (i == 4);
+            optionEntity.setIsCorrect(isCorrect);
+            optionEntity.setValue(i.toString());
+            ReflectionTestUtils.setField(optionEntity, "id", idsFromRequest.get(i));
+
+            options.add(optionEntity);
+        }
+        
+        for (Integer i = 0; i < 2; i++) {
+
+            QuestionEntity questionEntity = new QuestionEntity();
+            questionEntity.setQuestion(i + " + " + i);
+            questionEntity.setOptions(options);
+
+            questions.add(questionEntity);
+        }
+
+        List<GetOptionModelDTO> optionsConverted = options.stream()
+        .map(option -> {
+            GetOptionModelDTO optionConverted = new GetOptionModelDTO();
+            ReflectionTestUtils.setField(optionConverted, "id", option.getId());
+            ReflectionTestUtils.setField(optionConverted, "value", option.getValue());
+            ReflectionTestUtils.setField(optionConverted, "isCorrect", option.getIsCorrect());
+            return optionConverted;
+        }).collect(Collectors.toList());
+
+        List<GetQuestionModelDTO> questionsConverted = questions.stream()
+        .map(question -> {
+            GetQuestionModelDTO questionConverted = new GetQuestionModelDTO();
+            ReflectionTestUtils.setField(questionConverted, "id", question.getId());
+            ReflectionTestUtils.setField(questionConverted, "question", question.getQuestion());
+            ReflectionTestUtils.setField(questionConverted, "options", optionsConverted);
+            return questionConverted;
+        }).collect(Collectors.toList());
+
+
+        when(testRepository.findById(testId)).thenReturn(Optional.of(databaseTest));
+        when(questionMapper.toDtoList(questions)).thenReturn(questionsConverted);
+        
+        List<GetQuestionModelDTO> result = questionService.getAllQuestionsForTest(testId);
+
+        assertEquals(questionsConverted, result);
     }
 
 }
