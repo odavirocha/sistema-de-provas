@@ -10,9 +10,9 @@ import lombok.Data;
 public class CreateOptionModelDTO {
 
     @NotBlank(message = "O campo 'value' não pode estar em branco.")
-    String value;
+    private String value;
 
     @NotNull(message = "O campo 'isCorrect' não pode ser nulo.")
-    Boolean isCorrect;
+    private Boolean isCorrect;
 
 }

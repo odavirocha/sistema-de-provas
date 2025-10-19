@@ -9,8 +9,8 @@ import lombok.Getter;
 @Getter
 public class CreateQuestionsResponseDTO {
 
-    UUID id;
-    int totalQuestions;
-    String message;
+    private UUID id;
+    private int totalCreatedQuestions;
+    private String message;
     
 }

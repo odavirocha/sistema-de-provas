@@ -9,10 +9,10 @@ import lombok.Getter;
 @Getter
 public class CreateQuestionResponseDTO {
 
-    UUID id;
-    String question;
-    int totalOptions;
-    UUID correctOptionId;
-    String message;
+    private UUID id;
+    private String question;
+    private int totalOptions;
+    private UUID correctOptionId;
+    private String message;
     
 }

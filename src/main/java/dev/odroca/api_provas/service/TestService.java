@@ -1,13 +1,18 @@
 package dev.odroca.api_provas.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
+import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
+import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.repository.TestRepository;
@@ -35,6 +40,18 @@ public class TestService {
         testRepository.deleteById(id);
 
         return new DeleteTestResponseDTO(id.toString(), "Prova deletada com sucesso!");
+    }
+    
+    @Transactional
+    public AnswerTestResponseDTO answerTest(UUID testId, AnswerTestRequestDTO test) {
+
+        TestEntity databaseTest = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        
+        List<QuestionEntity> questionEntity = databaseTest.getQuestions();
+
+        
+        
+        return new AnswerTestResponseDTO();
     }
     
 }

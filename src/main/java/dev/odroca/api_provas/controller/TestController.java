@@ -3,6 +3,8 @@ package dev.odroca.api_provas.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
+import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
 import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
@@ -35,6 +37,12 @@ public class TestController {
 
         return testService.createTest(testEntity);
     }
+
+    @PostMapping("/{testId}")
+    public AnswerTestResponseDTO answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
+        return testService.answerTest(testId, test);
+    }
+    
 
     @DeleteMapping("/{testId}")
     public DeleteTestResponseDTO deleteTest(@PathVariable UUID testId) {

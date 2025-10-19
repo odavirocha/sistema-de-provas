@@ -172,7 +172,6 @@ public class QuestionService {
     public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        
         List<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
 
         return questions;

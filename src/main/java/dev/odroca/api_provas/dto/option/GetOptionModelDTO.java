@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetOptionModelDTO {
 
-    UUID id;
-    String value;
-    Boolean isCorrect;
+    private UUID id;
+    private String value;
+    private Boolean isCorrect;
     
 }

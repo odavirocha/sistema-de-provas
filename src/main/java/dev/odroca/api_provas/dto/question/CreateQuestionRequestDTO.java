@@ -9,9 +9,9 @@ import lombok.Getter;
 public class CreateQuestionRequestDTO {
 
     @NotNull(message = "O campo 'testId' não pode ser nulo!")
-    UUID testId;
+    private UUID testId;
 
     @NotNull(message = "O campo 'question' não pode ser nulo!")
-    CreateQuestionModelDTO question;
+    private CreateQuestionModelDTO question;
 
 }

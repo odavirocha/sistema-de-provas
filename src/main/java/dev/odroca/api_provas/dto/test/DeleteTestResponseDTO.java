@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class DeleteTestResponseDTO {
     
-    String id;
-    String message;
+    private String id;
+    private String message;
 
 }

@@ -9,12 +9,12 @@ import lombok.Data;
 @Data
 public class UpdateOptionModelDTO {
     
-    UUID optionId;
+    private UUID optionId;
     
     @NotBlank(message = "O campo 'value' não pode ser vazio.")
-    String value;
+    private String value;
     
     @NotNull(message = "O campo 'isCorrect' não pode ser nulo.")
-    Boolean isCorrect;
+    private Boolean isCorrect;
 
 }

@@ -15,9 +15,9 @@ import lombok.Getter;
 public class CreateQuestionsRequestDTO {
 
     @NotNull(message = "O campo 'testId' não pode ser nulo.")
-    UUID testId;
+    private UUID testId;
 
     @NotEmpty(message = "O campo 'questions' não pode estar vazia.")
-    List<@Valid CreateQuestionModelDTO> questions;
+    private List<@Valid CreateQuestionModelDTO> questions;
     
 }

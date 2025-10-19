@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetQuestionModelDTO {
     
-    UUID id;
-    String question;
-    List<GetOptionModelDTO> options;
+    private UUID id;
+    private String question;
+    private List<GetOptionModelDTO> options;
     
 }
