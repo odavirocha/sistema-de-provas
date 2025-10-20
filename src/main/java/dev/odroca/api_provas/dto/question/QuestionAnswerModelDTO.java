@@ -8,6 +8,6 @@ import lombok.Getter;
 public class QuestionAnswerModelDTO {
     
     private UUID questionId;
-    private UUID isCorrectId;
+    private UUID selectedOptionId;
     
 }

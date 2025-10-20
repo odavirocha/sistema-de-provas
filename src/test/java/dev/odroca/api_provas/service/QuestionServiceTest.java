@@ -233,9 +233,9 @@ public class QuestionServiceTest {
 
         assertNotNull(result);  
         assertNotNull(result.getId());
-        assertNotNull(result.getTotalQuestions());
+        assertNotNull(result.getTotalCreatedQuestions());
         assertEquals(testId, result.getId());
-        assertEquals(totalQuestions, result.getTotalQuestions());
+        assertEquals(totalQuestions, result.getTotalCreatedQuestions());
 
         // Verifica se realmente o looping de createQuestions chama createQuestion 2x
         verify(questionService, times(2)).createQuestion(eq(testId), any(CreateQuestionModelDTO.class));

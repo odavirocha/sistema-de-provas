@@ -2,9 +2,9 @@ package dev.odroca.api_provas.dto.question;
 
 import java.util.UUID;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class QuestionResultModelDTO {
     
     private UUID questionId;
