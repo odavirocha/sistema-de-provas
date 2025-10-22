@@ -2,8 +2,13 @@ package dev.odroca.api_provas.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import javax.swing.event.ListDataEvent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,42 +60,75 @@ public class TestService {
         List<QuestionEntity> databaseQuestions = databaseTest.getQuestions();
         List<QuestionAnswerModelDTO> requestQuestions = test.getQuestions();
 
+        // Score com total de questões que existem, 100%
         int score = databaseQuestions.size();
 
         List<QuestionResultModelDTO> questions = new ArrayList<>();
 
-        for (int i = 0; i < databaseQuestions.size(); i++) {
+        // IDs de questões do Request
+        Set<UUID> requestQuestionsId = requestQuestions.stream()
+            .map(question -> question.getQuestionId())
+            .collect(Collectors.toSet());
+        
+        // Questões que existem no banco de dados e no request
+        List<QuestionEntity> questionsAvailable = databaseQuestions.stream()
+            .filter(question -> requestQuestionsId.contains(question.getId()))
+            .collect(Collectors.toList());
 
-            QuestionResultModelDTO question = new QuestionResultModelDTO();
+        // Questões que não existem no request, mas existem no banco de dados
+        List<QuestionEntity> questionsWrong = databaseQuestions.stream()
+            .filter(question -> !requestQuestionsId.contains(question.getId()))
+            .collect(Collectors.toList());
+            
+        // Diminui o score com base nas respostas erradas
+        score -= questionsWrong.size();
 
-            // Cada questão que veio do request
-            // Tem somente o questionId e selectedOptionId
-            QuestionAnswerModelDTO requestQuestion = requestQuestions.get(i);
-            QuestionEntity databaseQuestion = databaseQuestions.get(i);
-
-            question.setQuestionId(requestQuestion.getQuestionId());
-            question.setSelectedOptionId(requestQuestion.getSelectedOptionId());
-
-            // Buscar o correctOptionId da questionId
-            UUID correctOptionId = databaseQuestion.getOptions().stream()
+        for (QuestionAnswerModelDTO requestQuestion : requestQuestions) {
+            for (QuestionEntity databaseQuestion : questionsAvailable) {
+                if (requestQuestion.getQuestionId().equals(databaseQuestion.getId())) {
+                    
+                    UUID correctOption = databaseQuestion.getOptions().stream()
                     .filter(option -> option.getIsCorrect())
                     .map(option -> option.getId())
-                    .findFirst()
-                    .orElseThrow(() -> new QuestionAnswerValidationException(databaseQuestion.getId()));
-            
-            question.setCorrectOptionId(correctOptionId);
+                    .findFirst().orElse(null);
 
-            if (requestQuestion.getSelectedOptionId().equals(correctOptionId)) {
-                question.setIsCorrect(true);
-            } else {
-                question.setIsCorrect(false);
-                score--;
+                    QuestionResultModelDTO question = new QuestionResultModelDTO();
+
+                    question.setQuestionId(requestQuestion.getQuestionId());
+                    question.setSelectedOptionId(requestQuestion.getSelectedOptionId());
+                    question.setCorrectOptionId(correctOption);
+
+                    if (requestQuestion.getSelectedOptionId().equals(correctOption)) {
+                        question.setIsCorrect(true);
+                    } else {
+                        question.setIsCorrect(false);
+                        score--;
+                    }
+
+                    questions.add(question);
+
+                }
             }
-
-            questions.add(question);
-            
         }
 
+        for (QuestionEntity wrongQuestion : questionsWrong) {
+            for (QuestionEntity databaseQuestion : questionsAvailable) {
+
+                UUID correctOption = databaseQuestion.getOptions().stream()
+                .filter(option -> option.getIsCorrect())
+                .map(option -> option.getId())
+                .findFirst().orElse(null);
+                
+                QuestionResultModelDTO question = new QuestionResultModelDTO();
+
+                question.setQuestionId(wrongQuestion.getId());
+                question.setSelectedOptionId(null);
+                question.setCorrectOptionId(correctOption);
+                question.setIsCorrect(false);
+                
+                questions.add(question);
+            }
+        }
  
         return new AnswerTestResponseDTO(score, questions, "!");
     }
