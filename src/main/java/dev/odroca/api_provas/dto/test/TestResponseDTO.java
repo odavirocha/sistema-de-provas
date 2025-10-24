@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CreateTestResponseDTO {
+public class TestResponseDTO {
     
     private UUID testId;
     private String name;

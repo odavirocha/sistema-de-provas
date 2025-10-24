@@ -2,13 +2,10 @@ package dev.odroca.api_provas.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import javax.swing.event.ListDataEvent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,12 +15,10 @@ import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
 import dev.odroca.api_provas.dto.question.QuestionResultModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
-import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
-import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.exception.QuestionAnswerValidationException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -35,11 +30,11 @@ public class TestService {
     private TestRepository testRepository;
 
     @Transactional
-    public CreateTestResponseDTO createTest(TestEntity test) {
+    public TestResponseDTO createTest(TestEntity test) {
         
         TestEntity saved = testRepository.save(test);
         
-        return new CreateTestResponseDTO(saved.getId(), saved.getName());
+        return new TestResponseDTO(saved.getId(), saved.getName());
     }
 
     @Transactional
@@ -60,27 +55,22 @@ public class TestService {
         List<QuestionEntity> databaseQuestions = databaseTest.getQuestions();
         List<QuestionAnswerModelDTO> requestQuestions = test.getQuestions();
 
-        // Score com total de questões que existem, 100%
         int score = databaseQuestions.size();
 
         List<QuestionResultModelDTO> questions = new ArrayList<>();
 
-        // IDs de questões do Request
         Set<UUID> requestQuestionsId = requestQuestions.stream()
             .map(question -> question.getQuestionId())
             .collect(Collectors.toSet());
         
-        // Questões que existem no banco de dados e no request
         List<QuestionEntity> questionsAvailable = databaseQuestions.stream()
             .filter(question -> requestQuestionsId.contains(question.getId()))
             .collect(Collectors.toList());
 
-        // Questões que não existem no request, mas existem no banco de dados
         List<QuestionEntity> questionsWrong = databaseQuestions.stream()
             .filter(question -> !requestQuestionsId.contains(question.getId()))
             .collect(Collectors.toList());
             
-        // Diminui o score com base nas respostas erradas
         score -= questionsWrong.size();
 
         for (QuestionAnswerModelDTO requestQuestion : requestQuestions) {
@@ -106,7 +96,7 @@ public class TestService {
                     }
 
                     questions.add(question);
-
+                    break;
                 }
             }
         }
@@ -127,10 +117,16 @@ public class TestService {
                 question.setIsCorrect(false);
                 
                 questions.add(question);
+                break;
             }
         }
  
-        return new AnswerTestResponseDTO(score, questions, "!");
+        return new AnswerTestResponseDTO(score, questions, "Prova finalizada.");
+    }
+    
+    @Transactional
+    public void getAllTestsForUser(UUID userId) {
+        
     }
     
 }

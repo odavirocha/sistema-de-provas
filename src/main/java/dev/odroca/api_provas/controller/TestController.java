@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
-import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 
@@ -30,7 +32,7 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/")
-    public CreateTestResponseDTO createTest(@RequestBody @Valid CreateTestRequestDTO test) {
+    public TestResponseDTO createTest(@RequestBody @Valid CreateTestRequestDTO test) {
 
         TestEntity testEntity = new TestEntity();
         testEntity.setName(test.getName());
@@ -41,6 +43,11 @@ public class TestController {
     @PostMapping("/{testId}")
     public AnswerTestResponseDTO answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
         return testService.answerTest(testId, test);
+    }
+
+    @GetMapping("/test/{userId}")
+    public String getAllTestsForUser(@PathVariable UUID userId) {
+        return new String();
     }
     
 

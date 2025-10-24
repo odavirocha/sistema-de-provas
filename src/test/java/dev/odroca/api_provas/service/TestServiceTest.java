@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import dev.odroca.api_provas.dto.test.CreateTestResponseDTO;
+import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.TestNotFoundException;
@@ -48,7 +48,7 @@ public class TestServiceTest {
         ReflectionTestUtils.setField(serviceEntity, "id", UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7"));
 
         when(testRepository.save(any(TestEntity.class))).thenReturn(serviceEntity);
-        CreateTestResponseDTO result = testService.createTest(controllerEntity);
+        TestResponseDTO result = testService.createTest(controllerEntity);
 
         assertNotNull(result);
         assertNotNull(result.getTestId());
