@@ -30,3 +30,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Chave assimétrica ###
+./src/main/resources/app.key
