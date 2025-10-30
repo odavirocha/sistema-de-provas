@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
+import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.error.ErrorResponse;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
@@ -77,4 +78,10 @@ public class ApplicationControllerAdvice {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
     }
     
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidCredentialsException(InvalidCredentialsException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "Unauthorized", 401);
+    }
+
 }
