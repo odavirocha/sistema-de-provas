@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
 import dev.odroca.api_provas.dto.login.LoginResponseDTO;
@@ -13,10 +15,13 @@ import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.repository.UserRepository;
 
-public class LoginService {
+public class AuthService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtEncoder jwtEncoder;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -38,6 +43,8 @@ public class LoginService {
             .expiresAt(timeNow.plusSeconds(60 * 5)) // 5 minutos
             .build();
         
+        var jwtToken = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            
         return new LoginResponseDTO();
     }
     

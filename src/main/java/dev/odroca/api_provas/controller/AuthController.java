@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
 import dev.odroca.api_provas.dto.login.LoginResponseDTO;
-import dev.odroca.api_provas.service.LoginService;
+import dev.odroca.api_provas.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,20 +17,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
-public class LoginController {
+public class AuthController {
 
     @Autowired
-    private LoginService loginService;
+    private AuthService authService;
 
     private final JwtEncoder jwtEncoder;
 
     private BCryptPasswordEncoder passwordEncoder;
     
-    @PostMapping("/")
+    @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginInformations) {
-        LoginResponseDTO response = loginService.login(loginInformations);
+        LoginResponseDTO response = authService.login(loginInformations);
         return new ResponseEntity<LoginResponseDTO>(response, HttpStatus.OK);
     }
     

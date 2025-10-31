@@ -37,7 +37,9 @@ public class SecurityConfig {
     private SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/auth/signup", "/auth/login").permitAll()
+                .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
