@@ -1,20 +1,26 @@
 package dev.odroca.api_provas.service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
 import dev.odroca.api_provas.dto.login.LoginResponseDTO;
+import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
+import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.entity.UserEntity;
+import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.repository.UserRepository;
 
+@Service
+@Transactional
 public class AuthService {
     
     @Autowired
@@ -25,6 +31,17 @@ public class AuthService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    public SignupResponseDTO signup(SignupRequestDTO signupInformations) {
+
+        Boolean user = userRepository.findByEmail(signupInformations.email()).isPresent();
+
+        if (user) throw new EmailAlreadyExistsException();
+
+        passwordEncoder.encode(signupInformations.password());
+
+        return new SignupResponseDTO("Conta criada com sucesso!");
+    }
 
     public LoginResponseDTO login(LoginRequestDTO loginInformations) {
 
@@ -45,7 +62,7 @@ public class AuthService {
         
         var jwtToken = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
             
-        return new LoginResponseDTO();
+        return new LoginResponseDTO("Teste", 10L);
     }
     
 }

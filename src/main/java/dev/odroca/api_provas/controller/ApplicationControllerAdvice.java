@@ -13,6 +13,7 @@ import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.error.ErrorResponse;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
+import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.TestNullNameException;
@@ -82,6 +83,12 @@ public class ApplicationControllerAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "Unauthorized", 401);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "Conflict", 409);
     }
 
 }
