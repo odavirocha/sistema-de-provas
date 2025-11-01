@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
-import dev.odroca.api_provas.dto.login.LoginResponseDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.entity.UserEntity;
@@ -51,7 +50,7 @@ public class AuthService {
         return new SignupResponseDTO("Conta criada com sucesso!");
     }
 
-    public LoginResponseDTO login(LoginRequestDTO loginInformations) {
+    public void login(LoginRequestDTO loginInformations) {
 
         UserEntity user = userRepository.findByEmail(loginInformations.email()).orElseThrow(() -> new InvalidCredentialsException());
 
@@ -71,8 +70,6 @@ public class AuthService {
             .build();
         
         String jwtToken = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-            
-        return new LoginResponseDTO(jwtToken, expireIn);
     }
     
 }
