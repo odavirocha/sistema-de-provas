@@ -15,6 +15,7 @@ import dev.odroca.api_provas.dto.login.LoginResponseDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.entity.UserEntity;
+import dev.odroca.api_provas.enums.Role;
 import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.repository.UserRepository;
@@ -30,15 +31,22 @@ public class AuthService {
     private JwtEncoder jwtEncoder;
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder bcrypt;
 
     public SignupResponseDTO signup(SignupRequestDTO signupInformations) {
 
-        Boolean user = userRepository.findByEmail(signupInformations.email()).isPresent();
+        Boolean userExists = userRepository.findByEmail(signupInformations.email()).isPresent();
 
-        if (user) throw new EmailAlreadyExistsException();
+        if (userExists) throw new EmailAlreadyExistsException();
 
-        passwordEncoder.encode(signupInformations.password());
+        String passwordHashed = bcrypt.encode(signupInformations.password());
+
+        UserEntity user = new UserEntity();
+        user.setEmail(signupInformations.email());
+        user.setPassword(passwordHashed);
+        user.setRoles(Role.USER);
+
+        userRepository.save(user);
 
         return new SignupResponseDTO("Conta criada com sucesso!");
     }
@@ -47,22 +55,24 @@ public class AuthService {
 
         UserEntity user = userRepository.findByEmail(loginInformations.email()).orElseThrow(() -> new InvalidCredentialsException());
 
-        if (!passwordEncoder.matches(loginInformations.password(), user.getPassword())) {
+        if (!bcrypt.matches(loginInformations.password(), user.getPassword())) {
             throw new InvalidCredentialsException();
         }
 
         Instant timeNow = Instant.now();
+        long expireIn = 60 * 5; // 5 minutos
 
         var claims = JwtClaimsSet.builder()
             .issuer("https://localhost:2709/login")
             .subject(user.getId().toString())
             .issuedAt(timeNow)
-            .expiresAt(timeNow.plusSeconds(60 * 5)) // 5 minutos
+            .expiresAt(timeNow.plusSeconds(expireIn))
+            .claim("roles", user.getRoles())
             .build();
         
-        var jwtToken = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        String jwtToken = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
             
-        return new LoginResponseDTO("Teste", 10L);
+        return new LoginResponseDTO(jwtToken, expireIn);
     }
     
 }
