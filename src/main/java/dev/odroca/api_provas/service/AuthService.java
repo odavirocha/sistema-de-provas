@@ -20,7 +20,7 @@ import dev.odroca.api_provas.enums.Role;
 import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
+import dev.odroca.api_provas.utils.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -38,6 +38,9 @@ public class AuthService {
 
     @Autowired
     private BCryptPasswordEncoder bcrypt;
+
+    @Autowired
+    private CookieUtil cookie;
 
     @Transactional
     public SignupResponseDTO signup(SignupRequestDTO signupInformations) {
@@ -89,23 +92,8 @@ public class AuthService {
 
         RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
 
-        addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
-        addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
-
-    }
-
-    private void addCookie(HttpServletResponse response, String name, String value, int expireIn) {
-
-        Cookie cookie = new Cookie(name, value);
-
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(expireIn);
-        cookie.setAttribute("SameSite", "Strict");
-
-        response.addCookie(cookie);
-        
+        cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
+        cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
     }
 
 }

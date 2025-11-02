@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
+import dev.odroca.api_provas.exception.InvalidTokenException;
 import dev.odroca.api_provas.error.ErrorResponse;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.TestNullNameException;
+import dev.odroca.api_provas.exception.UnauthorizedException;
+import dev.odroca.api_provas.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -59,6 +62,12 @@ public class ApplicationControllerAdvice {
     public ErrorResponse handleCorrectOptionNotFoundException(CorrectOptionNotFoundException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "NotFound", 404);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFoundException(UserNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "NotFound", 404);
+    }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -78,10 +87,22 @@ public class ApplicationControllerAdvice {
     public ErrorResponse handleTestNameNullException(MultipleCorrectOptionsException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidTokenException(InvalidTokenException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
+    }
     
     @ExceptionHandler(InvalidCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleInvalidCredentialsException(InvalidCredentialsException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "Unauthorized", 401);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse hnadleUnauthorizedException(UnauthorizedException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "Unauthorized", 401);
     }
 

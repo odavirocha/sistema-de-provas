@@ -9,4 +9,5 @@ import dev.odroca.api_provas.entity.RefreshTokenEntity;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity, UUID> {
     public Optional<RefreshTokenEntity> findByUserId(UUID userId);
+    public Optional<RefreshTokenEntity> findByRefreshToken(UUID refreshToken);
 }
