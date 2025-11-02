@@ -1,6 +1,7 @@
 package dev.odroca.api_provas.service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,11 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
+import dev.odroca.api_provas.entity.RefreshTokenEntity;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.enums.Role;
 import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 @Transactional
@@ -27,11 +31,15 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
-    private JwtEncoder jwtEncoder;
+    private RefreshTokenService refreshService;
+
+    @Autowired
+    private JwtEncoder jwt;
 
     @Autowired
     private BCryptPasswordEncoder bcrypt;
 
+    @Transactional
     public SignupResponseDTO signup(SignupRequestDTO signupInformations) {
 
         Boolean userExists = userRepository.findByEmail(signupInformations.email()).isPresent();
@@ -50,7 +58,8 @@ public class AuthService {
         return new SignupResponseDTO("Conta criada com sucesso!");
     }
 
-    public void login(LoginRequestDTO loginInformations) {
+    @Transactional
+    public void login(LoginRequestDTO loginInformations, HttpServletResponse response) {
 
         UserEntity user = userRepository.findByEmail(loginInformations.email()).orElseThrow(() -> new InvalidCredentialsException());
 
@@ -59,17 +68,44 @@ public class AuthService {
         }
 
         Instant timeNow = Instant.now();
-        long expireIn = 60 * 5; // 5 minutos
+        int accessTokenExpireIn = 60 * 5; // 5 minutos
+        int refreshTokenExpireIn = 60 * 60 * 24 * 7; // 7 dias
 
         var claims = JwtClaimsSet.builder()
-            .issuer("https://localhost:2709/login")
+            .issuer("https://localhost:8080/auth/login")
             .subject(user.getId().toString())
             .issuedAt(timeNow)
-            .expiresAt(timeNow.plusSeconds(expireIn))
+            .expiresAt(timeNow.plusSeconds(accessTokenExpireIn))
             .claim("roles", user.getRoles())
             .build();
         
-        String jwtToken = jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
+        Optional<RefreshTokenEntity> existingRefreshToken = refreshService.verifyExistRefreshTokenOfUser(user.getId());
+
+        if (existingRefreshToken.isPresent()) {
+            refreshService.deleteRefreshToken(existingRefreshToken.get().getRefreshToken());
+        }
+
+        RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
+
+        addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
+        addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
+
     }
-    
+
+    private void addCookie(HttpServletResponse response, String name, String value, int expireIn) {
+
+        Cookie cookie = new Cookie(name, value);
+
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(expireIn);
+        cookie.setAttribute("SameSite", "Strict");
+
+        response.addCookie(cookie);
+        
+    }
+
 }

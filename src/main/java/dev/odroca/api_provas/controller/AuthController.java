@@ -9,6 +9,7 @@ import dev.odroca.api_provas.dto.login.LoginRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,8 +33,8 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequestDTO loginInformations) {
-        authService.login(loginInformations);
+    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequestDTO loginInformations, HttpServletResponse response) {
+        authService.login(loginInformations, response);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
