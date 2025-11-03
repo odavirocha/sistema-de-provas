@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-
+import dev.odroca.api_provas.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,9 @@ import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.TestNotFoundException;
+import dev.odroca.api_provas.exception.UserNotFoundException;
+import dev.odroca.api_provas.mapper.TestMapper;
+import dev.odroca.api_provas.model.TestModelDTO;
 import dev.odroca.api_provas.repository.TestRepository;
 
 @Service
@@ -27,11 +29,15 @@ import dev.odroca.api_provas.repository.TestRepository;
 public class TestService {
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private TestRepository testRepository;
+    @Autowired
+    private TestMapper testMapper;
+
 
     @Transactional
     public TestResponseDTO createTest(TestEntity test) {
-        
         TestEntity saved = testRepository.save(test);
         
         return new TestResponseDTO(saved.getId(), saved.getName());
@@ -125,8 +131,15 @@ public class TestService {
     }
     
     @Transactional
-    public void getAllTestsForUser(UUID userId) {
+    public List<TestModelDTO> getAllTestsForUser(UUID userId) {
         
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+
+        List<TestEntity> testEntities = testRepository.findAllByUserId(userId);
+
+        List<TestModelDTO> response = testMapper.toDtoList(testEntities);
+
+        return  response; 
     }
     
 }

@@ -9,12 +9,16 @@ import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
 import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.model.TestModelDTO;
 import dev.odroca.api_provas.service.TestService;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,28 +36,32 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/")
-    public TestResponseDTO createTest(@RequestBody @Valid CreateTestRequestDTO test) {
+    public ResponseEntity<TestResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test) {
 
         TestEntity testEntity = new TestEntity();
         testEntity.setName(test.getName());
 
-        return testService.createTest(testEntity);
+        TestResponseDTO response = testService.createTest(testEntity);
+        return new ResponseEntity<TestResponseDTO>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/{testId}")
-    public AnswerTestResponseDTO answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
-        return testService.answerTest(testId, test);
+    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
+        AnswerTestResponseDTO response = testService.answerTest(testId, test);
+        return new ResponseEntity<AnswerTestResponseDTO>(response, HttpStatus.OK);
     }
 
     @GetMapping("/test/{userId}")
-    public String getAllTestsForUser(@PathVariable UUID userId) {
-        return new String();
+    public ResponseEntity<List<TestModelDTO>> getAllTestsForUser(@PathVariable UUID userId) {
+        List<TestModelDTO> response = testService.getAllTestsForUser(userId);
+        return new ResponseEntity<List<TestModelDTO>>(response, HttpStatus.OK);
     }
     
 
     @DeleteMapping("/{testId}")
-    public DeleteTestResponseDTO deleteTest(@PathVariable UUID testId) {
-        return testService.deleteTest(testId);
+    public ResponseEntity<DeleteTestResponseDTO> deleteTest(@PathVariable UUID testId) {
+        DeleteTestResponseDTO response = testService.deleteTest(testId);
+        return new ResponseEntity<DeleteTestResponseDTO>(response, HttpStatus.OK);
     }
 
 }
