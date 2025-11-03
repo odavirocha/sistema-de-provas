@@ -29,16 +29,12 @@ public class AuthService {
     
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RefreshTokenService refreshService;
-
     @Autowired
     private JwtEncoder jwt;
-
     @Autowired
     private BCryptPasswordEncoder bcrypt;
-
     @Autowired
     private CookieUtil cookie;
 

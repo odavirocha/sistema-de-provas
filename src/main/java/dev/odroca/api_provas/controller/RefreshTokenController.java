@@ -23,8 +23,7 @@ public class RefreshTokenController {
     @PostMapping("/refresh")
     public ResponseEntity<Void> refresh(HttpServletRequest request, HttpServletResponse response) {
         refreshService.refresh(request, response);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
-    
     
 }

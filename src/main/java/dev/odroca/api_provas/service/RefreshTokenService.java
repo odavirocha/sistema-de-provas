@@ -49,20 +49,17 @@ public class RefreshTokenService {
             }
         }
 
-        System.out.println("1");
         if (refreshTokenCookie == null) throw new UnauthorizedException();
-        System.out.println("2");
 
         RefreshTokenEntity refreshTokenEntity = refreshRepository.findByRefreshToken(UUID.fromString(refreshTokenCookie)).orElseThrow(() -> new UnauthorizedException());
 
         Instant timeNow = Instant.now();
 
-        if(refreshTokenEntity.getExpiryDate().isBefore(timeNow)) throw new InvalidTokenException();
+        if (refreshTokenEntity.getExpiryDate().isBefore(timeNow)) throw new InvalidTokenException();
 
         UserEntity user = refreshTokenEntity.getUser();
 
         deleteRefreshToken(refreshTokenEntity.getRefreshToken());
-        refreshRepository.flush();
 
         int accessTokenExpireIn = 60 * 5; // 5 minutos
         int refreshTokenExpireIn = 60 * 60 * 24 * 7; // 7 dias
