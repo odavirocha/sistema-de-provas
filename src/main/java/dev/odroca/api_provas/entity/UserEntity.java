@@ -31,6 +31,6 @@ public class UserEntity {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role roles;
+    private Role role;
     
 }

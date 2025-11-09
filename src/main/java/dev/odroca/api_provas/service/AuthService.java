@@ -50,7 +50,7 @@ public class AuthService {
         UserEntity user = new UserEntity();
         user.setEmail(signupInformations.email());
         user.setPassword(passwordHashed);
-        user.setRoles(Role.USER);
+        user.setRole(Role.ROLE_USER);
 
         userRepository.save(user);
 
@@ -75,7 +75,7 @@ public class AuthService {
             .subject(user.getId().toString())
             .issuedAt(timeNow)
             .expiresAt(timeNow.plusSeconds(accessTokenExpireIn))
-            .claim("roles", user.getRoles())
+            .claim("roles", user.getRole())
             .build();
         
         String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();

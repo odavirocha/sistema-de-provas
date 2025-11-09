@@ -69,7 +69,7 @@ public class RefreshTokenService {
             .subject(user.getId().toString())
             .issuedAt(timeNow)
             .expiresAt(timeNow.plusSeconds(accessTokenExpireIn))
-            .claim("roles", user.getRoles())
+            .claim("role", user.getRole())
             .build();
 
         String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
