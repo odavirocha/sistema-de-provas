@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -30,8 +31,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import dev.odroca.api_provas.enums.Role;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -42,7 +41,11 @@ public class SecurityConfig {
     @Value("${jwt.private.key}")
     private RSAPrivateKey privateKey;
 
-    private final CookieToHeaderF
+    private final CookieToHeaderFilter cookieToHeaderFilter;
+
+    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter) {
+        this.cookieToHeaderFilter = cookieToHeaderFilter;
+    }
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,8 +59,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                 .requestMatchers(HttpMethod.POST, "/test/").hasRole("USER")
                 .anyRequest().authenticated())
-            .addFilterBefore(cookieToHeaderFilter, null)
-            .oauth2ResourceServer(oauth2 -> oauth2.jwtAuthenticationConverter())
+            .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
