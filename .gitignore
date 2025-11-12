@@ -33,3 +33,5 @@ build/
 
 ### Chave assimétrica ###
 ./src/main/resources/app.key
+
+.env
