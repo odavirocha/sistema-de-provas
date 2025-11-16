@@ -67,3 +67,24 @@
     "message": "Questão alterada com sucesso!"
 }
 ```
+
+# Variáveis de Ambiente (.env)
+Para conectar ao banco de dados via .env foi necessário criar essa configuração na .vscode/launch.json (Se não existir, criar).
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot App",
+      "request": "launch",
+      "mainClass": "dev.odroca.api_provas.ApiProvasApplication",
+      "projectName": "api_provas",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
+```
+
+*O arquivo .env deve ficar na raiz do projeto para ser lido pelo launch.json e pelo docker — se estiver com PostgreSQL via docker.*
