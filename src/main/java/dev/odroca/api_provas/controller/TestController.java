@@ -19,6 +19,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,10 +38,11 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/")
-    public ResponseEntity<TestResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test) {
+    public ResponseEntity<TestResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
 
         TestEntity testEntity = new TestEntity();
         testEntity.setName(test.getName());
+        testEntity.setUserId(UUID.fromString(jwt.getSubject()));
 
         TestResponseDTO response = testService.createTest(testEntity);
         return new ResponseEntity<TestResponseDTO>(response, HttpStatus.CREATED);
@@ -51,7 +54,7 @@ public class TestController {
         return new ResponseEntity<AnswerTestResponseDTO>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/test/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<TestModelDTO>> getAllTestsForUser(@PathVariable UUID userId) {
         List<TestModelDTO> response = testService.getAllTestsForUser(userId);
         return new ResponseEntity<List<TestModelDTO>>(response, HttpStatus.OK);

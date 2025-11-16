@@ -10,24 +10,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Setter;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
 @Table(name = "test_table")
-@Getter
+@Data
 public class TestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter(AccessLevel.NONE)
     private UUID id;
 
     @Column(name = "user_id")
     private UUID userId;
 
-    @Setter
     private String name;
     
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
