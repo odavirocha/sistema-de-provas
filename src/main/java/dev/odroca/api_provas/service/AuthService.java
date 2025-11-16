@@ -1,6 +1,7 @@
 package dev.odroca.api_provas.service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class AuthService {
             .subject(user.getId().toString())
             .issuedAt(timeNow)
             .expiresAt(timeNow.plusSeconds(accessTokenExpireIn))
-            .claim("roles", user.getRole())
+            .claim("role", List.of(user.getRole().name()))
             .build();
         
         String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
