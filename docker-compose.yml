@@ -5,8 +5,9 @@ services:
     container_name: backend
     ports:
       - "8080:8080"
-    depends_on:
-      - database
+    ## Desabilitado, pois o banco está no Neon.
+    # depends_on:
+    #   - database
     environment:
       - SPRING_DATASOURCE_URL=${NEON_URL}
       # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}

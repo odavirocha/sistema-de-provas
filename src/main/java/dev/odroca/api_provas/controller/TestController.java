@@ -56,9 +56,9 @@ public class TestController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<TestModelDTO>> getAllTestsForUser(@PathVariable UUID userId, HttpServletRequest request) {
-        List<TestModelDTO> response = testService.getAllTestsForUser(userId, request);
-        return new ResponseEntity<List<TestModelDTO>>(response, HttpStatus.OK);
+    public ResponseEntity<List<TestResponseDTO>> getAllTestsForUser(@PathVariable UUID userId, HttpServletRequest request) {
+        List<TestResponseDTO> response = testService.getAllTestsForUser(userId, request);
+        return new ResponseEntity<List<TestResponseDTO>>(response, HttpStatus.OK);
     }
     
 

@@ -47,7 +47,9 @@ public class TestService {
     public TestResponseDTO createTest(TestEntity test) {
         TestEntity saved = testRepository.save(test);
         
-        return new TestResponseDTO(saved.getId(), saved.getName());
+        int totalQuestions = saved.getQuestions().size();
+
+        return new TestResponseDTO(saved.getId(), saved.getName(), totalQuestions);
     }
 
     @Transactional
@@ -138,7 +140,7 @@ public class TestService {
     }
     
     @Transactional
-    public List<TestModelDTO> getAllTestsForUser(UUID userId, HttpServletRequest request) {
+    public List<TestResponseDTO> getAllTestsForUser(UUID userId, HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
 
@@ -160,7 +162,9 @@ public class TestService {
 
         List<TestEntity> testEntities = testRepository.findAllByUserId(userId);
 
-        List<TestModelDTO> response = testMapper.toDtoList(testEntities);
+        List<TestResponseDTO> response = testEntities.stream()
+            .map(testEntity -> new TestResponseDTO(testEntity.getId(), testEntity.getName(), testEntity.getQuestions().size()))
+            .collect(Collectors.toList());
 
         return  response; 
     }

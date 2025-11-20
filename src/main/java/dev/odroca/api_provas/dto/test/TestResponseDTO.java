@@ -11,5 +11,6 @@ public class TestResponseDTO {
     
     private UUID testId;
     private String name;
+    private int totalQuestions;
     
 }
