@@ -93,7 +93,6 @@ public class AuthService {
         cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
         cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
 
-        System.out.println(user.getId().toString());
         return new LoginResponseDTO(user.getId().toString());
     }
 

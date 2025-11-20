@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,8 @@ public class TestService {
     private TestRepository testRepository;
     @Autowired
     private TestMapper testMapper;
+    @Autowired
+    private JwtDecoder jwtDecoder;
 
 
     @Transactional
@@ -139,18 +142,19 @@ public class TestService {
 
         Cookie[] cookies = request.getCookies();
 
-        UUID accessToken = null;
+        UUID userIdFromJwt = null;
 
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("accessToken".equals(cookie.getName())) {
-                    accessToken = UUID.fromString(cookie.getValue());
+                    System.out.println("Cookie: " + cookie.getName() + " " + cookie.getValue());
+                    userIdFromJwt = UUID.fromString(jwtDecoder.decode(cookie.getValue()).getSubject());
                     break;
                 }
             }
         }
 
-        if (!userId.equals(accessToken)) throw new UnauthorizedException();
+        if (!userId.equals(userIdFromJwt)) throw new UnauthorizedException();
 
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 
