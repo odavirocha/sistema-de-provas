@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
+import dev.odroca.api_provas.dto.login.LoginResponseDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.entity.RefreshTokenEntity;
@@ -59,7 +60,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void login(LoginRequestDTO loginInformations, HttpServletResponse response) {
+    public LoginResponseDTO login(LoginRequestDTO loginInformations, HttpServletResponse response) {
 
         UserEntity user = userRepository.findByEmail(loginInformations.email()).orElseThrow(() -> new InvalidCredentialsException());
 
@@ -91,6 +92,9 @@ public class AuthService {
 
         cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
         cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
+
+        System.out.println(user.getId().toString());
+        return new LoginResponseDTO(user.getId().toString());
     }
 
 }

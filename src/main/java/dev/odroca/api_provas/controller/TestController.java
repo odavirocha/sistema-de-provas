@@ -11,6 +11,7 @@ import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.model.TestModelDTO;
 import dev.odroca.api_provas.service.TestService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -55,8 +56,8 @@ public class TestController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<TestModelDTO>> getAllTestsForUser(@PathVariable UUID userId) {
-        List<TestModelDTO> response = testService.getAllTestsForUser(userId);
+    public ResponseEntity<List<TestModelDTO>> getAllTestsForUser(@PathVariable UUID userId, HttpServletRequest request) {
+        List<TestModelDTO> response = testService.getAllTestsForUser(userId, request);
         return new ResponseEntity<List<TestModelDTO>>(response, HttpStatus.OK);
     }
     

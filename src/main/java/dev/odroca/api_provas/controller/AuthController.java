@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.odroca.api_provas.dto.login.LoginRequestDTO;
+import dev.odroca.api_provas.dto.login.LoginResponseDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.service.AuthService;
@@ -30,9 +31,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequestDTO loginInformations, HttpServletResponse response) {
-        authService.login(loginInformations, response);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginInformations, HttpServletResponse responseServlet) {
+        LoginResponseDTO response = authService.login(loginInformations, responseServlet);
+        return new ResponseEntity<LoginResponseDTO>(response, HttpStatus.OK);
     }
 
 }

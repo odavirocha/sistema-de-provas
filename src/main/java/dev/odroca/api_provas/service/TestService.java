@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import dev.odroca.api_provas.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,15 +14,19 @@ import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
 import dev.odroca.api_provas.dto.question.QuestionResultModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
-import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
+import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.TestNotFoundException;
+import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.mapper.TestMapper;
 import dev.odroca.api_provas.model.TestModelDTO;
 import dev.odroca.api_provas.repository.TestRepository;
+import dev.odroca.api_provas.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @Transactional(readOnly = true)
@@ -131,8 +135,23 @@ public class TestService {
     }
     
     @Transactional
-    public List<TestModelDTO> getAllTestsForUser(UUID userId) {
-        
+    public List<TestModelDTO> getAllTestsForUser(UUID userId, HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+
+        UUID accessToken = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = UUID.fromString(cookie.getValue());
+                    break;
+                }
+            }
+        }
+
+        if (!userId.equals(accessToken)) throw new UnauthorizedException();
+
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 
         List<TestEntity> testEntities = testRepository.findAllByUserId(userId);
