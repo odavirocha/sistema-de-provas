@@ -1,6 +1,35 @@
-#
+# Sitema de provas
 
-## Criar uma prova `POST /test`
+Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a de outro usuário.
+
+-- IMAGEM COM O MER DA APLICAÇÃO
+
+## 🚀 Roadmap e Próximos Passos
+* [ ] Adicionar sistema de links privados e públicos.
+
+### 🛠️ Stack
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="30">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="30" style="vertical-align: middle;">
+</picture> <b>&nbsp;&nbsp;Java 17
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-white.svg" width="30">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-black.svg" width="30" style="vertical-align: middle;">
+</picture> <b>&nbsp;&nbsp;Spring Boot 3.5.5
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-white.svg" width="30">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-black.svg" width="30" style="vertical-align: middle;">
+</picture> <b>&nbsp;&nbsp;Maven 4.0.0
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-white.svg" width="30">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-black.svg" width="30" style="vertical-align: middle;">
+</picture> <b>&nbsp;&nbsp;PostgreSQL
+
+#### Criar uma prova `POST /test`
 
 **Example Request**
 ``` json
@@ -16,7 +45,7 @@
     "name": "Prova de teste 01"
 }
 ```
-## Criar uma questão `POST /questions`
+#### Criar uma questão `POST /questions`
 
 **Example Request**
 ``` json
@@ -46,7 +75,7 @@
 }
 ```
 
-## Criar uma questão `PUT /questions/{questionId}`
+#### Criar uma questão `PUT /questions/{questionId}`
 
 **Example Request**
 ``` json
