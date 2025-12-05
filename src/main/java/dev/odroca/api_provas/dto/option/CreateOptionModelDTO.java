@@ -1,0 +1,18 @@
+package dev.odroca.api_provas.dto.option;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class CreateOptionModelDTO {
+
+    @NotBlank(message = "O campo 'value' não pode estar em branco.")
+    private String value;
+
+    @NotNull(message = "O campo 'isCorrect' não pode ser nulo.")
+    private Boolean isCorrect;
+
+}

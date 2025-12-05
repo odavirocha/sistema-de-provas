@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: .
+    container_name: backend
+    ports:
+      - "8080:8080"
+    ## Desabilitado, pois o banco está no Neon.
+    # depends_on:
+    #   - database
+    environment:
+      - SPRING_DATASOURCE_URL=${NEON_URL}
+      # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+      # - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      # - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+  database:
+    image: postgres:17.7-alpine3.22
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
