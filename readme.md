@@ -7,27 +7,27 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
 ## 🚀 Roadmap e Próximos Passos
 * [ ] Adicionar sistema de links privados e públicos.
 
-### 🛠️ Stack
+## 🛠️ Stack
 
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;Java 17
-
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;Spring Boot 3.5.5
-
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;Maven 4.0.0
-
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;PostgreSQL
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
+    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
+  </picture>
+&nbsp;&nbsp;
+   <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-white.svg" width="50">
+    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-black.svg" width="50">
+  </picture>
+&nbsp;&nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-white.svg" width="50">
+    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-black.svg" width="50">
+  </picture>
+&nbsp;&nbsp;
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-white.svg" width="50">
+    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-black.svg" width="50">
+  </picture>
 
 #### Criar uma prova `POST /test`
 
