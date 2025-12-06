@@ -31,34 +31,78 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 ## Como instalar 📦
 
-### Como criar uma prova `POST /test`
+## Provas - POST /test
 
-<details>
-    <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-    &nbsp;
+- ### Como criar uma prova `/test/`
 
-```json
-{
-    "name": "Prova de teste 01"
-}
-```
+  <details>
+      <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
 
-</details>
+  ```json
+  {
+      "name": "Prova de teste 01"
+  }
+  ```
 
-<details>
-    <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-&nbsp;
+  </details>
 
-``` json
-{
-    "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
-    "name": "Prova de teste 01",
-    "totalQuestions": 5
-}
-```
+  <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+  &nbsp;
 
-</details>
+  ``` json
+  {
+      "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
+      "name": "Prova de teste 01",
+      "totalQuestions": 5
+  }
+  ```
 
+  </details>
+
+- ### Como responder uma prova `/test/{testId}`
+
+  <details>
+      <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+  ```json
+  {
+    "questions": [
+      {
+        "questionId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+        "selectedOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94"
+      }
+    ]
+  }
+  ```
+
+  </details>
+
+  <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+  &nbsp;
+
+  ``` json
+  {
+    "questions": [
+      {
+        "questionId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+        "selectedOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+        "correctOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+        "isCorrect": true
+      }
+    ],
+    "message": "Prova finalizada.",
+    "correctCount": 1,
+    "incorrectCount": 0
+  }
+  ```
+
+  </details>
+
+---
 
 ### Como criar uma questão `POST /questions`
 
@@ -161,3 +205,6 @@ Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por 
 *O arquivo .env deve ficar na raiz do projeto para ser lido pelo launch.json e pelo docker — se estiver com PostgreSQL via docker.*
 
 </details>
+
+## Roadmap 🗺️
+- [ ] Provas públicas e privadas

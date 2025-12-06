@@ -51,8 +51,8 @@ public class TestController {
     }
 
     @PostMapping("/{testId}")
-    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
-        AnswerTestResponseDTO response = testService.answerTest(testId, test);
+    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
+        AnswerTestResponseDTO response = testService.answerTest(testId, test, UUID.fromString(jwt.getSubject()));
         return new ResponseEntity<AnswerTestResponseDTO>(response, HttpStatus.OK);
     }
 

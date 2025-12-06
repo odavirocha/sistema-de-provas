@@ -20,6 +20,7 @@ import dev.odroca.api_provas.dto.test.TestForGetTestResponseDTO;
 import dev.odroca.api_provas.dto.test.TestForGetTestsResponseDTO;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.exception.SearchNotFoundOrUnauthorized;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.exception.UserNotFoundException;
@@ -62,9 +63,9 @@ public class TestService {
     }
     
     @Transactional
-    public AnswerTestResponseDTO answerTest(UUID testId, AnswerTestRequestDTO test) {
+    public AnswerTestResponseDTO answerTest(UUID testId, AnswerTestRequestDTO test, UUID userId) {
 
-        TestEntity databaseTest = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        TestEntity databaseTest = testRepository.findByIdAndUserId(testId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
         
         List<QuestionEntity> databaseQuestions = databaseTest.getQuestions();
         List<QuestionAnswerModelDTO> requestQuestions = test.getQuestions();

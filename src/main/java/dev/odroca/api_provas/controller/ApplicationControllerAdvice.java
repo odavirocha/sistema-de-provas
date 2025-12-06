@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
+import dev.odroca.api_provas.exception.SearchNotFoundOrUnauthorized;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.exception.InvalidTokenException;
@@ -69,6 +70,12 @@ public class ApplicationControllerAdvice {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "NotFound", 404);
     }
     
+    @ExceptionHandler(SearchNotFoundOrUnauthorized.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleSearchNotFoundOrUnauthorized(SearchNotFoundOrUnauthorized ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "NotFound", 404);
+    }
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(MethodArgumentNotValidException ex) {
@@ -93,7 +100,7 @@ public class ApplicationControllerAdvice {
     public ErrorResponse handleInvalidTokenException(InvalidTokenException ex) {
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
     }
-    
+
     @ExceptionHandler(InvalidCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleInvalidCredentialsException(InvalidCredentialsException ex) {

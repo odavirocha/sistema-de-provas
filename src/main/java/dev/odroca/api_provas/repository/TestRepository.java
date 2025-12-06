@@ -1,6 +1,7 @@
 package dev.odroca.api_provas.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface TestRepository extends JpaRepository<TestEntity, UUID> {
     @Transactional
     @Query("DELETE FROM TestEntity WHERE id = :testId AND userId = :userId")
     public int deleteByIdAndUserId(UUID testId, UUID userId);
+
+    public Optional<TestEntity> findByIdAndUserId(UUID testId, UUID userId);
 }
