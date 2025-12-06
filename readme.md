@@ -1,4 +1,4 @@
-# Sitema de provas
+# <p align="center"> SISTEMA DE PROVAS </p>
 
 Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a de outro usuário.
 
@@ -7,47 +7,67 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
 ## 🚀 Roadmap e Próximos Passos
 * [ ] Adicionar sistema de links privados e públicos.
 
-### 🛠️ Stack
+## 🛠️ Stack
 
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;Java 17
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
+    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
+  </picture>
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
+   <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
+    <img alt="Icone java" src="https://cdn.simpleicons.org/spring/black" width="50">
+  </picture>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/apachemaven/white" width="50">
+    <img alt="Icone java" src="https://cdn.simpleicons.org/apachemaven/black" width="50">
+  </picture>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/postgresql/white" width="50">
+    <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
+  </picture>
+&nbsp;&nbsp;
 
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;Spring Boot 3.5.5
+**Java 17**&nbsp; &nbsp; &nbsp; **Spring 3.5.4** &nbsp; &nbsp; &nbsp;**Maven 4.0.0** &nbsp; &nbsp; &nbsp; **PostgreSQL**
 
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;Maven 4.0.0
+## Como instalar 📦
 
-* <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-white.svg" width="30">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-black.svg" width="30" style="vertical-align: middle;">
-</picture> <b>&nbsp;&nbsp;PostgreSQL
+### Como criar uma prova `POST /test`
 
-#### Criar uma prova `POST /test`
+<details>
+    <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
 
-**Example Request**
-``` json
+```json
 {
     "name": "Prova de teste 01"
 }
 ```
 
-**Example Response**
+</details>
+
+<details>
+    <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+&nbsp;
+
 ``` json
 {
     "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
     "name": "Prova de teste 01"
 }
 ```
-#### Criar uma questão `POST /questions`
 
-**Example Request**
+</details>
+
+
+### Como criar uma questão `POST /questions`
+
+<details>
+  <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+  &nbsp;
+
 ``` json
 {
     "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
@@ -63,8 +83,13 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
     }
 }
 ```
+  
+</details>
 
-**Example Response**
+<details>
+  <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+&nbsp;
+
 ``` json
 {
     "id": "e7baa643-6ee6-4ffc-b41b-4aa248b4c144",
@@ -74,10 +99,16 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
     "message": "Questão criada com sucesso!"
 }
 ```
+  
+</details>
 
 #### Criar uma questão `PUT /questions/{questionId}`
 
 **Example Request**
+<details>
+  <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+&nbsp;
+
 ``` json
 {
     "question": "10+10",
@@ -90,17 +121,28 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
     ]
 }
 ```
+  
+</details>
 
-**Example Response**
+<details>
+  <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+&nbsp;
+
 ``` json
 {
     "id": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
     "message": "Questão alterada com sucesso!"
 }
 ```
+  
+</details>
 
-# Variáveis de Ambiente (.env)
-Para conectar ao banco de dados via .env foi necessário criar essa configuração na .vscode/launch.json (Se não existir, criar).
+### Variáveis de Ambiente (.env)
+<details>
+  <summary><strong> Se necessário </strong> <sub> (expandir) </sub></summary>
+&nbsp;
+
+Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuraçãaao para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
 
 ```json
 {
@@ -119,3 +161,5 @@ Para conectar ao banco de dados via .env foi necessário criar essa configuraç�
 ```
 
 *O arquivo .env deve ficar na raiz do projeto para ser lido pelo launch.json e pelo docker — se estiver com PostgreSQL via docker.*
+
+</details>
