@@ -13,7 +13,6 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
     <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
   </picture>
-<<<<<<< HEAD
 &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
    <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
@@ -36,23 +35,6 @@ Esse pequeno sistema serve para o usuário criar sua própria prova ou fazer a d
 ## Como instalar 📦
 
 ### Como criar uma prova `POST /test`
-=======
-&nbsp;&nbsp;
-   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-white.svg" width="50">
-    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/spring-black.svg" width="50">
-  </picture>
-&nbsp;&nbsp;
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-white.svg" width="50">
-    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/maven-black.svg" width="50">
-  </picture>
-&nbsp;&nbsp;
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-white.svg" width="50">
-    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/postgresql-black.svg" width="50">
-  </picture>
->>>>>>> bc66ec1699307e6762f8d11b529c74f3eb8d91c4
 
 <details>
     <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
@@ -179,8 +161,5 @@ Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por 
 ```
 
 *O arquivo .env deve ficar na raiz do projeto para ser lido pelo launch.json e pelo docker — se estiver com PostgreSQL via docker.*
-<<<<<<< HEAD
 
 </details>
-=======
->>>>>>> bc66ec1699307e6762f8d11b529c74f3eb8d91c4
