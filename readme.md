@@ -31,153 +31,171 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 ## Como instalar 📦
 
-## Provas - POST /test
+# Rotas 🛣️
+<details>
+    <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
 
-- ### Como criar uma prova `/test/`
+###### *NOTA: Para essas rotas funcionarem é necessário enviar o Access Token via CookieHttp Only.*
 
-  <details>
+* ### POST /test
+
+  * #### Como criar uma prova `/test/`
+
+    <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
 
-  ```json
-  {
-      "name": "Prova de teste 01"
-  }
-  ```
+    ```json
+    {
+        "name": "Prova de teste 01"
+    }
+    ```
 
-  </details>
+    </details>
 
-  <details>
+    <details>
       <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-  &nbsp;
+    &nbsp;
 
-  ``` json
-  {
-      "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
-      "name": "Prova de teste 01",
-      "totalQuestions": 5
-  }
-  ```
+    ``` json
+    {
+        "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
+        "name": "Prova de teste 01",
+        "totalQuestions": 5
+    }
+    ```
 
-  </details>
+    </details>
 
-- ### Como responder uma prova `/test/{testId}`
+  * #### Como responder uma prova `/test/{testId}`
 
-  <details>
+    <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
 
-  ```json
-  {
-    "questions": [
+    ```json
+    {
+      "questions": [
+        {
+          "questionId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+          "selectedOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94"
+        }
+      ]
+    }
+    ```
+
+    </details>
+
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+    ``` json
+    {
+      "questions": [
+        {
+          "questionId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+          "selectedOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+          "correctOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+          "isCorrect": true
+        }
+      ],
+      "message": "Prova finalizada.",
+      "correctCount": 1,
+      "incorrectCount": 0
+    }
+    ```
+
+    </details>
+
+
+* ### GET /test
+
+  * #### Retorna todas as provas do usuário `/test/`
+
+    <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ``` json
+    [
       {
-        "questionId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
-        "selectedOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94"
+        "testId": "07469299-616f-4f0a-8d09-12da01570437",
+        "name": "Prova de Teste 1",
+        "totalQuestions": 1
       }
     ]
-  }
-  ```
+    ```
+    
+    </details>
+  
+  * #### Retorna uma prova `/test/${testId}`
 
-  </details>
-
-  <details>
+    <details>
       <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-  &nbsp;
+    &nbsp;
+    
+    ``` json
+    {
+      "testName": "Prova de Teste 1",
+      "questions": [
+        {
+          "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+          "question": "Questão número 6",
+          "options": [
+            {
+              "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
+              "value": "4",
+              "isCorrect": false
+            },
+            {
+              "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+              "value": "5",
+              "isCorrect": true
+            }
+          ]
+        }
+      ]
+    }
+    ```
+    
+    </details>
 
-  ``` json
-  {
-    "questions": [
+* ### DELETE /test
+    
+    - #### Deleta uma prova `/test/${testId}`
+
+      <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ``` json
       {
-        "questionId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
-        "selectedOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94",
-        "correctOptionId": "de823a13-3c12-4cf7-b266-3d16abe98c94",
-        "isCorrect": true
+        "id": "dae17f4c-3b63-4ce6-92eb-7ce4c950b496",
+        "message": "Prova deletada com sucesso!"
       }
-    ],
-    "message": "Prova finalizada.",
-    "correctCount": 1,
-    "incorrectCount": 0
-  }
-  ```
+      ```
+        
+      </details>
 
-  </details>
+</details>
 
 ---
-
-### Como criar uma questão `POST /questions`
-
-<details>
-  <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-  &nbsp;
-
-``` json
-{
-    "testId": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
-    "question": {
-    "question": "1+1",
-    "options": [ 
-            { "value": "3", "isCorrect": false },
-            { "value": "2", "isCorrect": true },
-            { "value": "4", "isCorrect": false },
-            { "value": "6", "isCorrect": false },
-            { "value": "7", "isCorrect": false }
-        ]
-    }
-}
-```
-  
-</details>
-
-<details>
-  <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-&nbsp;
-
-``` json
-{
-    "id": "e7baa643-6ee6-4ffc-b41b-4aa248b4c144",
-    "question": "1+1",
-    "totalOptions": 5,
-    "correctOptionId": "00b3841f-245f-44ce-9ac2-0cffd18e93ab",
-    "message": "Questão criada com sucesso!"
-}
-```
-  
-</details>
-
-#### Criar uma questão `PUT /questions/{questionId}`
-
-**Example Request**
-<details>
-  <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-&nbsp;
-
-``` json
-{
-    "question": "10+10",
-    "options": [
-        {"optionId": "63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03", "value": "2", "isCorrect": false},
-        {"optionId": "00b3841f-245f-44ce-9ac2-0cffd18e93ab", "value": "10", "isCorrect": false},
-        {"optionId": "4b8f5e4a-892e-41e2-ab58-b9e7dd907b70", "value": "15", "isCorrect": false},
-        {"optionId": "22fd1613-f319-406d-897c-ba3d6d36458c", "value": "13", "isCorrect": false},
-        {"optionId": "0034398d-c602-43ba-9aff-6f0081244b30", "value": "20", "isCorrect": true}
-    ]
-}
-```
-  
-</details>
-
-<details>
-  <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-&nbsp;
-
-``` json
-{
-    "id": "5e6863bc-4f69-4a95-b672-c41296ec95a2",
-    "message": "Questão alterada com sucesso!"
-}
-```
-  
-</details>
 
 ### Variáveis de Ambiente (.env)
 <details>

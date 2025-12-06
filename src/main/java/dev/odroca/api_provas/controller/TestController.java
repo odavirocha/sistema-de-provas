@@ -11,7 +11,6 @@ import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.dto.test.TestForGetTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -57,21 +56,21 @@ public class TestController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<TestForGetTestsResponseDTO>> getAllTestsForUser(HttpServletRequest request) {
-        List<TestForGetTestsResponseDTO> response = testService.getAllTestsForUser(request);
+    public ResponseEntity<List<TestForGetTestsResponseDTO>> getAllTestsForUser(@AuthenticationPrincipal Jwt jwt) {
+        List<TestForGetTestsResponseDTO> response = testService.getAllTestsForUser(UUID.fromString(jwt.getSubject()));
         return new ResponseEntity<List<TestForGetTestsResponseDTO>>(response, HttpStatus.OK);
     }
     
     @GetMapping("/{testId}")
-    public ResponseEntity<TestForGetTestResponseDTO> getTest(@PathVariable UUID testId, HttpServletRequest request) {
-        TestForGetTestResponseDTO response = testService.getTest(testId, request);
+    public ResponseEntity<TestForGetTestResponseDTO> getTest(@PathVariable UUID testId, @AuthenticationPrincipal Jwt jwt) {
+        TestForGetTestResponseDTO response = testService.getTest(testId, UUID.fromString(jwt.getSubject()));
         return new ResponseEntity<TestForGetTestResponseDTO>(response, HttpStatus.OK);
     }
     
 
     @DeleteMapping("/{testId}")
-    public ResponseEntity<DeleteTestResponseDTO> deleteTest(@PathVariable UUID testId, HttpServletRequest request) {
-        DeleteTestResponseDTO response = testService.deleteTest(testId, request);
+    public ResponseEntity<DeleteTestResponseDTO> deleteTest(@PathVariable UUID testId, @AuthenticationPrincipal Jwt jwt) {
+        DeleteTestResponseDTO response = testService.deleteTest(testId, UUID.fromString(jwt.getSubject()));
         return new ResponseEntity<DeleteTestResponseDTO>(response, HttpStatus.OK);
     }
 

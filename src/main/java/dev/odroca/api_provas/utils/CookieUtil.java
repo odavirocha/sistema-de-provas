@@ -31,6 +31,8 @@ public class CookieUtil {
         response.addHeader("Set-Cookie", cookie.toString());
     }
     
+
+    // DELETAR DEPOIS, QUE MUDAR TUDO PARA @AuthenticationPrincipal
     public UUID getUserIdByJWT(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         UUID userId = null;

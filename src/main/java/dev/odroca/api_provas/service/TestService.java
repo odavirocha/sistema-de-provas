@@ -21,14 +21,11 @@ import dev.odroca.api_provas.dto.test.TestForGetTestsResponseDTO;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.SearchNotFoundOrUnauthorized;
-import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.TestRepository;
 import dev.odroca.api_provas.repository.UserRepository;
-import dev.odroca.api_provas.utils.CookieUtil;
-import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,8 +37,6 @@ public class TestService {
     private TestRepository testRepository;
     @Autowired
     private QuestionMapper questionMapper;
-    @Autowired
-    private CookieUtil cookieUtil;
 
 
     @Transactional
@@ -52,13 +47,9 @@ public class TestService {
     }
 
     @Transactional
-    public DeleteTestResponseDTO deleteTest(UUID testId, HttpServletRequest request) {
-        UUID userId = cookieUtil.getUserIdByJWT(request);
-
+    public DeleteTestResponseDTO deleteTest(UUID testId, UUID userId) {
         int deleteRows = testRepository.deleteByIdAndUserId(testId, userId);
-    
         if (deleteRows == 0) throw new UnauthorizedException();
-
         return new DeleteTestResponseDTO(testId.toString(), "Prova deletada com sucesso!");
     }
     
@@ -146,8 +137,7 @@ public class TestService {
     }
     
     @Transactional
-    public List<TestForGetTestsResponseDTO> getAllTestsForUser(HttpServletRequest request) {
-        UUID userId = cookieUtil.getUserIdByJWT(request);
+    public List<TestForGetTestsResponseDTO> getAllTestsForUser(UUID userId) {
 
         userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
 
@@ -161,15 +151,9 @@ public class TestService {
     }
     
     @Transactional
-    public TestForGetTestResponseDTO getTest(UUID testId, HttpServletRequest request) {
-        UUID userId = cookieUtil.getUserIdByJWT(request);
-
-        TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-
-        if (!test.getUserId().equals(userId)) throw new UnauthorizedException();
-
+    public TestForGetTestResponseDTO getTest(UUID testId, UUID userId) {
+        TestEntity test = testRepository.findByIdAndUserId(testId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
         List<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
-        
         return new TestForGetTestResponseDTO(test.getName(), questions);
     }
     
