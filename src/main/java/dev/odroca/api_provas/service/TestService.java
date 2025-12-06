@@ -45,11 +45,9 @@ public class TestService {
 
     @Transactional
     public TestForGetTestsResponseDTO createTest(TestEntity test) {
-        TestEntity saved = testRepository.save(test);
-        
-        int totalQuestions = saved.getQuestions().size();
-
-        return new TestForGetTestsResponseDTO(saved.getId(), saved.getName(), totalQuestions);
+        TestEntity userEntitySaved = testRepository.save(test);
+        int totalQuestions = userEntitySaved.getQuestions().size();
+        return new TestForGetTestsResponseDTO(userEntitySaved.getId(), userEntitySaved.getName(), totalQuestions);
     }
 
     @Transactional

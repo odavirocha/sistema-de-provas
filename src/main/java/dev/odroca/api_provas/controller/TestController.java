@@ -43,7 +43,7 @@ public class TestController {
     public ResponseEntity<TestForGetTestsResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
 
         TestEntity testEntity = new TestEntity();
-        testEntity.setName(test.getName());
+        testEntity.setName(test.name());
         testEntity.setUserId(UUID.fromString(jwt.getSubject()));
 
         TestForGetTestsResponseDTO response = testService.createTest(testEntity);
