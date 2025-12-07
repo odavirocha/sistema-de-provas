@@ -550,7 +550,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
       
-* #### GET /question
     - #### Retorna todas as questões de uma prova `/question/{testId}`
       
       <details>
