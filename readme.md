@@ -8,7 +8,7 @@
 
 Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de outro usuário.
 
--- IMAGEM COM O MER DA APLICAÇÃO
+![Mer do projeto](MER.png)
 
 <div id="user-content-toc">
   <ul style="list-style: none;">
