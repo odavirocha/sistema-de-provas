@@ -74,59 +74,59 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 * #### POST /auth
   * #### Como criar uma conta `/auth/signup`
-  <details>
-      <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+        <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+        &nbsp;
 
-    ```json
-    {
-      "email": "example@example.com",
-      "password": "123!123a"
-    }
-    ```
+      ```json
+      {
+        "email": "example@example.com",
+        "password": "123!123a"
+      }
+      ```
 
-  </details>
+    </details>
 
-  <details>
-      <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+        <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+        &nbsp;
 
-    ```json
-    {
-      "message": "Conta criada com sucesso!"
-    }
-    ```
+      ```json
+      {
+        "message": "Conta criada com sucesso!"
+      }
+      ```
 
-  </details>
+    </details>
 
   * #### Como criar uma conta `/auth/login`
-  <details>
-      <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+        <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+        &nbsp;
 
-    ```json
-    {
-      "email": "example@example.com",
-      "password": "123!123a"
-    }
-    ```
+      ```json
+      {
+        "email": "example@example.com",
+        "password": "123!123a"
+      }
+      ```
 
-  </details>
+    </details>
 
-  <details>
-      <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+        <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+        &nbsp;
 
-    ```json
-    {
-      "userId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293"
-    }
-    ```
+      ```json
+      {
+        "userId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293"
+      }
+      ```
 
-  </details>
+    </details>
 
   * #### Como criar uma conta `/auth/refresh`
-  Essa rota quando chamada, recebe o Refresh Token via Cookie HttpOnly e responde um Access Token e Refresh Token novos.
+    Essa rota quando chamada, recebe o Refresh Token via Cookie HttpOnly e responde um Access Token e Refresh Token novos.
 
 
 </details>
