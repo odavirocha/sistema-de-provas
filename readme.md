@@ -67,10 +67,11 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   </ul>
 </div>
 
+###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via CookieHttp Only.*
+
 <details>
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
 
-###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via CookieHttp Only.*
 
 * #### POST /test
   * #### Como criar uma prova `/test/`
@@ -217,9 +218,12 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       ```
       </details>
 
----
+</details>
 
-<div><b>❯&nbsp;&nbsp;<span style="background-color: #4CAF50; color: white; padding: 3px 6px; border-radius: 0px;"> <b> POST </span> &nbsp;<b>/question </div>
+<details>
+    <summary><strong> Questões </strong> <sub> (expandir) </sub></summary>
+
+* #### POST /question
 
     - #### Como criar uma questão `/question/{testId}`
 
