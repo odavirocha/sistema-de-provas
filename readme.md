@@ -97,7 +97,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     }
     ```
 
-</details>
+  </details>
 
 * #### POST /auth
   * #### Como criar uma contaa `/auth/login`
@@ -124,11 +124,12 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     }
     ```
 
-</details>
+  </details>
 
 * #### POST /auth
   * #### Como criar uma conta `/auth/refresh`
   Essa rota quando chamada, recebe o Refresh Token via Cookie HttpOnly e responde um Access Token e Refresh Token novos.
+
 
 </details>
 
