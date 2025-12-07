@@ -54,7 +54,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 </div>
 
 <div id="user-content-toc">
-  <ul style="list-style: none; height: 2.5rem;">
+  <ul style="list-style: none;">
     <summary>
       <h2>
         Rotas
