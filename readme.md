@@ -67,7 +67,70 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   </ul>
 </div>
 
-###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via CookieHttp Only.*
+###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly.*
+
+<details>
+    <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
+
+* #### POST /auth
+  * #### Como criar uma contaa `/auth/signup`
+  <details>
+      <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+    ```json
+    {
+      "email": "example@example.com",
+      "password": "123!123a"
+    }
+    ```
+
+  </details>
+
+  <details>
+      <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+    ```json
+    {
+      "message": "Conta criada com sucesso!"
+    }
+    ```
+
+</details>
+
+* #### POST /auth
+  * #### Como criar uma contaa `/auth/login`
+  <details>
+      <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+    ```json
+    {
+      "email": "example@example.com",
+      "password": "123!123a"
+    }
+    ```
+
+  </details>
+
+  <details>
+      <summary><strong> Exemplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+    ```json
+    {
+      "userId": "9fa7c520-38d9-453c-957f-6b0f0cc8a293"
+    }
+    ```
+
+</details>
+
+* #### POST /auth
+  * #### Como criar uma conta `/auth/refresh`
+  Essa rota quando chamada, recebe o Refresh Token via Cookie HttpOnly e responde um Access Token e Refresh Token novos.
+
+</details>
 
 <details>
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
