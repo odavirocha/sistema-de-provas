@@ -59,8 +59,8 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       <h2>
         Rotas
         <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/endpoint-white.svg" width="20">
-          <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/endpoint-black.svg" width="20">
+          <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/endpoint-white.svg" width="15">
+          <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/endpoint-black.svg" width="15">
         </picture>
       </h2>
     </summary>
