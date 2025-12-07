@@ -23,6 +23,7 @@ import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
+import dev.odroca.api_provas.exception.SearchNotFoundOrUnauthorized;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
@@ -47,9 +48,9 @@ public class QuestionService {
 
 
     @Transactional
-    public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
+    public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel, UUID userId) {
         
-        TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        TestEntity test = testRepository.findByIdAndUserId(testId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
         
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
@@ -60,12 +61,12 @@ public class QuestionService {
         
         if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
             throw new CorrectOptionNotFoundException();
-        };
+        }
         
         long listOptionsSize = optionEntities.stream().filter(option -> option.getIsCorrect()).count();
         if ( listOptionsSize > 1 ) {
             throw new MultipleCorrectOptionsException();
-        };
+        }
         
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
@@ -86,16 +87,16 @@ public class QuestionService {
     }
         
     @Transactional
-    public CreateQuestionsResponseDTO createQuestions(CreateQuestionsRequestDTO questionsModel) {
+    public CreateQuestionsResponseDTO createQuestions(UUID testId, CreateQuestionsRequestDTO questionsModel, UUID userId) {
         int totalQuestions = 0;
         
         // Transforma cada questão em uma entidade QuestionModelDTO
-        for (CreateQuestionModelDTO question : questionsModel.getQuestions()) {
-            createQuestion(questionsModel.getTestId(), question);
+        for (CreateQuestionModelDTO question : questionsModel.questions()) {
+            createQuestion(testId, question, userId);
             totalQuestions++;
         }
         
-        return new CreateQuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
+        return new CreateQuestionsResponseDTO(testId, totalQuestions, "Questões criadas com sucesso!");
     }
     
     @Transactional

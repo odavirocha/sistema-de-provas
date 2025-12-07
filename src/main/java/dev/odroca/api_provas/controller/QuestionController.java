@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,22 +27,22 @@ import dev.odroca.api_provas.service.QuestionService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/questions")
+@RequestMapping("/question")
 public class QuestionController {
 
     @Autowired
     private QuestionService questionService;
         
-    @PostMapping("/")
-    public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
-        CreateQuestionResponseDTO response = questionService.createQuestion(question.getTestId(), question.getQuestion());
+    @PostMapping("/{testId}")
+    public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@PathVariable UUID testId, @RequestBody @Valid CreateQuestionRequestDTO question, @AuthenticationPrincipal Jwt jwt) {
+        CreateQuestionResponseDTO response = questionService.createQuestion(testId, question.question(), UUID.fromString(jwt.getSubject()));
         return new ResponseEntity<CreateQuestionResponseDTO>(response, HttpStatus.CREATED);
     }
     
     // testar a resposta de quando envia mais de uma questão
-    @PostMapping("/batch")
-    public ResponseEntity<CreateQuestionsResponseDTO> createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions) {
-        CreateQuestionsResponseDTO response = questionService.createQuestions(questions);        
+    @PostMapping("/{testId}/batch")
+    public ResponseEntity<CreateQuestionsResponseDTO> createQuestions(@PathVariable UUID testId, @RequestBody @Valid CreateQuestionsRequestDTO questions, @AuthenticationPrincipal Jwt jwt) {
+        CreateQuestionsResponseDTO response = questionService.createQuestions(testId, questions, UUID.fromString(jwt.getSubject()));        
         return new ResponseEntity<CreateQuestionsResponseDTO>(response, HttpStatus.OK);
     }
     

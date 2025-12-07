@@ -61,10 +61,10 @@ public class SecurityConfig {
                 // .requestMatchers(HttpMethod.POST, "/test/{testId}").hasRole("USER") // Se a prova for: Pública?  Privada? Não lista?
                 .requestMatchers(HttpMethod.GET, "/test/{userId}").hasRole("USER")
                 .requestMatchers(HttpMethod.DELETE, "/test/{testId}").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/questions/").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/questions/batch").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/questions/{questionId}").hasRole("USER")
-                .requestMatchers(HttpMethod.GET, "/questions/{testId}").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/question/").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/question/batch").hasRole("USER")
+                .requestMatchers(HttpMethod.PUT, "/question/{questionId}").hasRole("USER")
+                .requestMatchers(HttpMethod.GET, "/question/{testId}").hasRole("USER")
                 .anyRequest().authenticated())
             .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
             .oauth2ResourceServer(oauth2 -> oauth2

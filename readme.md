@@ -1,10 +1,24 @@
-# <p align="center"> SISTEMA DE PROVAS </p>
+<div id="user-content-toc">
+  <ul align="center" style="list-style: none;">
+    <summary>
+      <h1>SISTEMA DE PROVAS</h1>
+    </summary>
+  </ul>
+</div>
 
 Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de outro usuário.
 
 -- IMAGEM COM O MER DA APLICAÇÃO
 
-## 🛠️ Stack
+<div id="user-content-toc">
+  <ul style="list-style: none;">
+    <summary>
+      <h2>
+        Stack 🛠️
+      </h2>
+    </summary>
+  </ul>
+</div>
 
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
@@ -29,18 +43,37 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 **Java 17**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Spring 3.5.5**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Maven 4.0.0**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**PostgreSQL**
 
-## Como instalar 📦
+<div id="user-content-toc">
+  <ul style="list-style: none;">
+    <summary>
+      <h2>
+        Como instalar 📦
+      </h2>
+    </summary>
+  </ul>
+</div>
 
-# Rotas 🛣️
+<div id="user-content-toc">
+  <ul style="list-style: none;">
+    <summary>
+      <h2>
+        Rotas
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/endpoint-white.svg" width="20">
+          <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/endpoint-black.svg" width="20">
+        </picture>
+      </h2>
+    </summary>
+  </ul>
+</div>
+
 <details>
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
 
-###### *NOTA: Para essas rotas funcionarem é necessário enviar o Access Token via CookieHttp Only.*
+###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via CookieHttp Only.*
 
 * ### POST /test
-
   * #### Como criar uma prova `/test/`
-
     <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
@@ -50,7 +83,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
         "name": "Prova de teste 01"
     }
     ```
-
     </details>
 
     <details>
@@ -64,11 +96,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
         "totalQuestions": 5
     }
     ```
-
     </details>
 
   * #### Como responder uma prova `/test/{testId}`
-
     <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
@@ -83,7 +113,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       ]
     }
     ```
-
     </details>
 
     <details>
@@ -105,7 +134,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       "incorrectCount": 0
     }
     ```
-
     </details>
 
 
@@ -126,7 +154,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       }
     ]
     ```
-    
     </details>
   
   * #### Retorna uma prova `/test/${testId}`
@@ -173,7 +200,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       ]
     }
     ```
-    
     </details>
 
 * ### DELETE /test
@@ -190,7 +216,104 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
         "message": "Prova deletada com sucesso!"
       }
       ```
-        
+      </details>
+
+
+---
+* ### POST /question
+
+    - #### Como criar uma questão `/question/{testId}`
+
+      <details>
+        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+        "question": {
+          "question": "Quanto é 1+1?",
+          "options": [
+            {"value": "1", "isCorrect": false},
+            {"value": "2", "isCorrect": true},
+            {"value": "3", "isCorrect": false},
+            {"value": "4", "isCorrect": false}
+          ]
+        }
+      }
+      ```
+      
+      </details>
+
+      <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+        "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+        "question": "Quanto é 1+1?",
+        "totalOptions": 4,
+        "correctOptionId": "d8bebc0f-16f2-4fb3-840f-5b106f0a78d8",
+        "message": "Questão criada com sucesso!"
+      }
+      ```
+      
+      </details>
+
+    - #### Como criar varias questões `/question/{testId}/batch`
+
+      <details>
+        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+        "questions": [
+            {
+              "question": "Quanto é 1+1?",
+              "options": [
+                {"value": "1", "isCorrect": false},
+                {"value": "2", "isCorrect": true},
+                {"value": "3", "isCorrect": false},
+                {"value": "4", "isCorrect": false}
+              ]
+            },
+            {
+              "question": "Quanto é 1+2?",
+              "options": [
+                {"value": "1", "isCorrect": false},
+                {"value": "2", "isCorrect": false},
+                {"value": "3", "isCorrect": true},
+                {"value": "4", "isCorrect": false}
+              ]
+            },
+            {
+              "question": "Quanto é 1+3?",
+              "options": [
+                {"value": "1", "isCorrect": false},
+                {"value": "2", "isCorrect": false},
+                {"value": "3", "isCorrect": false},
+                {"value": "4", "isCorrect": true}
+              ]
+            }
+        ]
+      }
+      ```
+      
+      </details>
+
+      <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+        "id": "07469299-616f-4f0a-8d09-12da01570437",
+        "totalCreatedQuestions": 3,
+        "message": "Questões criadas com sucesso!"
+      }
+      ```
+      
       </details>
 
 </details>
