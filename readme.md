@@ -72,7 +72,8 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 ###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via CookieHttp Only.*
 
-* ### POST /test
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #48CC8E; color: white; padding: 3px 6px; border-radius: 0px;"> <b> POST </span> &nbsp;<b>/test </div>
+
   * #### Como criar uma prova `/test/`
     <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
@@ -136,8 +137,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ```
     </details>
 
-
-* ### GET /test
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #60B0FF; color: white; padding: 3px 6px; border-radius: 0px;"> <b> GET </span> &nbsp;<b>/test </div>
 
   * #### Retorna todas as provas do usuário `/test/`
 
@@ -202,9 +202,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ```
     </details>
 
-* ### DELETE /test
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #F83D39; color: white; padding: 3px 6px; border-radius: 0px;"> <b> DELETE </span> &nbsp;<b>/test </div>
     
-    - #### Deleta uma prova `/test/${testId}`
+  - #### Deleta uma prova `/test/${testId}`
 
       <details>
         <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
@@ -218,11 +218,11 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       ```
       </details>
 
-
 ---
-* ### POST /question
 
-    - #### Como criar uma questão `/question/{testId}`
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #48CC8E; color: white; padding: 3px 6px; border-radius: 0px;"> <b> POST </span> &nbsp;<b>/question </div>
+
+  - #### Como criar uma questão `/question/{testId}`
 
       <details>
         <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
@@ -302,8 +302,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
 
-* ### PUT /question
-    - #### Como editar uma questão `/question/{testId}`
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #FBA130; color: white; padding: 3px 6px; border-radius: 0px;"> <b> PUT </span> &nbsp;<b>/question </div>
+    
+  - #### Como editar uma questão `/question/{testId}`
 
       <details>
         <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
@@ -336,8 +337,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
 
-* ### GET /question
-    - #### Retorna todas as questões de uma prova `/question/{testId}`
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #60B0FF; color: white; padding: 3px 6px; border-radius: 0px;"> <b> GET </span> &nbsp;<b>/question </div>
+
+  - #### Retorna todas as questões de uma prova `/question/{testId}`
       
       <details>
         <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
@@ -485,8 +487,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
       
-* ### GET /question
-    - #### Retorna todas as questões de uma prova `/question/{testId}`
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #60B0FF; color: white; padding: 3px 6px; border-radius: 0px;"> <b> GET </span> &nbsp;<b>/question </div>
+
+  - #### Retorna todas as questões de uma prova `/question/{testId}`
       
       <details>
         <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
@@ -634,8 +637,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
 
-* ### DELETE /question
-    - #### Deleta uma questão `/question/{questionId}`
+<div><b>➜&nbsp;&nbsp;<span style="background-color: #F83D39; color: white; padding: 3px 6px; border-radius: 0px;"> <b> DELETE </span> &nbsp;<b>/question </div>
+
+  - #### Deleta uma questão `/question/{questionId}`
       
       <details>
         <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
