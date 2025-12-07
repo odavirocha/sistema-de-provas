@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.odroca.api_provas.dto.option.UpdateOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionResponseDTO;
+import dev.odroca.api_provas.dto.question.DeleteQuestionResponseDTO;
 import dev.odroca.api_provas.dto.question.GetQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionRequestDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionResponseDTO;
@@ -25,6 +26,7 @@ import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.SearchNotFoundOrUnauthorized;
 import dev.odroca.api_provas.exception.TestNotFoundException;
+import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.OptionRepository;
@@ -100,9 +102,9 @@ public class QuestionService {
     }
     
     @Transactional
-    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
+    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion, UUID userId) {
 
-        QuestionEntity databaseQuestion = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
+        QuestionEntity databaseQuestion = questionRepository.findByIdAndTest_UserId(questionId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
         
         // Atualiza o enunciado
         databaseQuestion.setQuestion(requestQuestion.question());
@@ -170,12 +172,18 @@ public class QuestionService {
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
     }
 
-    public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
+    public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId, UUID userId) {
 
-        TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        TestEntity test = testRepository.findByIdAndUserId(testId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
         List<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
 
         return questions;
+    }
+
+    public DeleteQuestionResponseDTO deleteQuestion(UUID questionId, UUID userId) {
+        int deletedRows = questionRepository.deleteByIdAndTest_UserId(questionId, userId);
+        if (deletedRows == 0) throw new UnauthorizedException();
+        return new DeleteQuestionResponseDTO(questionId, "Questão deletada com sucesso!");
     }
 
 }

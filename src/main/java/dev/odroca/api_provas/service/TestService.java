@@ -48,8 +48,8 @@ public class TestService {
 
     @Transactional
     public DeleteTestResponseDTO deleteTest(UUID testId, UUID userId) {
-        int deleteRows = testRepository.deleteByIdAndUserId(testId, userId);
-        if (deleteRows == 0) throw new UnauthorizedException();
+        int deletedRows = testRepository.deleteByIdAndUserId(testId, userId);
+        if (deletedRows == 0) throw new UnauthorizedException();
         return new DeleteTestResponseDTO(testId.toString(), "Prova deletada com sucesso!");
     }
     

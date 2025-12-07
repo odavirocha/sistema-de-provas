@@ -302,15 +302,349 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
 
+* ### PUT /question
+    - #### Como editar uma questão `/question/{testId}`
+
+      <details>
+        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+        "question": "Quanto é 10+10?",
+        "options": [
+          {"value": "100", "isCorrect": false},
+          {"value": "20", "isCorrect": true},
+          {"value": "200", "isCorrect": false},
+          {"value": "10", "isCorrect": false}
+        ]
+      }
+      ```
+
+      </details>
+      
       <details>
         <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
 
       ```json
       {
-        "id": "07469299-616f-4f0a-8d09-12da01570437",
-        "totalCreatedQuestions": 3,
-        "message": "Questões criadas com sucesso!"
+        "questionId": "486fce7b-2012-4a88-b23b-5cc353060643",
+        "message": "Questão alterada com sucesso!"
+      }
+      ```
+      
+      </details>
+
+* ### GET /question
+    - #### Retorna todas as questões de uma prova `/question/{testId}`
+      
+      <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      [
+        {
+          "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+          "question": "Questão número 6",
+          "options": [
+            {
+              "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
+              "value": "4",
+              "isCorrect": false
+            },
+            {
+              "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+              "value": "5",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "id": "44d02fe8-3388-485a-95ca-a16703d25585",
+          "question": "Quanto é 1+1?",
+          "options": [
+            {
+              "id": "f9f9711f-86a2-47a2-b7e3-f149f449bead",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "ef6ba040-7354-4d6d-a566-489a41bfaf97",
+              "value": "2",
+              "isCorrect": true
+            },
+            {
+              "id": "f24b21c2-7c3a-4f1b-8a75-47d6696882d1",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "b2d489e2-66fd-413a-b451-b8f7631d9b1a",
+              "value": "4",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "id": "eb0a987f-dd0a-47cc-a912-0d54e79881bf",
+          "question": "Quanto é 1+2?",
+          "options": [
+            {
+              "id": "64d1e3ad-917f-42fd-94fa-47ec3da5ad44",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "651ff639-27af-4295-888d-3be53dbf7b06",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "763c1673-79ac-4d45-a3a0-866b7cb24011",
+              "value": "3",
+              "isCorrect": true
+            },
+            {
+              "id": "67f3e8e5-50ce-47f7-aa84-f2edf5daae2b",
+              "value": "4",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "id": "1c380efd-ede0-4570-a8cf-ad91783b068e",
+          "question": "Quanto é 1+3?",
+          "options": [
+            {
+              "id": "88fcd2df-4a2d-4839-ae68-68f3fcbd69c5",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "b857b1de-84b8-4232-b125-60e4823afd3e",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "79c97807-d33a-4031-8bdc-7aace96824bd",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "fa7139a4-aa58-408c-9018-7d274aedd029",
+              "value": "4",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+          "question": "Quanto é 10+10?",
+          "options": [
+            {
+              "id": "5c96eba8-508c-4277-9c7a-974b1abac323",
+              "value": "100",
+              "isCorrect": false
+            },
+            {
+              "id": "69a724ec-17f2-49b4-9898-255b40864b89",
+              "value": "20",
+              "isCorrect": true
+            },
+            {
+              "id": "66df9e69-f667-4ee0-987f-9608a3c66c6a",
+              "value": "200",
+              "isCorrect": false
+            },
+            {
+              "id": "7998dad5-ab11-4778-901b-e26f32561e69",
+              "value": "10",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+      ```
+      
+      </details>
+      
+* ### GET /question
+    - #### Retorna todas as questões de uma prova `/question/{testId}`
+      
+      <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      [
+        {
+          "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+          "question": "Questão número 6",
+          "options": [
+            {
+              "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
+              "value": "4",
+              "isCorrect": false
+            },
+            {
+              "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+              "value": "5",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "id": "44d02fe8-3388-485a-95ca-a16703d25585",
+          "question": "Quanto é 1+1?",
+          "options": [
+            {
+              "id": "f9f9711f-86a2-47a2-b7e3-f149f449bead",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "ef6ba040-7354-4d6d-a566-489a41bfaf97",
+              "value": "2",
+              "isCorrect": true
+            },
+            {
+              "id": "f24b21c2-7c3a-4f1b-8a75-47d6696882d1",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "b2d489e2-66fd-413a-b451-b8f7631d9b1a",
+              "value": "4",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "id": "eb0a987f-dd0a-47cc-a912-0d54e79881bf",
+          "question": "Quanto é 1+2?",
+          "options": [
+            {
+              "id": "64d1e3ad-917f-42fd-94fa-47ec3da5ad44",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "651ff639-27af-4295-888d-3be53dbf7b06",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "763c1673-79ac-4d45-a3a0-866b7cb24011",
+              "value": "3",
+              "isCorrect": true
+            },
+            {
+              "id": "67f3e8e5-50ce-47f7-aa84-f2edf5daae2b",
+              "value": "4",
+              "isCorrect": false
+            }
+          ]
+        },
+        {
+          "id": "1c380efd-ede0-4570-a8cf-ad91783b068e",
+          "question": "Quanto é 1+3?",
+          "options": [
+            {
+              "id": "88fcd2df-4a2d-4839-ae68-68f3fcbd69c5",
+              "value": "1",
+              "isCorrect": false
+            },
+            {
+              "id": "b857b1de-84b8-4232-b125-60e4823afd3e",
+              "value": "2",
+              "isCorrect": false
+            },
+            {
+              "id": "79c97807-d33a-4031-8bdc-7aace96824bd",
+              "value": "3",
+              "isCorrect": false
+            },
+            {
+              "id": "fa7139a4-aa58-408c-9018-7d274aedd029",
+              "value": "4",
+              "isCorrect": true
+            }
+          ]
+        },
+        {
+          "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+          "question": "Quanto é 10+10?",
+          "options": [
+            {
+              "id": "5c96eba8-508c-4277-9c7a-974b1abac323",
+              "value": "100",
+              "isCorrect": false
+            },
+            {
+              "id": "69a724ec-17f2-49b4-9898-255b40864b89",
+              "value": "20",
+              "isCorrect": true
+            },
+            {
+              "id": "66df9e69-f667-4ee0-987f-9608a3c66c6a",
+              "value": "200",
+              "isCorrect": false
+            },
+            {
+              "id": "7998dad5-ab11-4778-901b-e26f32561e69",
+              "value": "10",
+              "isCorrect": false
+            }
+          ]
+        }
+      ]
+      ```
+      
+      </details>
+
+* ### DELETE /question
+    - #### Deleta uma questão `/question/{questionId}`
+      
+      <details>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+        "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+        "message": "Questão deletada com sucesso!"
       }
       ```
       
@@ -319,6 +653,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 </details>
 
 ---
+
 
 ### Variáveis de Ambiente (.env)
 <details>
