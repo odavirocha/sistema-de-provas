@@ -73,7 +73,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
 
 * #### POST /auth
-  * #### Como criar uma contaa `/auth/signup`
+  * #### Como criar uma conta `/auth/signup`
   <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
@@ -100,7 +100,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   </details>
 
 * #### POST /auth
-  * #### Como criar uma contaa `/auth/login`
+  * #### Como criar uma conta `/auth/login`
   <details>
       <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
@@ -727,7 +727,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   <summary><strong> Se necessário </strong> <sub> (expandir) </sub></summary>
 &nbsp;
 
-Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuraçãaao para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
+Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuraçãao para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
 
 ```json
 {
