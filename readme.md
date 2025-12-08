@@ -13,7 +13,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/stack-white.svg" height="40">
   <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/stack-black.svg" height="40">
-</picture>
+</picture>&nbsp;
 &nbsp;
 
 <picture>
