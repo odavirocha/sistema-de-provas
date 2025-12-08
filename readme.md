@@ -54,17 +54,8 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/rotas-white.svg" height="40">
   <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/rotas-black.svg" height="40">
 </picture>
-<br>
 
-<div id="user-content-toc">
-  <ul align="center" style="list-style: none;">
-    <summary>
-      <h6>NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly.</h6>
-    </summary>
-  </ul>
-</div>
-
-
+> **Nota:** *Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly*
 
 <details>
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
