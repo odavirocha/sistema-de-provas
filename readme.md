@@ -10,52 +10,55 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 ![Mer do projeto](MER.png)
 
-<div id="user-content-toc">
-  <ul style="list-style: none;">
-    <summary>
-      <h2>
-        Stack 🛠️
-      </h2>
-    </summary>
-  </ul>
-</div>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/stack-white.svg" height="40">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/stack-black.svg" height="40">
+</picture>
 
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
-    <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
-  </picture>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
-    <img alt="Icone java" src="https://cdn.simpleicons.org/spring/black" width="50">
-  </picture>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/apachemaven/white" width="50">
-    <img alt="Icone java" src="https://cdn.simpleicons.org/apachemaven/black" width="50">
-  </picture>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/postgresql/white" width="50">
-    <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
-  </picture>
-&nbsp;&nbsp;
+<table>
+  <tr style="border: 0px;">
+    <td align="center" style="border: 0px;">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
+        <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
+      </picture>
+    </td>
+    <td align="center" style="border: 0px;">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
+        <img alt="Icone java" src="https://cdn.simpleicons.org/spring/black" width="50">
+      </picture>
+    </td>
+    <td align="center" style="border: 0px;">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/apachemaven/white" width="50">
+        <img alt="Icone java" src="https://cdn.simpleicons.org/apachemaven/black" width="50">
+      </picture>
+    </td>
+    <td align="center" style="border: 0px;">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/postgresql/white" width="50">
+        <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
+      </picture>
+    </td>
+  </tr>
+  <tr style="border: 0px; background: transparent;">
+    <td style="border:0px;"><b>Java 17</td>
+    <td style="border:0px;"><b>Spring 3.5.5</td>
+    <td style="border:0px;"><b>Maven 4.0.0</td>
+    <td style="border:0px;"><b>PostgreSQL</td>
+  </tr>
+</table>
 
-**Java 17**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Spring 3.5.5**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Maven 4.0.0**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**PostgreSQL**
-
-<div id="user-content-toc">
-  <ul style="list-style: none;">
-    <summary>
-      <h2>
-        Como instalar 📦
-      </h2>
-    </summary>
-  </ul>
-</div>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/rotas-white.svg" width="100">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/rotas-black.svg" width="100">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/como-instalar-white.svg" height="40">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/como-instalar-black.svg" height="40">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/rotas-white.svg" height="40">
+  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/rotas-black.svg" height="40">
 </picture>
 
 ###### *NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly.*
