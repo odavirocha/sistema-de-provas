@@ -56,7 +56,15 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 </picture>
 <br>
 
-*NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly.*
+<div id="user-content-toc">
+  <ul align="center" style="list-style: none;">
+    <summary>
+      <h6>NOTA: Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly.</h6>
+    </summary>
+  </ul>
+</div>
+
+
 
 <details>
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
