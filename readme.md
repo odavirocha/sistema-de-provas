@@ -9,8 +9,8 @@
 Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de outro usuário.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="readme-assets/mer-white.drawio.svg">
-  <img alt="Icone java" src="readme-assets/mer-black.drawio.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="readme-assets/mer-white.svg">
+  <img alt="Icone java" src="readme-assets/mer-black.svg">
 </picture>
 
 ---
