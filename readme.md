@@ -20,30 +20,42 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 <br>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
-  <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
-</picture>
-&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
-  <img alt="Icone java" src="https://cdn.simpleicons.org/spring/black" width="50">
-</picture>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/apachemaven/white" width="50">
-  <img alt="Icone java" src="https://cdn.simpleicons.org/apachemaven/black" width="50">
-</picture>
-&nbsp; &nbsp; &nbsp; &nbsp; 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/postgresql/white" width="50">
-  <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
-</picture>
 
-<strong>Java 17</strong> &nbsp; &nbsp;&nbsp;
-<strong>Spring 3.5.5</strong>&nbsp; &nbsp; &nbsp; &nbsp;
-<strong>Maven</strong>&nbsp; &nbsp; &nbsp; &nbsp;
-<strong>PostgreSQL</strong>
+<table>
+  <tr align="center">
+    <td>
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
+      <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
+    </picture>
+    </td>
+    <td>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
+        <img alt="Icone java" src="https://cdn.simpleicons.org/spring/black" width="50">
+      </picture>
+    </td>
+    <td>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/apachemaven/white" width="50">
+        <img alt="Icone java" src="https://cdn.simpleicons.org/apachemaven/black" width="50">
+      </picture>
+    </td>
+    <td>
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/postgresql/white" width="50">
+        <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
+      </picture>
+    </td>
+  </tr>
+  <tr>
+    <td> <strong>Java 17</strong> </td>
+    <td> <strong>Spring 3.5.5</strong> </td>
+    <td> <strong>Maven</strong> </td>
+    <td> <strong>PostgreSQL</strong> </td>
+    </tr>
+</table>
+
 
 ---
 <br>
