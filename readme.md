@@ -56,7 +56,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 > ⚠️ Para as rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly
 
 <details>
-  <summary><h2> ⚙️ Como rodar manualmente. </h2> <sub> (expandir) </sub></summary>
+  <summary><strong> ⚙️ Como rodar manualmente. </strong> <sub> (expandir) </sub></summary>
 
 -  ### Pré-requisitos
     - Java 17+
@@ -122,7 +122,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 
 <details>
-  <summary><h2> 🐋 Como rodar com Docker. </h2> <sub> (expandir) </sub></summary>
+  <summary><strong> 🐋 Como rodar com Docker. </strong> <sub> (expandir) </sub></summary>
 
 - ### Pré-requisitos
   - Docker
@@ -174,7 +174,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 > **Nota:** *Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly*
 
 <details>
-    <summary><strong> Autenticação </strong> <sub> (expandir) </sub></summary>
+    <summary><strong> 🔐 Autenticação </strong> <sub> (expandir) </sub></summary>
 
 * #### POST /auth
   * #### Como criar uma conta `/auth/signup`
@@ -236,7 +236,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 </details>
 
 <details>
-    <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
+    <summary><strong> 📑 Provas </strong> <sub> (expandir) </sub></summary>
 
 * #### POST /test
   * #### Como criar uma prova `/test/`
@@ -386,7 +386,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 </details>
 
 <details>
-    <summary><strong> Questões </strong> <sub> (expandir) </sub></summary>
+    <summary><strong> ✏️ Questões </strong> <sub> (expandir) </sub></summary>
 
 * #### POST /question
 
@@ -821,12 +821,14 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 ---
 
-### Variáveis de Ambiente (.env)
+### Variáveis de ambiente no VSCode (.env)
+No vscode eu tive que dizer para o projeto onde estava as variaveis de ambiente, então se estiver usando VSCode essa seção pode ser útil.
+
 <details>
   <summary><strong> Se necessário </strong> <sub> (expandir) </sub></summary>
 &nbsp;
 
-Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuraçãao para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
+Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuração para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
 
 ```json
 {
