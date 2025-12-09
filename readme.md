@@ -10,6 +10,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 ![Mer do projeto](MER.png)
 
+---
+<br>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/stack-white.svg" height="40">
   <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/stack-black.svg" height="40">
@@ -21,17 +24,17 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-white.svg" width="50">
   <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/icons/java-black.svg" width="50">
 </picture>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/spring/white" width="50">
   <img alt="Icone java" src="https://cdn.simpleicons.org/spring/black" width="50">
 </picture>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/apachemaven/white" width="50">
   <img alt="Icone java" src="https://cdn.simpleicons.org/apachemaven/black" width="50">
 </picture>
-&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/postgresql/white" width="50">
   <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
@@ -39,15 +42,114 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 <b>Java 17 &nbsp; &nbsp;&nbsp;
 <b>Spring 3.5.5&nbsp; &nbsp; &nbsp; &nbsp;
-<b>Maven 4.0.0&nbsp; &nbsp; &nbsp; &nbsp;
+<b>Maven&nbsp; &nbsp; &nbsp; &nbsp;
 <b>PostgreSQL
 
+---
+<br>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/como-instalar-white.svg" height="40">
   <img alt="Icone java" src="https://raw.githubusercontent.com/oDroca/icones-para-readme/main/assets/como-instalar-black.svg" height="40">
 </picture>
 
+> ⚠️ Para as rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly
+
+### ⚙️ Como rodar manualmente.
+#### Pré-requisitos
+- Java 17+
+- Maven
+- PostgreSQL
+
+### 1. Configure o banco de dados.
+  Crie um arquivo `env` na raiz do projeto:
+
+  ```.env
+    # Banco local
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=postgres
+    POSTGRES_DB=banco_api_provas
+
+    # Banco em nuvem
+    NEON_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
+  ```
+
+  Ou se preferir diretamente no arquivo `application.properties`:
+
+  <details>
+    <summary><strong> Opção 1: Banco local ou docker </strong> <sub> (expandir) </sub></summary>
+    <br>
+
+  ```
+    spring.datasource.url=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+    spring.datasource.username=${POSTGRES_USER}
+    spring.datasource.password=${POSTGRES_PASSWORD}
+  ```
+  </details>
+
+  <details>
+    <summary><strong> Opção 2: Banco na nuvem. </strong> <sub> (expandir) </sub></summary>
+    <br>
+   
+  ```
+    spring.datasource.url=${NEON_URL}
+  ```
+  </details>
+
+### 2. Instale as dependências.
+
+  Rode no terminal o comando:
+
+  ```bash
+  ./mvnw clean install
+  ```
+
+### 3. Execute o projeto.
+
+  Rode no terminal o comando:
+
+  ```bash
+  ./mvnw spring-boot:run
+  ```
+
+Isso deixará a API disponível em http://localhost:8080/.
+> ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+
+### 🐋 Como rodar com Docker.
+#### Pré-requisitos
+- Docker
+- Docker Compose
+- Arquivo `.env` — na raiz.
+
+#### Passo a passo
+1. Escolha qual banco usar no `docker-compose.yml`.
+  - Para usar banco em nuvem.
+  ```yaml
+  environment:
+    - SPRING_DATASOURCE_URL=${NEON_URL}
+    # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+    # - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+    # - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+  ```
+  - Para usar PostgreSQL Local.
+  ```yaml
+  environment:
+    # - SPRING_DATASOURCE_URL=${NEON_URL}
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+    - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+    - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+  ```
+
+2. Execute o contâiner.
+  Rode no terminal linux o comando:
+  ```bash
+  docker compose up backend
+  ```
+
+Isso deixará a API disponível em http://localhost:8080/.
+> ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+
+---
 <br>
 
 <picture>
@@ -121,7 +223,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 <details>
     <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
-
 
 * #### POST /test
   * #### Como criar uma prova `/test/`
@@ -705,7 +806,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 </details>
 
 ---
-
 
 ### Variáveis de Ambiente (.env)
 <details>
