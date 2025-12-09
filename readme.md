@@ -40,10 +40,10 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
   <img alt="Icone java" src="https://cdn.simpleicons.org/postgresql/black" width="50">
 </picture>
 
-<b>Java 17 &nbsp; &nbsp;&nbsp;
-<b>Spring 3.5.5&nbsp; &nbsp; &nbsp; &nbsp;
-<b>Maven&nbsp; &nbsp; &nbsp; &nbsp;
-<b>PostgreSQL
+<strong>Java 17</strong> &nbsp; &nbsp;&nbsp;
+<strong>Spring 3.5.5</strong>&nbsp; &nbsp; &nbsp; &nbsp;
+<strong>Maven</strong>&nbsp; &nbsp; &nbsp; &nbsp;
+<strong>PostgreSQL</strong>
 
 ---
 <br>
@@ -55,99 +55,113 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 > ⚠️ Para as rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly
 
-### ⚙️ Como rodar manualmente.
-#### Pré-requisitos
-- Java 17+
-- Maven
-- PostgreSQL
+<details>
+  <summary><h2> ⚙️ Como rodar manualmente. </h2> <sub> (expandir) </sub></summary>
 
-### 1. Configure o banco de dados.
-  Crie um arquivo `env` na raiz do projeto:
+-  ### Pré-requisitos
+    - Java 17+
+    - Maven
+    - PostgreSQL
 
-  ```.env
-    # Banco local
-    POSTGRES_USER=postgres
-    POSTGRES_PASSWORD=postgres
-    POSTGRES_DB=banco_api_provas
+- ### Passo a passo
 
-    # Banco em nuvem
-    NEON_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
-  ```
+  ### 1. Configure o banco de dados.
+    Crie um arquivo `env` na raiz do projeto:
 
-  Ou se preferir diretamente no arquivo `application.properties`:
+    ```.env
+      # Banco local
+      POSTGRES_USER=postgres
+      POSTGRES_PASSWORD=postgres
+      POSTGRES_DB=banco_api_provas
 
-  <details>
-    <summary><strong> Opção 1: Banco local ou docker </strong> <sub> (expandir) </sub></summary>
-    <br>
+      # Banco em nuvem
+      NEON_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
+    ```
 
-  ```
-    spring.datasource.url=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-    spring.datasource.username=${POSTGRES_USER}
-    spring.datasource.password=${POSTGRES_PASSWORD}
-  ```
-  </details>
+    Ou se preferir diretamente no arquivo `application.properties`:
 
-  <details>
-    <summary><strong> Opção 2: Banco na nuvem. </strong> <sub> (expandir) </sub></summary>
-    <br>
-   
-  ```
-    spring.datasource.url=${NEON_URL}
-  ```
-  </details>
+    <details>
+      <summary><strong> Opção 1: Banco local ou docker </strong> <sub> (expandir) </sub></summary>
+      <br>
 
-### 2. Instale as dependências.
+    ```
+      spring.datasource.url=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+      spring.datasource.username=${POSTGRES_USER}
+      spring.datasource.password=${POSTGRES_PASSWORD}
+    ```
+    </details>
 
-  Rode no terminal o comando:
+    <details>
+      <summary><strong> Opção 2: Banco na nuvem. </strong> <sub> (expandir) </sub></summary>
+      <br>
+    
+    ```
+      spring.datasource.url=${NEON_URL}
+    ```
+    </details>
 
-  ```bash
-  ./mvnw clean install
-  ```
+  ### 2. Instale as dependências.
 
-### 3. Execute o projeto.
+    Rode no terminal o comando:
 
-  Rode no terminal o comando:
+    ```bash
+    ./mvnw clean install
+    ```
 
-  ```bash
-  ./mvnw spring-boot:run
-  ```
+  ### 3. Execute o projeto.
 
-Isso deixará a API disponível em http://localhost:8080/.
-> ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+    Rode no terminal o comando:
 
-### 🐋 Como rodar com Docker.
-#### Pré-requisitos
-- Docker
-- Docker Compose
-- Arquivo `.env` — na raiz.
+    ```bash
+    ./mvnw spring-boot:run
+    ```
 
-#### Passo a passo
-1. Escolha qual banco usar no `docker-compose.yml`.
-  - Para usar banco em nuvem.
-  ```yaml
-  environment:
-    - SPRING_DATASOURCE_URL=${NEON_URL}
-    # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
-    # - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-    # - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-  ```
-  - Para usar PostgreSQL Local.
-  ```yaml
-  environment:
-    # - SPRING_DATASOURCE_URL=${NEON_URL}
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
-    - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-    - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-  ```
+  Isso deixará a API disponível em http://localhost:8080/.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+</details>
 
-2. Execute o contâiner.
-  Rode no terminal linux o comando:
-  ```bash
-  docker compose up backend
-  ```
 
-Isso deixará a API disponível em http://localhost:8080/.
-> ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+<details>
+  <summary><h2> 🐋 Como rodar com Docker. </h2> <sub> (expandir) </sub></summary>
+
+- ### Pré-requisitos
+  - Docker
+  - Docker Compose
+  - Arquivo `.env` — na raiz.
+
+- ### Passo a passo
+
+  ### 1. Escolha qual banco usar no `docker-compose.yml`.
+    - Para usar banco em nuvem.
+
+      ```yaml
+      environment:
+        - SPRING_DATASOURCE_URL=${NEON_URL}
+        # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+        # - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+        # - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      ```
+
+    - Para usar PostgreSQL Local.
+
+      ```yaml
+      environment:
+        # - SPRING_DATASOURCE_URL=${NEON_URL}
+        - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+        - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+        - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      ```
+
+  ### 2. Execute o contâiner.
+    Rode no terminal linux o comando:
+    ```bash
+    docker compose up backend
+    ```
+
+  Isso deixará a API disponível em http://localhost:8080/.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+
+</details>
 
 ---
 <br>
@@ -160,7 +174,7 @@ Isso deixará a API disponível em http://localhost:8080/.
 > **Nota:** *Para essas rotas funcionarem, é necessário enviar o Access Token via Cookie HttpOnly*
 
 <details>
-    <summary><strong> Provas </strong> <sub> (expandir) </sub></summary>
+    <summary><strong> Autenticação </strong> <sub> (expandir) </sub></summary>
 
 * #### POST /auth
   * #### Como criar uma conta `/auth/signup`
