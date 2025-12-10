@@ -1,6 +1,6 @@
 package dev.odroca.api_provas.dto.test;
 
-public record DeleteTestResponseDTO(
+public record DeletedTestResponseDTO(
     String id,
     String message
 ) {}

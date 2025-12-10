@@ -865,5 +865,5 @@ Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por 
 
 </details>
 
-## Roadmap 🗺️
-- [ ] Provas públicas e privadas
+### Tempo de desenvolvimento
+Este projeto represente mais de 180 horas de trabalho dedicado, distribuídas por um período de 47 dias — com uma média diária de 3 a 5 horas.

@@ -15,7 +15,7 @@ import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
 import dev.odroca.api_provas.dto.question.QuestionResultModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
-import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
+import dev.odroca.api_provas.dto.test.DeletedTestResponseDTO;
 import dev.odroca.api_provas.dto.test.TestForGetTestResponseDTO;
 import dev.odroca.api_provas.dto.test.TestForGetTestsResponseDTO;
 import dev.odroca.api_provas.entity.QuestionEntity;
@@ -47,10 +47,10 @@ public class TestService {
     }
 
     @Transactional
-    public DeleteTestResponseDTO deleteTest(UUID testId, UUID userId) {
+    public DeletedTestResponseDTO deleteTest(UUID testId, UUID userId) {
         int deletedRows = testRepository.deleteByIdAndUserId(testId, userId);
         if (deletedRows == 0) throw new UnauthorizedException();
-        return new DeleteTestResponseDTO(testId.toString(), "Prova deletada com sucesso!");
+        return new DeletedTestResponseDTO(testId.toString(), "Prova deletada com sucesso!");
     }
     
     @Transactional
