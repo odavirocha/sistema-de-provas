@@ -1,12 +1,20 @@
 package dev.odroca.api_provas.dto.question;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import dev.odroca.api_provas.dto.option.GetOptionModelDTO;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public record GetQuestionModelDTO (
-    UUID id,
-    String question,
-    List<GetOptionModelDTO> options
-){}
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class GetQuestionModelDTO {
+    
+    private UUID id;
+    private String question;
+    private Set<GetOptionModelDTO> options;
+    
+}

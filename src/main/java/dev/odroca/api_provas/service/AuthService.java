@@ -3,7 +3,6 @@ package dev.odroca.api_provas.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,13 +21,8 @@ import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.enums.Role;
 import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
-import dev.odroca.api_provas.exception.InvalidTokenException;
-import dev.odroca.api_provas.exception.UnauthorizedException;
-import dev.odroca.api_provas.repository.RefreshTokenRepository;
 import dev.odroca.api_provas.repository.UserRepository;
 import dev.odroca.api_provas.utils.CookieUtil;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -38,7 +32,7 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private RefreshTokenRepository refreshRepository;
+    private RefreshTokenService refreshService;
     @Autowired
     private JwtEncoder jwt;
     @Autowired
@@ -88,86 +82,18 @@ public class AuthService {
         
         String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
 
-        Optional<RefreshTokenEntity> existingRefreshToken = verifyExistRefreshTokenOfUser(user.getId());
+        Optional<RefreshTokenEntity> existingRefreshToken = refreshService.verifyExistRefreshTokenOfUser(user.getId());
 
         if (existingRefreshToken.isPresent()) {
-            deleteRefreshToken(existingRefreshToken.get().getRefreshToken());
+            refreshService.deleteRefreshToken(existingRefreshToken.get().getRefreshToken());
         }
 
-        RefreshTokenEntity refreshToken = createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
+        RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
 
-        cookie.addCookie(response, "accessToken", accessToken, 60 * 60 * 24 * 7); // Cookie é apagado em 7 dias
-        cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), 60 * 60 * 24 * 7); // Cookie é apagado em 7 dias
+        cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
+        cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
 
         return new LoginResponseDTO(user.getId().toString());
     }
 
-    @Transactional
-    public void refresh(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-
-        String refreshTokenCookie = null;
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshTokenCookie = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        if (refreshTokenCookie == null) throw new UnauthorizedException();
-
-        RefreshTokenEntity refreshTokenEntity = refreshRepository.findByRefreshToken(UUID.fromString(refreshTokenCookie)).orElseThrow(() -> new UnauthorizedException());
-
-        Instant timeNow = Instant.now();
-
-        if (refreshTokenEntity.getExpiryDate().isBefore(timeNow)) throw new InvalidTokenException();
-
-        UserEntity user = refreshTokenEntity.getUser();
-
-        deleteRefreshToken(refreshTokenEntity.getRefreshToken());
-
-        int accessTokenExpireIn = 60 * 5; // 5 minutos
-        int refreshTokenExpireIn = 60 * 60 * 24 * 7; // 7 dias
-
-        var claims = JwtClaimsSet.builder()
-            .issuer("https://localhost:8080/auth/login")
-            .subject(user.getId().toString())
-            .issuedAt(timeNow)
-            .expiresAt(timeNow.plusSeconds(accessTokenExpireIn))
-            .claim("role", user.getRole())
-            .build();
-
-        String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        String refreshToken = createRefreshToken(user, timeNow.plusSeconds(refreshTokenExpireIn)).getRefreshToken().toString();
-
-        cookie.addCookie(response, "accessToken", accessToken, 60 * 60 * 24 * 7);
-        cookie.addCookie(response, "refreshToken", refreshToken, 60 * 60 * 24 * 7);
-    }
-
-    public Optional<RefreshTokenEntity> verifyExistRefreshTokenOfUser(UUID userId) {
-        return refreshRepository.findByUserId(userId);
-    }
-
-    @Transactional
-    public RefreshTokenEntity createRefreshToken(UserEntity user, Instant expiryDate) {
-
-        Instant timeNow = Instant.now();
-            
-        RefreshTokenEntity tokenEntity = new RefreshTokenEntity();
-    
-        tokenEntity.setUser(user);
-        tokenEntity.setExpiryDate(expiryDate);
-        tokenEntity.setIssuedAt(timeNow);
-
-        return refreshRepository.save(tokenEntity);
-    }
-
-    @Transactional
-    public void deleteRefreshToken(UUID token) {
-        refreshRepository.deleteById(token);
-        refreshRepository.flush();
-    }
 }

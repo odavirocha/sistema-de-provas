@@ -1,6 +1,6 @@
 package dev.odroca.api_provas.mapper;
 
-import java.util.List;
+import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,11 +26,11 @@ public interface OptionMapper {
     @Mapping(target = "optionId", ignore = true)
     UpdateOptionModelDTO entityToUpdateOptionModelDTO(OptionEntity optionEntity);
 
-    List<OptionEntity> createDtoToEntityList(List<CreateOptionModelDTO> createOptionModelDTOs);
+    Set<OptionEntity> createDtoToEntityList(Set<CreateOptionModelDTO> createOptionModelDTOs);
 
-    List<GetOptionModelDTO> entityToGetDtoList(List<OptionEntity> optionEntities);
+    Set<GetOptionModelDTO> entityToGetDtoList(Set<OptionEntity> optionEntities);
 
-    List<OptionEntity> updateDtoToEntityList(List<UpdateOptionModelDTO> optionModelDTOs);
+    Set<OptionEntity> updateDtoToEntityList(Set<UpdateOptionModelDTO> optionModelDTOs);
     
-    List<UpdateOptionModelDTO> entityUpdateOptionModelDTOList(List<OptionEntity> optionEntities);
+    Set<UpdateOptionModelDTO> entityUpdateOptionModelDTOList(Set<OptionEntity> optionEntities);
 }

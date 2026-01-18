@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -50,6 +49,7 @@ public class SecurityConfig {
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
             .csrf(csrf -> csrf.disable())
             .cors(Customizer.withDefaults())
@@ -61,15 +61,13 @@ public class SecurityConfig {
                 // .requestMatchers(HttpMethod.POST, "/test/{testId}").hasRole("USER") // Se a prova for: Pública?  Privada? Não lista?
                 .requestMatchers(HttpMethod.GET, "/test/{userId}").hasRole("USER")
                 .requestMatchers(HttpMethod.DELETE, "/test/{testId}").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/question/").hasRole("USER")
-                .requestMatchers(HttpMethod.POST, "/question/batch").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/question/{questionId}").hasRole("USER")
-                .requestMatchers(HttpMethod.GET, "/question/{testId}").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/questions/").hasRole("USER")
+                .requestMatchers(HttpMethod.POST, "/questions/batch").hasRole("USER")
+                .requestMatchers(HttpMethod.PUT, "/questions/{questionId}").hasRole("USER")
+                .requestMatchers(HttpMethod.GET, "/questions/{testId}").hasRole("USER")
                 .anyRequest().authenticated())
             .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
-            .oauth2ResourceServer(oauth2 -> oauth2
-                .authenticationEntryPoint(authenticationEntryPoint())
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
@@ -119,11 +117,6 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint(){
-        return new CustomAuthenticationEntryPoint();
     }
     
 }

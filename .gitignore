@@ -32,6 +32,6 @@ build/
 .vscode/
 
 ### Chave assimétrica ###
-src/main/resources/app.key
+./src/main/resources/app.key
 
 .env

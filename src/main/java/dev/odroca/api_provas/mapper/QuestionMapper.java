@@ -1,6 +1,6 @@
 package dev.odroca.api_provas.mapper;
 
-import java.util.List;
+import java.util.Set;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,12 +15,10 @@ public interface QuestionMapper {
     @Mapping(target = "test", ignore = true)
     QuestionEntity toEntity(CreateQuestionModelDTO questionModelDTO);
     
-    @Mapping(source = "options", target = "options")
     GetQuestionModelDTO toDto(QuestionEntity questionEntity);
-    
-    List<QuestionEntity> toEntityList(List<CreateQuestionModelDTO> createQuestionModelDTOList);
-    
-    @Mapping(source = "options", target = "options")
-    List<GetQuestionModelDTO> toDtoList(List<QuestionEntity> questionEntityList);
+
+    Set<QuestionEntity> toEntityList(Set<CreateQuestionModelDTO> createQuestionModelDTOList);
+
+    Set<GetQuestionModelDTO> toDtoList(Set<QuestionEntity> questionEntityList);
 
 }

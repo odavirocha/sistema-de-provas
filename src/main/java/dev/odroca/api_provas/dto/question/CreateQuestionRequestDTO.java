@@ -1,8 +1,17 @@
 package dev.odroca.api_provas.dto.question;
 
-import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 
-public record CreateQuestionRequestDTO(
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+
+@Getter
+public class CreateQuestionRequestDTO {
+
+    @NotNull(message = "O campo 'testId' não pode ser nulo!")
+    private UUID testId;
+
     @NotNull(message = "O campo 'question' não pode ser nulo!")
-    CreateQuestionModelDTO question
-) {}
+    private CreateQuestionModelDTO question;
+
+}

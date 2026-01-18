@@ -19,7 +19,8 @@ public class CookieToHeaderFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         
         final String token = getToken(request);
-        if (token != null && !request.getRequestURI().contains("/auth/"))  {
+        
+        if (token != null)  {
             HttpServletRequestWrapper wrappedRequest = new HttpServletRequestWrapper(request) {
                 @Override
                 public String getHeader(String name) {

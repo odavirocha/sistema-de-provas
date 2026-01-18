@@ -1,6 +1,7 @@
 package dev.odroca.api_provas.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.odroca.api_provas.dto.option.UpdateOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionResponseDTO;
-import dev.odroca.api_provas.dto.question.DeleteQuestionResponseDTO;
 import dev.odroca.api_provas.dto.question.GetQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionRequestDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionResponseDTO;
@@ -23,8 +23,8 @@ import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
-import dev.odroca.api_provas.exception.SearchNotFoundOrUnauthorized;
-import dev.odroca.api_provas.exception.UnauthorizedException;
+import dev.odroca.api_provas.exception.QuestionNotFoundException;
+import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.OptionRepository;
@@ -48,25 +48,25 @@ public class QuestionService {
 
 
     @Transactional
-    public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel, UUID userId) {
+    public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
         
-        TestEntity test = testRepository.findByIdAndUserId(testId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
+        TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.getQuestion());
         
-        List<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.getOptions());
+        Set<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.getOptions());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
         
         if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
             throw new CorrectOptionNotFoundException();
-        }
+        };
         
         long listOptionsSize = optionEntities.stream().filter(option -> option.getIsCorrect()).count();
         if ( listOptionsSize > 1 ) {
             throw new MultipleCorrectOptionsException();
-        }
+        };
         
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
@@ -87,37 +87,37 @@ public class QuestionService {
     }
         
     @Transactional
-    public CreateQuestionsResponseDTO createQuestions(UUID testId, CreateQuestionsRequestDTO questionsModel, UUID userId) {
+    public CreateQuestionsResponseDTO createQuestions(CreateQuestionsRequestDTO questionsModel) {
         int totalQuestions = 0;
         
         // Transforma cada questão em uma entidade QuestionModelDTO
-        for (CreateQuestionModelDTO question : questionsModel.questions()) {
-            createQuestion(testId, question, userId);
+        for (CreateQuestionModelDTO question : questionsModel.getQuestions()) {
+            createQuestion(questionsModel.getTestId(), question);
             totalQuestions++;
         }
         
-        return new CreateQuestionsResponseDTO(testId, totalQuestions, "Questões criadas com sucesso!");
+        return new CreateQuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
     }
     
     @Transactional
-    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion, UUID userId) {
+    public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
 
-        QuestionEntity databaseQuestion = questionRepository.findByIdAndTest_UserId(questionId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
+        QuestionEntity databaseQuestion = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
         
         // Atualiza o enunciado
-        databaseQuestion.setQuestion(requestQuestion.question());
+        databaseQuestion.setQuestion(requestQuestion.getQuestion());
 
-        if (requestQuestion.options().stream().noneMatch(option -> option.getIsCorrect())) {
+        if (requestQuestion.getOptions().stream().noneMatch(option -> option.getIsCorrect())) {
             throw new CorrectOptionNotFoundException();
         }
 
-        long listLimit = requestQuestion.options().stream().filter(option -> option.getIsCorrect()).count();
+        long listLimit = requestQuestion.getOptions().stream().filter(option -> option.getIsCorrect()).count();
         if (listLimit > 1) {
             throw new MultipleCorrectOptionsException();
         }
 
         // Guarda somente os IDs de quem tem ID
-        List<UUID> idsFromRequest = requestQuestion.options().stream()
+        List<UUID> idsFromRequest = requestQuestion.getOptions().stream()
             .map(option -> option.getOptionId())
             .filter(id -> id != null)
             .collect(Collectors.toList());
@@ -139,11 +139,11 @@ public class QuestionService {
 
         // Atualiza as questões que já existiam
         for (Integer i = 0; i < databaseQuestion.getOptions().size(); i++) {
-            databaseQuestion.getOptions().get(i).setIsCorrect(requestQuestion.options().get(i).getIsCorrect());
-            databaseQuestion.getOptions().get(i).setValue(requestQuestion.options().get(i).getValue());
+            databaseQuestion.getOptions().get(i).setIsCorrect(requestQuestion.getOptions().get(i).getIsCorrect());
+            databaseQuestion.getOptions().get(i).setValue(requestQuestion.getOptions().get(i).getValue());
         }
 
-        List<OptionEntity> newOptions = requestQuestion.options().stream()
+        List<OptionEntity> newOptions = requestQuestion.getOptions().stream()
             .filter(option -> option.getOptionId() == null)
             .map(option -> {
                 OptionEntity optionEntity = new OptionEntity();
@@ -156,7 +156,7 @@ public class QuestionService {
 
         databaseQuestion.getOptions().addAll(newOptions);
 
-        List<UpdateOptionModelDTO> existingsIds = requestQuestion.options().stream()
+        List<UpdateOptionModelDTO> existingsIds = requestQuestion.getOptions().stream()
         .filter(option -> idsFromRequest.contains(option.getOptionId()))
         .collect(Collectors.toList());
 
@@ -170,18 +170,12 @@ public class QuestionService {
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
     }
 
-    public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId, UUID userId) {
+    public Set<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
 
-        TestEntity test = testRepository.findByIdAndUserId(testId, userId).orElseThrow(() -> new SearchNotFoundOrUnauthorized());
-        List<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
+        TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        Set<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
 
         return questions;
-    }
-
-    public DeleteQuestionResponseDTO deleteQuestion(UUID questionId, UUID userId) {
-        int deletedRows = questionRepository.deleteByIdAndTest_UserId(questionId, userId);
-        if (deletedRows == 0) throw new UnauthorizedException();
-        return new DeleteQuestionResponseDTO(questionId, "Questão deletada com sucesso!");
     }
 
 }

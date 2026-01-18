@@ -1,6 +1,6 @@
 package dev.odroca.api_provas.dto.question;
 
-import java.util.List;
+import java.util.Set;
 
 import dev.odroca.api_provas.dto.option.CreateOptionModelDTO;
 import jakarta.validation.Valid;
@@ -17,6 +17,6 @@ public class CreateQuestionModelDTO {
     private String question;
     
     @NotEmpty(message = "O campo 'options' não pode ser vazio.")
-    private List<@Valid CreateOptionModelDTO> options;
+    private Set<@Valid CreateOptionModelDTO> options;
     
 }

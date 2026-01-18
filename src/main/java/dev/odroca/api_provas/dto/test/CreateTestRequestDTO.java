@@ -1,8 +1,16 @@
 package dev.odroca.api_provas.dto.test;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
-public record CreateTestRequestDTO(
+@Getter
+public class CreateTestRequestDTO {
+    
+    @NotBlank
     @NotNull
-    String name
-) {}
+    @NotEmpty
+    private String name;
+
+}

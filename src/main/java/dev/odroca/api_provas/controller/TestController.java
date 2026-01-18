@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
-import dev.odroca.api_provas.dto.test.TestForGetTestsResponseDTO;
+import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
-import dev.odroca.api_provas.dto.test.TestForGetTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.service.TestService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -27,10 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
-
-
-
 @RestController
 @RequestMapping("/test")
 public class TestController {
@@ -39,38 +35,32 @@ public class TestController {
     private TestService testService;
 
     @PostMapping("/")
-    public ResponseEntity<TestForGetTestsResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<TestResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
 
         TestEntity testEntity = new TestEntity();
-        testEntity.setName(test.name());
+        testEntity.setName(test.getName());
         testEntity.setUserId(UUID.fromString(jwt.getSubject()));
 
-        TestForGetTestsResponseDTO response = testService.createTest(testEntity);
-        return new ResponseEntity<TestForGetTestsResponseDTO>(response, HttpStatus.CREATED);
+        TestResponseDTO response = testService.createTest(testEntity);
+        return new ResponseEntity<TestResponseDTO>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/{testId}")
-    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
-        AnswerTestResponseDTO response = testService.answerTest(testId, test, UUID.fromString(jwt.getSubject()));
+    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
+        AnswerTestResponseDTO response = testService.answerTest(testId, test);
         return new ResponseEntity<AnswerTestResponseDTO>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<TestForGetTestsResponseDTO>> getAllTestsForUser(@AuthenticationPrincipal Jwt jwt) {
-        List<TestForGetTestsResponseDTO> response = testService.getAllTestsForUser(UUID.fromString(jwt.getSubject()));
-        return new ResponseEntity<List<TestForGetTestsResponseDTO>>(response, HttpStatus.OK);
-    }
-    
-    @GetMapping("/{testId}")
-    public ResponseEntity<TestForGetTestResponseDTO> getTest(@PathVariable UUID testId, @AuthenticationPrincipal Jwt jwt) {
-        TestForGetTestResponseDTO response = testService.getTest(testId, UUID.fromString(jwt.getSubject()));
-        return new ResponseEntity<TestForGetTestResponseDTO>(response, HttpStatus.OK);
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<TestResponseDTO>> getAllTestsForUser(@PathVariable UUID userId, HttpServletRequest request) {
+        List<TestResponseDTO> response = testService.getAllTestsForUser(userId, request);
+        return new ResponseEntity<List<TestResponseDTO>>(response, HttpStatus.OK);
     }
     
 
     @DeleteMapping("/{testId}")
-    public ResponseEntity<DeleteTestResponseDTO> deleteTest(@PathVariable UUID testId, @AuthenticationPrincipal Jwt jwt) {
-        DeleteTestResponseDTO response = testService.deleteTest(testId, UUID.fromString(jwt.getSubject()));
+    public ResponseEntity<DeleteTestResponseDTO> deleteTest(@PathVariable UUID testId) {
+        DeleteTestResponseDTO response = testService.deleteTest(testId);
         return new ResponseEntity<DeleteTestResponseDTO>(response, HttpStatus.OK);
     }
 
