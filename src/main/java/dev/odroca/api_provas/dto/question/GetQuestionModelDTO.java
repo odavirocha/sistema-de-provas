@@ -1,6 +1,6 @@
 package dev.odroca.api_provas.dto.question;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import dev.odroca.api_provas.dto.option.GetOptionModelDTO;
@@ -15,6 +15,6 @@ public class GetQuestionModelDTO {
     
     private UUID id;
     private String question;
-    private List<GetOptionModelDTO> options;
+    private Set<GetOptionModelDTO> options;
     
 }

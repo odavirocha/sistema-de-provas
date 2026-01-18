@@ -1,6 +1,7 @@
 package dev.odroca.api_provas.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,7 @@ public class QuestionService {
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.getQuestion());
         
-        List<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.getOptions());
+        Set<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.getOptions());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
         
         if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
@@ -169,10 +170,10 @@ public class QuestionService {
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");
     }
 
-    public List<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
+    public Set<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        List<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
+        Set<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
 
         return questions;
     }

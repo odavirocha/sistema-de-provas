@@ -15,8 +15,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -79,7 +81,7 @@ public class QuestionServiceTest {
     void createQuestionSuccessful() {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2?", options);
         
         for (Integer i = 0; i < 5; i++) {
@@ -90,13 +92,13 @@ public class QuestionServiceTest {
         TestEntity testEntity = new TestEntity();
         when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
 
-        List<OptionEntity> optionEntities = options.stream().map(option -> {
+        Set<OptionEntity> optionEntities = options.stream().map(option -> {
             OptionEntity optionEntity = new OptionEntity();
             ReflectionTestUtils.setField(optionEntity, "id", UUID.randomUUID());
             optionEntity.setValue(option.getValue());
             optionEntity.setIsCorrect(option.getIsCorrect());
             return optionEntity;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
         when(optionMapper.createDtoToEntityList(options)).thenReturn(optionEntities);
 
         QuestionEntity questionEntity = new QuestionEntity();
@@ -121,7 +123,7 @@ public class QuestionServiceTest {
     void createQuestionTestNotFoundException() {
         
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         
         for (Integer i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
@@ -146,7 +148,7 @@ public class QuestionServiceTest {
     void createQuestionMultipleCorrectOptionsException() {
 
         UUID testId = UUID.randomUUID();
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         CreateQuestionModelDTO question = new CreateQuestionModelDTO( "Qual é a opção 2?", options);
 
         options.add(new CreateOptionModelDTO("Opção 1!", false));  
@@ -157,13 +159,13 @@ public class QuestionServiceTest {
         TestEntity testEntity = new TestEntity();
         when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
 
-        List<OptionEntity> optionEntities = options.stream().map(option -> {
+        Set<OptionEntity> optionEntities = options.stream().map(option -> {
             OptionEntity optionEntity = new OptionEntity();
             ReflectionTestUtils.setField(optionEntity, "id", UUID.randomUUID());
             optionEntity.setValue(option.getValue());
             optionEntity.setIsCorrect(option.getIsCorrect());
             return optionEntity;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
         when(optionMapper.createDtoToEntityList(options)).thenReturn(optionEntities);
 
         assertThrows(MultipleCorrectOptionsException.class, () -> {
@@ -180,7 +182,7 @@ public class QuestionServiceTest {
     void createQuestionCorrectOptionNotFoundException() {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         
         for (Integer i = 0; i < 5; i++) {
             options.add(new CreateOptionModelDTO(i.toString(), false));
@@ -191,13 +193,13 @@ public class QuestionServiceTest {
         TestEntity testEntity = new TestEntity();
         when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
 
-        List<OptionEntity> optionEntities = options.stream().map(option -> {
+        Set<OptionEntity> optionEntities = options.stream().map(option -> {
             OptionEntity optionEntity = new OptionEntity();
             ReflectionTestUtils.setField(optionEntity, "id", UUID.randomUUID());
             optionEntity.setValue(option.getValue());
             optionEntity.setIsCorrect(false);
             return optionEntity;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
         when(optionMapper.createDtoToEntityList(options)).thenReturn(optionEntities);
         
         assertThrows(CorrectOptionNotFoundException.class, () -> {
@@ -215,13 +217,13 @@ public class QuestionServiceTest {
         int totalQuestions = 2;
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
 
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         for (Integer i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
             options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
         }
 
-        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        Set<CreateQuestionModelDTO> questions = new HashSet<>();
         questions.add(new CreateQuestionModelDTO("1+1?", options));
         questions.add(new CreateQuestionModelDTO("6-4?", options));
         
@@ -248,13 +250,13 @@ public class QuestionServiceTest {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
 
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         for (Integer i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
             options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
         }
 
-        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        Set<CreateQuestionModelDTO> questions = new HashSet<>();
         questions.add(new CreateQuestionModelDTO("1+1?", options));
         questions.add(new CreateQuestionModelDTO("6-4?", options));
 
@@ -272,18 +274,18 @@ public class QuestionServiceTest {
 
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         
-        List<CreateOptionModelDTO> optionsWrong = new ArrayList<>();
+        Set<CreateOptionModelDTO> optionsWrong = new HashSet<>();
         optionsWrong.add(new CreateOptionModelDTO("Opção 1", true));
         optionsWrong.add(new CreateOptionModelDTO("Opção 2", true));
         optionsWrong.add(new CreateOptionModelDTO("Opção 3", false));
         
-        List<CreateOptionModelDTO> optionsCorrect = new ArrayList<>();
+        Set<CreateOptionModelDTO> optionsCorrect = new HashSet<>();
         optionsCorrect.add(new CreateOptionModelDTO("Opção 1", true));
         optionsCorrect.add(new CreateOptionModelDTO("Opção 2", false));
         optionsCorrect.add(new CreateOptionModelDTO("Opção 3", false));
         
 
-        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        Set<CreateQuestionModelDTO> questions = new HashSet<>();
         questions.add(new CreateQuestionModelDTO("Questão 1?", optionsWrong));
         questions.add(new CreateQuestionModelDTO("Questão 2?", optionsCorrect));
 
@@ -305,12 +307,12 @@ public class QuestionServiceTest {
         ReflectionTestUtils.setField(testEntity, "id", testId);
         when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
         
-        List<CreateOptionModelDTO> options = new ArrayList<>();
+        Set<CreateOptionModelDTO> options = new HashSet<>();
         for (Integer i = 0; i < 5; i++) {
             options.add(new CreateOptionModelDTO(i.toString(), false));
         }
 
-        List<CreateQuestionModelDTO> questions = new ArrayList<>();
+        Set<CreateQuestionModelDTO> questions = new HashSet<>();
         questions.add(new CreateQuestionModelDTO("1+1?", options));
         questions.add(new CreateQuestionModelDTO("6-4?", options));
 
@@ -462,7 +464,7 @@ public class QuestionServiceTest {
             optionsThatExist.add(option);
         }
         
-        List<OptionEntity> databaseOptions = new ArrayList<>();
+        Set<OptionEntity> databaseOptions = new HashSet<>();
         
         databaseOptions.addAll(optionsThatExist);
         databaseOptions.add(optionToDelete);
@@ -521,7 +523,7 @@ public class QuestionServiceTest {
         QuestionEntity questionEntity = new QuestionEntity();
         ReflectionTestUtils.setField(questionEntity, "id", questionId);
         questionEntity.setQuestion("2+2");
-        questionEntity.setOptions(new ArrayList<>());
+        questionEntity.setOptions(new HashSet<>());
 
         when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
         
@@ -554,7 +556,7 @@ public class QuestionServiceTest {
         QuestionEntity questionEntity = new QuestionEntity();
         ReflectionTestUtils.setField(questionEntity, "id", questionId);
         questionEntity.setQuestion("1+2");
-        questionEntity.setOptions(new ArrayList<>());
+        questionEntity.setOptions(new HashSet<>());
 
         when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
     
@@ -570,8 +572,8 @@ public class QuestionServiceTest {
         UUID testId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
         
         TestEntity databaseTest = new TestEntity();
-        List<QuestionEntity> questions = new ArrayList<>();
-        List<OptionEntity> options = new ArrayList<>();
+        Set<QuestionEntity> questions = new HashSet<>();
+        Set<OptionEntity> options = new HashSet<>();
         List<UUID> idsFromRequest = List.of(
             UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
             UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
@@ -613,20 +615,20 @@ public class QuestionServiceTest {
             return optionConverted;
         }).collect(Collectors.toList());
 
-        List<GetQuestionModelDTO> questionsConverted = questions.stream()
+        Set<GetQuestionModelDTO> questionsConverted = questions.stream()
         .map(question -> {
             GetQuestionModelDTO questionConverted = new GetQuestionModelDTO();
             ReflectionTestUtils.setField(questionConverted, "id", question.getId());
             ReflectionTestUtils.setField(questionConverted, "question", question.getQuestion());
             ReflectionTestUtils.setField(questionConverted, "options", optionsConverted);
             return questionConverted;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
 
 
         when(testRepository.findById(testId)).thenReturn(Optional.of(databaseTest));
         when(questionMapper.toDtoList(questions)).thenReturn(questionsConverted);
         
-        List<GetQuestionModelDTO> result = questionService.getAllQuestionsForTest(testId);
+        Set<GetQuestionModelDTO> result = questionService.getAllQuestionsForTest(testId);
 
         assertEquals(questionsConverted, result);
     }

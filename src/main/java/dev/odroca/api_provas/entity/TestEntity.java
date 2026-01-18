@@ -1,7 +1,7 @@
 package dev.odroca.api_provas.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -32,6 +32,6 @@ public class TestEntity {
     private String name;
     
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionEntity> questions = new ArrayList<>();
+    private Set<QuestionEntity> questions = new HashSet<>();
 
 }

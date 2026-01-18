@@ -22,23 +22,21 @@ import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.exception.UserNotFoundException;
-import dev.odroca.api_provas.mapper.TestMapper;
-import dev.odroca.api_provas.model.TestModelDTO;
 import dev.odroca.api_provas.repository.TestRepository;
 import dev.odroca.api_provas.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class TestService {
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private TestRepository testRepository;
-    @Autowired
-    private TestMapper testMapper;
     @Autowired
     private JwtDecoder jwtDecoder;
 
@@ -65,9 +63,9 @@ public class TestService {
     @Transactional
     public AnswerTestResponseDTO answerTest(UUID testId, AnswerTestRequestDTO test) {
 
-        TestEntity databaseTest = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        TestEntity databaseTest = testRepository.findByIdWithQuestionsAndOptions(testId).orElseThrow(() -> new TestNotFoundException(testId));
         
-        List<QuestionEntity> databaseQuestions = databaseTest.getQuestions();
+        Set<QuestionEntity> databaseQuestions = databaseTest.getQuestions();
         List<QuestionAnswerModelDTO> requestQuestions = test.getQuestions();
 
         int score = databaseQuestions.size();
@@ -143,7 +141,7 @@ public class TestService {
     public List<TestResponseDTO> getAllTestsForUser(UUID userId, HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
-
+        
         UUID userIdFromJwt = null;
 
         if (cookies != null) {

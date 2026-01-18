@@ -9,7 +9,6 @@ import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
 import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.model.TestModelDTO;
 import dev.odroca.api_provas.service.TestService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,9 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
-
-
-
 
 @RestController
 @RequestMapping("/test")
