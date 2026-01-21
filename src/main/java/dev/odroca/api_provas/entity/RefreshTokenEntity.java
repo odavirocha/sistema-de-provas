@@ -26,7 +26,7 @@ public class RefreshTokenEntity {
     @Setter(value = AccessLevel.NONE)
     private UUID refreshToken;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
     

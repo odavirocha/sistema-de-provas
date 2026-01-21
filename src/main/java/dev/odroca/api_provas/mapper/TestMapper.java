@@ -11,7 +11,7 @@ import dev.odroca.api_provas.model.TestModelDTO;
 @Mapper(componentModel = "spring", uses = QuestionMapper.class)
 public interface TestMapper {
     
-    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "user", ignore = true)
     TestEntity toEntity(TestModelDTO testModelDTO);
 
     TestModelDTO toDto(TestEntity testEntity);
