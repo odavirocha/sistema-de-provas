@@ -9,6 +9,9 @@ import dev.odroca.api_provas.dto.test.CreateTestRequestDTO;
 import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.entity.TestEntity;
+import dev.odroca.api_provas.entity.UserEntity;
+import dev.odroca.api_provas.exception.UserNotFoundException;
+import dev.odroca.api_provas.repository.UserRepository;
 import dev.odroca.api_provas.service.TestService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -33,13 +36,18 @@ public class TestController {
 
     @Autowired
     private TestService testService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/")
     public ResponseEntity<TestResponseDTO> createTest(@RequestBody @Valid CreateTestRequestDTO test, @AuthenticationPrincipal Jwt jwt) {
 
         TestEntity testEntity = new TestEntity();
         testEntity.setName(test.getName());
-        testEntity.setUserId(UUID.fromString(jwt.getSubject()));
+
+        UserEntity user = userRepository.findById(UUID.fromString(jwt.getSubject())).orElseThrow(() -> new UserNotFoundException());
+
+        testEntity.setUser(user);
 
         TestResponseDTO response = testService.createTest(testEntity);
         return new ResponseEntity<TestResponseDTO>(response, HttpStatus.CREATED);

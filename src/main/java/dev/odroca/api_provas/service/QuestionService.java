@@ -1,9 +1,7 @@
 package dev.odroca.api_provas.service;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +20,10 @@ import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
 import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
-import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.QuestionNotFoundException;
 import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
-import dev.odroca.api_provas.repository.OptionRepository;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 
@@ -39,8 +35,6 @@ public class QuestionService {
     private TestRepository testRepository;
     @Autowired
     private QuestionRepository questionRepository;
-    @Autowired
-    private OptionRepository optionRepository;
     @Autowired
     private OptionMapper optionMapper;
     @Autowired
@@ -103,68 +97,28 @@ public class QuestionService {
     public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
 
         QuestionEntity databaseQuestion = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
-        
+        Set<OptionEntity> databaseOptions = databaseQuestion.getOptions();
+
         // Atualiza o enunciado
         databaseQuestion.setQuestion(requestQuestion.getQuestion());
 
-        if (requestQuestion.getOptions().stream().noneMatch(option -> option.getIsCorrect())) {
+        if (requestQuestion.getOptions().stream().noneMatch(option -> option.isCorrect())) {
             throw new CorrectOptionNotFoundException();
         }
 
-        long listLimit = requestQuestion.getOptions().stream().filter(option -> option.getIsCorrect()).count();
-        if (listLimit > 1) {
-            throw new MultipleCorrectOptionsException();
+        long listLimit = requestQuestion.getOptions().stream().filter(option -> option.isCorrect()).count();
+        if (listLimit > 1) throw new MultipleCorrectOptionsException();
+
+        for (UpdateOptionModelDTO requestOption : requestQuestion.getOptions()) {
+            for (OptionEntity databaseOption : databaseOptions) {
+                if (databaseOption.getId().equals(requestOption.optionId())) {
+                    databaseOption.setValue(requestOption.value());
+                    databaseOption.setIsCorrect(requestOption.isCorrect());
+                    break;
+                }
+            }
         }
 
-        // Guarda somente os IDs de quem tem ID
-        List<UUID> idsFromRequest = requestQuestion.getOptions().stream()
-            .map(option -> option.getOptionId())
-            .filter(id -> id != null)
-            .collect(Collectors.toList());
-
-        List<OptionEntity> optionsThatExist = optionRepository.findAllById(idsFromRequest);
-
-        if (optionsThatExist.size() != idsFromRequest.size()) {
-            throw new OptionNotFoundException();
-        }
-        
-        // Entidades que não existem no banco de dados são armazenados
-        List<OptionEntity> entitiesToDelete = databaseQuestion.getOptions().stream()
-            .filter(option -> !idsFromRequest.contains(option.getId()))
-            .collect(Collectors.toList());
-
-        optionRepository.deleteAll(entitiesToDelete);
-
-        databaseQuestion.getOptions().removeAll(entitiesToDelete);
-
-        // Atualiza as questões que já existiam
-        for (Integer i = 0; i < databaseQuestion.getOptions().size(); i++) {
-            databaseQuestion.getOptions().get(i).setIsCorrect(requestQuestion.getOptions().get(i).getIsCorrect());
-            databaseQuestion.getOptions().get(i).setValue(requestQuestion.getOptions().get(i).getValue());
-        }
-
-        List<OptionEntity> newOptions = requestQuestion.getOptions().stream()
-            .filter(option -> option.getOptionId() == null)
-            .map(option -> {
-                OptionEntity optionEntity = new OptionEntity();
-                optionEntity.setQuestion(databaseQuestion);
-                optionEntity.setValue(option.getValue());
-                optionEntity.setIsCorrect(option.getIsCorrect());
-                return optionEntity;
-            })
-            .collect(Collectors.toList());
-
-        databaseQuestion.getOptions().addAll(newOptions);
-
-        List<UpdateOptionModelDTO> existingsIds = requestQuestion.getOptions().stream()
-        .filter(option -> idsFromRequest.contains(option.getOptionId()))
-        .collect(Collectors.toList());
-
-        for (Integer i = 0; i < existingsIds.size(); i++) {
-            databaseQuestion.getOptions().get(i).setValue(existingsIds.get(i).getValue());
-            databaseQuestion.getOptions().get(i).setIsCorrect(existingsIds.get(i).getIsCorrect());
-        }
-        
         QuestionEntity saved = questionRepository.save(databaseQuestion);
 
         return new UpdateQuestionResponseDTO(saved.getId(), "Questão alterada com sucesso!");

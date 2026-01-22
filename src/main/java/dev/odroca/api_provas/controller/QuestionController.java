@@ -1,15 +1,15 @@
 package dev.odroca.api_provas.controller;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,16 +44,16 @@ public class QuestionController {
         return new ResponseEntity<CreateQuestionsResponseDTO>(response, HttpStatus.OK);
     }
     
-    @PutMapping("/{questionId}")
+    @PatchMapping("/{questionId}")
     public ResponseEntity<UpdateQuestionResponseDTO> updateQuestion(@PathVariable UUID questionId, @RequestBody @Valid UpdateQuestionRequestDTO questionUpdate) {
         UpdateQuestionResponseDTO response = questionService.updateQuestion(questionId, questionUpdate);
         return new ResponseEntity<UpdateQuestionResponseDTO>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{testId}")
-    public ResponseEntity<List<GetQuestionModelDTO>> getAllQuestionsForTest(@PathVariable UUID testId) {
-        List<GetQuestionModelDTO> response = questionService.getAllQuestionsForTest(testId);
-        return new ResponseEntity<List<GetQuestionModelDTO>>(response, HttpStatus.OK);
+    public ResponseEntity<Set<GetQuestionModelDTO>> getAllQuestionsForTest(@PathVariable UUID testId) {
+        Set<GetQuestionModelDTO> response = questionService.getAllQuestionsForTest(testId);
+        return new ResponseEntity<Set<GetQuestionModelDTO>>(response, HttpStatus.OK);
     }
     
 }

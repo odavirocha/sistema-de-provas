@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/test/{testId}").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/questions/").hasRole("USER")
                 .requestMatchers(HttpMethod.POST, "/questions/batch").hasRole("USER")
-                .requestMatchers(HttpMethod.PUT, "/questions/{questionId}").hasRole("USER")
+                .requestMatchers(HttpMethod.PATCH, "/questions/{questionId}").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/questions/{testId}").hasRole("USER")
                 .anyRequest().authenticated())
             .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
