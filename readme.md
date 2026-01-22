@@ -44,7 +44,7 @@
 }
 ```
 
-## Criar uma questão `PUT /questions/{questionId}`
+## Criar uma questão `PATCH /questions/{questionId}`
 
 **Example Request**
 ``` json
