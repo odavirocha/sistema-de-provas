@@ -3,6 +3,7 @@ package dev.odroca.api_provas.entity;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +29,7 @@ public class OptionEntity {
     @JoinColumn(name = "is_correct")
     private Boolean isCorrect;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id")
     private QuestionEntity question;
 }

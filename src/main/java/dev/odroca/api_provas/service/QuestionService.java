@@ -96,7 +96,7 @@ public class QuestionService {
     @Transactional
     public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
 
-        QuestionEntity databaseQuestion = questionRepository.findById(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
+        QuestionEntity databaseQuestion = questionRepository.findByIdWithOptions(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
         Set<OptionEntity> databaseOptions = databaseQuestion.getOptions();
 
         // Atualiza o enunciado
