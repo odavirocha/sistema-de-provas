@@ -69,8 +69,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/questions/{questionId}").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/questions/{testId}").hasRole("USER")
                 .anyRequest().authenticated())
-            .addFilterBefore(csrfValidationFilter, CookieToHeaderFilter.class)
-            .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
+                .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
+                .addFilterBefore(csrfValidationFilter, CookieToHeaderFilter.class)
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
