@@ -17,22 +17,15 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint{
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(401);
-        
-        if (authException == null || authException.getCause() == null) {
-            response.getWriter().write("Token inválido.");
+
+        Throwable cause = authException.getCause();
+
+        if (cause.getMessage().contains("expired")) {
+            response.getWriter().write("{\"error\":\"EXPIRED_TOKEN\"}");
             return;
         }
 
-        Throwable cause = authException.getCause();
-        String error = cause.getMessage();
-
-        if (cause.getMessage().contains("expired")) {
-            error = "EXPIRED_TOKEN";
-        }
-
-        // Fazer os invalid token quando for outra bucha.
-
-        response.getWriter().write(error);
+        response.getWriter().write("{\"error\":\"INVALID_TOKEN\"}");
     }
 
 }

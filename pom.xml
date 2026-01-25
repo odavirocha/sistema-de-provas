@@ -77,11 +77,11 @@
 			<scope>test</scope>
 		</dependency>
 	
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-database-postgresql</artifactId>
 			<version>11.7.2</version>
-		</dependency>
+		</dependency> -->
 		
 	</dependencies>
 

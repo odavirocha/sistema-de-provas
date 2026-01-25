@@ -43,8 +43,11 @@ public class SecurityConfig {
 
     private final CookieToHeaderFilter cookieToHeaderFilter;
 
-    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter) {
+    private final CsrfValidationFilter csrfValidationFilter;
+
+    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter, CsrfValidationFilter csrfValidationFilter) {
         this.cookieToHeaderFilter = cookieToHeaderFilter;
+        this.csrfValidationFilter = csrfValidationFilter;
     }
     
     @Bean
@@ -66,6 +69,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/questions/{questionId}").hasRole("USER")
                 .requestMatchers(HttpMethod.GET, "/questions/{testId}").hasRole("USER")
                 .anyRequest().authenticated())
+            .addFilterBefore(csrfValidationFilter, CookieToHeaderFilter.class)
             .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -80,7 +84,7 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(Arrays.asList("http://localhost:2709"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        config.setAllowedHeaders(Arrays.asList("Content-Type", "Accept"));
+        config.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "CSRF-Token"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
