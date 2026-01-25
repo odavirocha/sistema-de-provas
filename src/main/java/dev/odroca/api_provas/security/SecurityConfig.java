@@ -85,7 +85,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(Arrays.asList("http://localhost:2709"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "CSRF-Token"));
-        config.setAllowCredentials(true);
+        config.setAllowCredentials(true); // Permite receber credenciais (authorization headers, cookies, ...)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(("/**"), config);

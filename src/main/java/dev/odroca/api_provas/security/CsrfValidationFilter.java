@@ -27,13 +27,14 @@ public class CsrfValidationFilter extends OncePerRequestFilter {
                 }
             }
 
+            response.setContentType("application/json;charset=UTF-8");
+
             if (csrfCookie == null) {
                 response.getWriter().write("{\"error\":\"CSRF_NOT_FOUND\"}");
                 return;
             }
 
             if (!csrfToken.equals(csrfCookie)) {
-                response.setContentType("application/json;charset=UTF-8");
                 response.setStatus(403);
                 response.getWriter().write("{\"error\":\"INVALID_CSRF\"}");
                 return;
