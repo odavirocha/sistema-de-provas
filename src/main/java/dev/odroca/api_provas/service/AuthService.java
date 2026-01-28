@@ -90,8 +90,8 @@ public class AuthService {
 
         RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
 
-        cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
-        cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn); // 7 Dias
+        cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn, true);
+        cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn, true); // 7 Dias
 
         return new LoginResponseDTO(user.getId().toString());
     }

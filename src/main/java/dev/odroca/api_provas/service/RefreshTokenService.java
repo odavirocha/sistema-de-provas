@@ -75,8 +75,8 @@ public class RefreshTokenService {
         String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
         String refreshToken = createRefreshToken(user, timeNow.plusSeconds(refreshTokenExpireIn)).getRefreshToken().toString();
 
-        cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn);
-        cookie.addCookie(response, "refreshToken", refreshToken, refreshTokenExpireIn);
+        cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn, true);
+        cookie.addCookie(response, "refreshToken", refreshToken, refreshTokenExpireIn, true);
     }
     
     public Optional<RefreshTokenEntity> verifyExistRefreshTokenOfUser(UUID userId) {

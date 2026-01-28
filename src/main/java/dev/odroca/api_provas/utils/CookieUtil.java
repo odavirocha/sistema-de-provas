@@ -8,9 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class CookieUtil {
     
-    public void addCookie(HttpServletResponse response, String name, String value, int expireIn) {
+    public void addCookie(HttpServletResponse response, String name, String value, int expireIn, boolean httpOnly) {
         ResponseCookie cookie = ResponseCookie.from(name, value)
-            .httpOnly(true)
+            .httpOnly(httpOnly)
             .secure(true)
             .path("/")
             .maxAge(expireIn)
