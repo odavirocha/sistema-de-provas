@@ -346,11 +346,9 @@ public class QuestionServiceTest {
 
         for (Integer i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
-            UpdateOptionModelDTO optionModelDTO = new UpdateOptionModelDTO();
 
+            UpdateOptionModelDTO optionModelDTO = new UpdateOptionModelDTO(null, i.toString(), isCorrect);
             ReflectionTestUtils.setField(optionModelDTO, "optionId", idsFromRequest.get(i));
-            optionModelDTO.setValue(i.toString());
-            optionModelDTO.setIsCorrect(isCorrect);
 
             optionsForQuestionUpdate.add(optionModelDTO);
         }
@@ -418,16 +416,13 @@ public class QuestionServiceTest {
 
         for (Integer i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 3);
-            UpdateOptionModelDTO option = new UpdateOptionModelDTO();
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO(null, i.toString(), isCorrect);
             
             if (i < 4) {
                 ReflectionTestUtils.setField(option, "optionId", idsFromRequest.get(i)); // Seta o ID ou nulo.
             } else {
                 ReflectionTestUtils.setField(option, "optionId", null); // Seta o ID ou nulo.
             }
-
-            option.setIsCorrect(isCorrect);
-            option.setValue(i.toString());
 
             optionsForQuestionUpdate.add(option);
         }
@@ -510,12 +505,8 @@ public class QuestionServiceTest {
         List<UpdateOptionModelDTO> options = new ArrayList<>();
 
         for (Integer i = 0; i < 5; i++) {
-            
-            UpdateOptionModelDTO option = new UpdateOptionModelDTO();
-            option.setIsCorrect(false);
-            option.setValue(i.toString());
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO(null, i.toString(), false);
             options.add(option);
-
         }
 
         ReflectionTestUtils.setField(requestQuestion, "options", options);
@@ -543,12 +534,8 @@ public class QuestionServiceTest {
         List<UpdateOptionModelDTO> options = new ArrayList<>();
 
         for (Integer i = 0; i < 5; i++) {
-            
-            UpdateOptionModelDTO option = new UpdateOptionModelDTO();
-            option.setIsCorrect(true);
-            option.setValue(i.toString());
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO(null, i.toString(), true);
             options.add(option);
-
         }
 
         ReflectionTestUtils.setField(requestQuestion, "options", options);

@@ -2,20 +2,22 @@ services:
   backend:
     build:
       context: .
-    container_name: backend
+    container_name: sistema-provas
     ports:
       - "8080:8080"
-    ## Desabilitado, pois o banco está no Neon.
-    # depends_on:
-    #   - database
+    ## Desabilitar depends_on se usar banco externo
+    depends_on:
+      - database
     environment:
-      - SPRING_DATASOURCE_URL=${NEON_URL}
-      # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
-      # - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-      # - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      ## Ativar se usar banco externo
+      # - SPRING_DATASOURCE_URL=${NEON_URL}
+      ## Desativar as 3 linhas se usar banco local
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
   database:
     image: postgres:17.7-alpine3.22
-    container_name: database
+    container_name: database-sistem-provas
     ports:
       - "5432:5432"
     environment:
