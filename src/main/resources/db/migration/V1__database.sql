@@ -8,8 +8,8 @@ CREATE TABLE user_table(
 CREATE TABLE refresh_token_table(
     refresh_token UUID PRIMARY KEY,
     user_id UUID NOT NULL UNIQUE,
-    expiryDate TIMESTAMP NOT NULL,
-    issuedAt TIMESTAMP NOT NULL,
+    expiry_date TIMESTAMP NOT NULL,
+    issued_at TIMESTAMP NOT NULL,
     CONSTRAINT fk_refresh_user_id 
         FOREIGN KEY (user_id)
         REFERENCES user_table(id)

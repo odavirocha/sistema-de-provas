@@ -1,5 +1,7 @@
 package dev.odroca.api_provas.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,8 @@ import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
 import dev.odroca.api_provas.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +38,11 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginInformations, HttpServletResponse responseServlet) {
         LoginResponseDTO response = authService.login(loginInformations, responseServlet);
         return new ResponseEntity<LoginResponseDTO>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/csrf")
+    public ResponseEntity<Map<String, String>> refreshCsrfToken() {
+        return ResponseEntity.ok(Map.of("message", "CSRF token gerado"));
     }
 
 }
