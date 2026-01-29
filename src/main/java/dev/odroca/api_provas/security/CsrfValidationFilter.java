@@ -2,7 +2,16 @@ package dev.odroca.api_provas.security;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPublicKey;
+import java.util.HexFormat;
+import java.util.UUID;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,14 +26,32 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CsrfValidationFilter extends OncePerRequestFilter {
     
+    @Value("${SALTHMAC}")
+    private String salt;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        
+        if (request.getRequestURI().equals("/auth/login") || request.getRequestURI().equals("/auth/signup")) {
+            
+            String normalCsrfToken = UUID.randomUUID().toString();
+            String algorithm = "HmacSHA256";
+            
+            try {
+                SecretKeySpec secretKey = new SecretKeySpec(salt.getBytes("UTF-8"), algorithm);
 
-        if (request.getRequestURI().equals("/auth/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        if (request.getRequestURI().equals("/auth/signup")) {
+                Mac Hmac = Mac.getInstance(algorithm);
+                Hmac.init(secretKey);
+
+                byte[] macData = Hmac.doFinal(normalCsrfToken.getBytes("UTF-8"));
+                
+                String hexResult = HexFormat.of().formatHex(macData);
+            } catch (NoSuchAlgorithmException e) {
+                
+            } catch (InvalidKeyException e) {
+                
+            }
+
             filterChain.doFilter(request, response);
             return;
         }
@@ -37,7 +64,6 @@ public class CsrfValidationFilter extends OncePerRequestFilter {
             return;
         }
 
-        
         String csrfTokenHeader = request.getHeader("X-XSRF-TOKEN");
         String csrfTokenCookie = null;
         Cookie[] cookies = request.getCookies();
