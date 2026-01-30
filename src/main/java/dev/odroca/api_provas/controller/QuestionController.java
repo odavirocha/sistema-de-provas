@@ -31,16 +31,16 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
         
-    @PostMapping("/")
-    public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question) {
-        CreateQuestionResponseDTO response = questionService.createQuestion(question.getTestId(), question.getQuestion());
+    @PostMapping("/{testId}")
+    public ResponseEntity<CreateQuestionResponseDTO> createQuestion(@RequestBody @Valid CreateQuestionRequestDTO question, @PathVariable UUID testId) {
+        CreateQuestionResponseDTO response = questionService.createQuestion(testId, question.getQuestion());
         return new ResponseEntity<CreateQuestionResponseDTO>(response, HttpStatus.CREATED);
     }
     
     // testar a resposta de quando envia mais de uma questão
-    @PostMapping("/batch")
-    public ResponseEntity<CreateQuestionsResponseDTO> createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions) {
-        CreateQuestionsResponseDTO response = questionService.createQuestions(questions);        
+    @PostMapping("/{testId}/batch")
+    public ResponseEntity<CreateQuestionsResponseDTO> createQuestions(@RequestBody @Valid CreateQuestionsRequestDTO questions, @PathVariable UUID testId) {
+        CreateQuestionsResponseDTO response = questionService.createQuestions(testId, questions);        
         return new ResponseEntity<CreateQuestionsResponseDTO>(response, HttpStatus.OK);
     }
     

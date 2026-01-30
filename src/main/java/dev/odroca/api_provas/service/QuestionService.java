@@ -81,16 +81,16 @@ public class QuestionService {
     }
         
     @Transactional
-    public CreateQuestionsResponseDTO createQuestions(CreateQuestionsRequestDTO questionsModel) {
+    public CreateQuestionsResponseDTO createQuestions(UUID testId, CreateQuestionsRequestDTO questionsModel) {
         int totalQuestions = 0;
         
         // Transforma cada questão em uma entidade QuestionModelDTO
         for (CreateQuestionModelDTO question : questionsModel.getQuestions()) {
-            createQuestion(questionsModel.getTestId(), question);
+            createQuestion(testId, question);
             totalQuestions++;
         }
         
-        return new CreateQuestionsResponseDTO(questionsModel.getTestId(), totalQuestions, "Questões criadas com sucesso!");
+        return new CreateQuestionsResponseDTO(testId, totalQuestions, "Questões criadas com sucesso!");
     }
     
     @Transactional
