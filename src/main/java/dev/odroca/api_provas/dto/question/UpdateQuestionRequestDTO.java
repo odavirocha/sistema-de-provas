@@ -6,19 +6,11 @@ import dev.odroca.api_provas.dto.option.UpdateOptionModelDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-public class UpdateQuestionRequestDTO {
-
+public record UpdateQuestionRequestDTO(
     @NotBlank(message = "O campo 'question' não pode estar em branco.")
-    private String question;
-    
+    String question,
     @NotEmpty(message = "O campo 'options' não pode ser vazio.")
-    private Set<@Valid UpdateOptionModelDTO> options;
+    Set<@Valid UpdateOptionModelDTO> options
     
-}
+) {}

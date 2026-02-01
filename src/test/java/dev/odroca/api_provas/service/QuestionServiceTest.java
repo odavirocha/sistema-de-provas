@@ -378,7 +378,7 @@ public class QuestionServiceTest {
 
         QuestionEntity shouldResponseQuestion = new QuestionEntity();
         ReflectionTestUtils.setField(shouldResponseQuestion, "id", questionId);
-        shouldResponseQuestion.setQuestion(requestQuestion.getQuestion());
+        shouldResponseQuestion.setQuestion(requestQuestion.question());
         Set<OptionEntity> responseOptions = requestOptions.stream()
             .map(option -> {
                 OptionEntity optionEntity = new OptionEntity(option.value(), option.isCorrect());
@@ -402,8 +402,18 @@ public class QuestionServiceTest {
     void updateQuestionQuestionNotFoundException() {
 
         UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
-        
-        UpdateQuestionRequestDTO questionRequestDTO = new UpdateQuestionRequestDTO();
+        List<UUID> optionsId = List.of(
+            UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
+            UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
+            UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
+            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
+        );
+        Set<UpdateOptionModelDTO> options = new HashSet<>();
+        for (Integer i = 0; i < 4; i++) {
+            options.add(new UpdateOptionModelDTO(optionsId.get(i), i.toString(), false));
+        }
+
+        UpdateQuestionRequestDTO questionRequestDTO = new UpdateQuestionRequestDTO("1+1", options);
 
         when(questionRepository.findByIdWithOptions(questionId)).thenReturn(Optional.empty());
 
@@ -418,24 +428,25 @@ public class QuestionServiceTest {
     void updateQuestionCorrectOptionNotFoundException() {
 
         UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
-
-        UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("1+1", null);
-
-        List<UpdateOptionModelDTO> options = new ArrayList<>();
-
-        for (Integer i = 0; i < 5; i++) {
-            UpdateOptionModelDTO option = new UpdateOptionModelDTO(null, i.toString(), false);
-            options.add(option);
+        Set<UpdateOptionModelDTO> options = new HashSet<>();
+        List<UUID> optionsId = List.of(
+            UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
+            UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
+            UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
+            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
+        );
+        for (Integer i = 0; i < 4; i++) {
+            options.add(new UpdateOptionModelDTO(optionsId.get(i), i.toString(), false));
         }
 
-        ReflectionTestUtils.setField(requestQuestion, "options", options);
+        UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("1+1", options);
 
         QuestionEntity questionEntity = new QuestionEntity();
         ReflectionTestUtils.setField(questionEntity, "id", questionId);
         questionEntity.setQuestion("2+2");
         questionEntity.setOptions(new HashSet<>());
 
-        when(questionRepository.findById(questionId)).thenReturn(Optional.of(questionEntity));
+        when(questionRepository.findByIdWithOptions(questionId)).thenReturn(Optional.of(questionEntity));
         
         assertThrows(CorrectOptionNotFoundException.class, () -> {
             questionService.updateQuestion(questionId, requestQuestion);

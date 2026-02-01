@@ -100,16 +100,16 @@ public class QuestionService {
         Set<OptionEntity> databaseOptions = databaseQuestion.getOptions();
 
         // Atualiza o enunciado
-        databaseQuestion.setQuestion(requestQuestion.getQuestion());
+        databaseQuestion.setQuestion(requestQuestion.question());
 
-        if (requestQuestion.getOptions().stream().noneMatch(option -> option.isCorrect())) {
+        if (requestQuestion.options().stream().noneMatch(option -> option.isCorrect())) {
             throw new CorrectOptionNotFoundException();
         }
 
-        long listLimit = requestQuestion.getOptions().stream().filter(option -> option.isCorrect()).count();
+        long listLimit = requestQuestion.options().stream().filter(option -> option.isCorrect()).count();
         if (listLimit > 1) throw new MultipleCorrectOptionsException();
 
-        for (UpdateOptionModelDTO requestOption : requestQuestion.getOptions()) {
+        for (UpdateOptionModelDTO requestOption : requestQuestion.options()) {
             for (OptionEntity databaseOption : databaseOptions) {
                 if (databaseOption.getId().equals(requestOption.optionId())) {
                     databaseOption.setValue(requestOption.value());
