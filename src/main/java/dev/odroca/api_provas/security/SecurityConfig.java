@@ -60,6 +60,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/users/role/{userId}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/test/").hasRole("USER")
                 // .requestMatchers(HttpMethod.POST, "/test/{testId}").hasRole("USER") // Se a prova for: Pública?  Privada? Não lista?
                 .requestMatchers(HttpMethod.GET, "/test/{userId}").hasRole("USER")
@@ -97,7 +98,7 @@ public class SecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthoritiesClaimName("role");
-        grantedAuthoritiesConverter.setAuthorityPrefix(""); // Padrão seta SCOPE_
+        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_"); // Padrão seta SCOPE_
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);

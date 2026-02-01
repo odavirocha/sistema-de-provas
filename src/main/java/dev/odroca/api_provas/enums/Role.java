@@ -1,9 +1,7 @@
 package dev.odroca.api_provas.enums;
 
 public enum Role {
-
-    ROLE_USER,
-    ROLE_MODERATOR,
-    ROLE_ADMIN;
-    
+    USER,
+    MODERATOR,
+    ADMIN;
 }

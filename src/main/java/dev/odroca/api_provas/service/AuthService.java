@@ -52,7 +52,7 @@ public class AuthService {
         UserEntity user = new UserEntity();
         user.setEmail(signupInformations.email());
         user.setPassword(passwordHashed);
-        user.setRole(Role.ROLE_USER);
+        user.setRole(Role.USER);
 
         userRepository.save(user);
 
