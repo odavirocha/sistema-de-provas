@@ -398,14 +398,14 @@ public class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar QuestionNotFoundException quando não achar a resposta que as opções estão atribuidas.") 
+    @DisplayName("Deve retornar QuestionNotFoundException quando não achar a questão.") 
     void updateQuestionQuestionNotFoundException() {
 
         UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
         
         UpdateQuestionRequestDTO questionRequestDTO = new UpdateQuestionRequestDTO();
 
-        when(questionRepository.findById(questionId)).thenReturn(Optional.empty());
+        when(questionRepository.findByIdWithOptions(questionId)).thenReturn(Optional.empty());
 
         assertThrows(QuestionNotFoundException.class, () -> {
             questionService.updateQuestion(questionId, questionRequestDTO);
