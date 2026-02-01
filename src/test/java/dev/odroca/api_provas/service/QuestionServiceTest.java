@@ -523,21 +523,15 @@ public class QuestionServiceTest {
             questions.add(questionEntity);
         }
 
-        List<GetOptionModelDTO> optionsConverted = options.stream()
+        Set<GetOptionModelDTO> optionsConverted = options.stream()
         .map(option -> {
-            GetOptionModelDTO optionConverted = new GetOptionModelDTO();
-            ReflectionTestUtils.setField(optionConverted, "id", option.getId());
-            ReflectionTestUtils.setField(optionConverted, "value", option.getValue());
-            ReflectionTestUtils.setField(optionConverted, "isCorrect", option.getIsCorrect());
+            GetOptionModelDTO optionConverted = new GetOptionModelDTO(option.getId(), option.getValue(), option.getIsCorrect());
             return optionConverted;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
 
         Set<GetQuestionModelDTO> questionsConverted = questions.stream()
         .map(question -> {
-            GetQuestionModelDTO questionConverted = new GetQuestionModelDTO();
-            ReflectionTestUtils.setField(questionConverted, "id", question.getId());
-            ReflectionTestUtils.setField(questionConverted, "question", question.getQuestion());
-            ReflectionTestUtils.setField(questionConverted, "options", optionsConverted);
+            GetQuestionModelDTO questionConverted = new GetQuestionModelDTO(question.getId(), question.getQuestion(), optionsConverted);
             return questionConverted;
         }).collect(Collectors.toSet());
 
