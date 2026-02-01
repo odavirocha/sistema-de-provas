@@ -227,11 +227,11 @@ public class QuestionServiceTest {
         questions.add(new CreateQuestionModelDTO("1+1?", options));
         questions.add(new CreateQuestionModelDTO("6-4?", options));
         
-        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(questions);
 
         // Não faço nada com o response de createQuestion
         doReturn(null).when(questionService).createQuestion(any(UUID.class), any(CreateQuestionModelDTO.class));
-        CreateQuestionsResponseDTO result = questionService.createQuestions(questionsModel);
+        CreateQuestionsResponseDTO result = questionService.createQuestions(testId, questionsModel);
 
         assertNotNull(result);  
         assertNotNull(result.getId());
@@ -260,10 +260,10 @@ public class QuestionServiceTest {
         questions.add(new CreateQuestionModelDTO("1+1?", options));
         questions.add(new CreateQuestionModelDTO("6-4?", options));
 
-        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(questions);
 
         assertThrows(TestNotFoundException.class, () -> {
-            questionService.createQuestions(questionsModel);
+            questionService.createQuestions(testId, questionsModel);
         });
 
     }
@@ -289,10 +289,10 @@ public class QuestionServiceTest {
         questions.add(new CreateQuestionModelDTO("Questão 1?", optionsWrong));
         questions.add(new CreateQuestionModelDTO("Questão 2?", optionsCorrect));
 
-        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(questions);
 
         assertThrows(MultipleCorrectOptionsException.class, () -> {
-            questionService.createQuestions(questionsModel);
+            questionService.createQuestions(testId, questionsModel);
         });
 
     }
@@ -316,10 +316,10 @@ public class QuestionServiceTest {
         questions.add(new CreateQuestionModelDTO("1+1?", options));
         questions.add(new CreateQuestionModelDTO("6-4?", options));
 
-        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(testId, questions);
+        CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(questions);
 
         assertThrows(CorrectOptionNotFoundException.class, () -> {
-            questionService.createQuestions(questionsModel);
+            questionService.createQuestions(testId, questionsModel);
         });
         
     }
@@ -328,73 +328,61 @@ public class QuestionServiceTest {
     @DisplayName("Deve editar a questão quando tudo estiver OK.") 
     void updateQuestionSuccessful() {
 
-        // Parâmetro do updateQuestion
         UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
 
-        // Parâmetro do updateQuestion
-        UpdateQuestionRequestDTO questionUpdate = new UpdateQuestionRequestDTO("Enunciado: 1+1?", null);
-                
-        List<UUID> idsFromRequest = List.of(
+        List<UUID> optionsId = List.of(
             UUID.fromString("63d25ed5-f5f9-4a60-a5c0-3718bf9f9a03"),
             UUID.fromString("00b3841f-245f-44ce-9ac2-0cffd18e93ab"),
             UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
-            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30"),
-            UUID.fromString("3c9bac11-8019-4630-838a-b8621cb90686")
+            UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
         );
 
-        List<UpdateOptionModelDTO> optionsForQuestionUpdate = new ArrayList<>();
-
-        for (Integer i = 0; i < 5; i++) {
-            Boolean isCorrect = (i == 4);
-
-            UpdateOptionModelDTO optionModelDTO = new UpdateOptionModelDTO(null, i.toString(), isCorrect);
-            ReflectionTestUtils.setField(optionModelDTO, "optionId", idsFromRequest.get(i));
-
-            optionsForQuestionUpdate.add(optionModelDTO);
+        Set<UpdateOptionModelDTO> requestOptions = new HashSet<>();
+        for (Integer i = 0; i < 4; i++) {
+            if (i.equals(2)) {
+                UpdateOptionModelDTO option = new UpdateOptionModelDTO(optionsId.get(i), i.toString(), true);
+                requestOptions.add(option);
+            } else {
+                UpdateOptionModelDTO option = new UpdateOptionModelDTO(optionsId.get(i), i.toString(), false);
+                requestOptions.add(option);
+            }
         }
+        UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("Enunciado: 1+1?", requestOptions);
 
-        // Adiciona List<UpdateOptionModelDTO> optionsForQuestionUpdate dentro do campo options
-        ReflectionTestUtils.setField(questionUpdate, "options", optionsForQuestionUpdate);
-
-        // FindById(questionId)
         QuestionEntity databaseQuestion = new QuestionEntity();
-
         ReflectionTestUtils.setField(databaseQuestion, "id", questionId);
+        databaseQuestion.setQuestion("Enunciado: 2+1?");
 
-        List<OptionEntity> optionsForDatabaseQuestion = new ArrayList<>();
-
-        for (Integer i = 0; i < 5; i++) {
-            Boolean isCorrect = (i == 4);
-            OptionEntity optionEntity = new OptionEntity();
-
-            ReflectionTestUtils.setField(optionEntity, "id", idsFromRequest.get(i));
-            optionEntity.setValue(i.toString());
-            optionEntity.setIsCorrect(isCorrect);
-
-            optionsForDatabaseQuestion.add(optionEntity);
+        Set<OptionEntity> databaseOptions = new HashSet<>();
+        for (Integer i = 0; i < 4; i++) {
+            OptionEntity option = new OptionEntity(i.toString(), false);
+            ReflectionTestUtils.setField(option, "id", optionsId.get(i));
+            if (i.equals(3)) {
+                option.setIsCorrect(true);
+            }
+            databaseOptions.add(option);
         }
+        databaseQuestion.setOptions(databaseOptions);
 
-        List<OptionEntity> optionsThatExist = List.of(
-            new OptionEntity(), 
-            new OptionEntity(), 
-            new OptionEntity(), 
-            new OptionEntity() , 
-            new OptionEntity()
-        );
-        
-        // Adiciona List<OptionEntity> optionsForDatabaseQuestion dentro do campo options
-        ReflectionTestUtils.setField(databaseQuestion, "options", optionsForDatabaseQuestion);
-        
-        when(questionRepository.findById(questionId)).thenReturn(Optional.of(databaseQuestion));
-        when(optionRepository.findAllById(idsFromRequest)).thenReturn(optionsThatExist);
-        when(questionRepository.save(databaseQuestion)).thenReturn(databaseQuestion);
+        QuestionEntity shouldResponseQuestion = new QuestionEntity();
+        ReflectionTestUtils.setField(shouldResponseQuestion, "id", questionId);
+        shouldResponseQuestion.setQuestion(requestQuestion.getQuestion());
+        Set<OptionEntity> responseOptions = requestOptions.stream()
+            .map(option -> {
+                OptionEntity optionEntity = new OptionEntity(option.value(), option.isCorrect());
+                ReflectionTestUtils.setField(optionEntity, "id", option.optionId());
+                return optionEntity;
+            })
+            .collect(Collectors.toSet());
+        shouldResponseQuestion.setOptions(responseOptions);
 
-        UpdateQuestionResponseDTO result = questionService.updateQuestion(questionId, questionUpdate);
-
-        assertNotNull(result);
-        assertEquals(questionId, result.getQuestionId());
+        when(questionRepository.findByIdWithOptions(questionId)).thenReturn(Optional.of(databaseQuestion));
+        when(questionRepository.save(any(QuestionEntity.class))).thenReturn(shouldResponseQuestion);
         
-        verify(optionRepository, never()).deleteAll(anyList()); // Requets sem nenhum nulo, nenhuma opção deve ser deletada
+        UpdateQuestionResponseDTO response = questionService.updateQuestion(questionId, requestQuestion);
+
+        assertEquals(questionId, response.getQuestionId());
+        assertEquals("Questão alterada com sucesso!", response.getMessage());
     }
 
     @Test

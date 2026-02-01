@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateOptionModelDTO(
+    @NotBlank(message = "O campo 'optionId' não pode ser vazio.")
     UUID optionId,
     @NotBlank(message = "O campo 'value' não pode ser vazio.")
     String value,
