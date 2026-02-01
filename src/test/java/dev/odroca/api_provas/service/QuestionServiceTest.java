@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -283,13 +282,26 @@ public class QuestionServiceTest {
         optionsCorrect.add(new CreateOptionModelDTO("Opção 1", true));
         optionsCorrect.add(new CreateOptionModelDTO("Opção 2", false));
         optionsCorrect.add(new CreateOptionModelDTO("Opção 3", false));
-        
 
         Set<CreateQuestionModelDTO> questions = new HashSet<>();
         questions.add(new CreateQuestionModelDTO("Questão 1?", optionsWrong));
         questions.add(new CreateQuestionModelDTO("Questão 2?", optionsCorrect));
 
         CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(questions);
+
+        TestEntity test = new TestEntity();
+        Set<OptionEntity> optionsEntities1 = new HashSet<>();
+        optionsEntities1.add(new OptionEntity("Opção 1", true));
+        optionsEntities1.add(new OptionEntity("Opção 2", true));
+        optionsEntities1.add(new OptionEntity("Opção 3", false));
+
+        Set<OptionEntity> optionsEntities2 = new HashSet<>();
+        optionsEntities2.add(new OptionEntity("Opção 1", true));
+        optionsEntities2.add(new OptionEntity("Opção 2", false));
+        optionsEntities2.add(new OptionEntity("Opção 3", false));
+
+        when(testRepository.findById(testId)).thenReturn(Optional.of(test));
+        when(optionMapper.createDtoToEntityList(any())).thenReturn(optionsEntities1, optionsEntities2);
 
         assertThrows(MultipleCorrectOptionsException.class, () -> {
             questionService.createQuestions(testId, questionsModel);
