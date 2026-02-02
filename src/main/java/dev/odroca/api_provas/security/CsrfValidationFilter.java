@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -22,13 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class CsrfValidationFilter extends OncePerRequestFilter {
     
+    @Autowired
     private CookieUtil cookieUtil;
+    @Autowired
     private Hmac hmac;
-
-    public CsrfValidationFilter(CookieUtil cookieUtil, Hmac hmac) {
-        this.cookieUtil = cookieUtil;
-        this.hmac = hmac;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

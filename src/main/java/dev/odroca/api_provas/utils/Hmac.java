@@ -18,8 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class Hmac {
     
-    @Value("${SALTHMAC}")
+    @Value("${SECRET_HMAC}")
     private String secret;
+
     private final String algorithm = "HmacSHA256";
 
     public String encode(byte[] token) throws AccessDeniedException {
