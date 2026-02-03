@@ -336,52 +336,6 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ]
     ```
     </details>
-  
-  * #### Retorna uma prova `/test/${testId}`
-
-    <details>
-      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-    &nbsp;
-    
-    ``` json
-    {
-      "testName": "Prova de Teste 1",
-      "questions": [
-        {
-          "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
-          "question": "Questão número 6",
-          "options": [
-            {
-              "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
-              "value": "4",
-              "isCorrect": false
-            },
-            {
-              "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
-              "value": "5",
-              "isCorrect": true
-            }
-          ]
-        }
-      ]
-    }
-    ```
-    </details>
 
 * #### DELETE /test
     
