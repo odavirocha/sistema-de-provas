@@ -218,7 +218,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
     </details>
 
-  * #### Como criar uma conta `/auth/login`
+  * #### Como acessar uma conta `/auth/login`
     <details>
         <summary><strong> Exemplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
         &nbsp;
@@ -244,9 +244,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
     </details>
 
-  * #### Como criar uma conta `/auth/refresh`
-    Recebe o Refresh Token via Cookie HttpOnly e responde um com Access Token e Refresh Token, inválidando assim o Refresh Token antigo.
-
+  * #### Como gerar um novo Access Token válido `/auth/refresh`
+    Essa rota recebe o Refresh Token.
+    Retorna via Cookie HttpOnly um novo Access Token e um novo Refresh Token.
 
 </details>
 

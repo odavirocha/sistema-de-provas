@@ -147,7 +147,6 @@ public class TestService {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("accessToken".equals(cookie.getName())) {
-                    System.out.println("Cookie: " + cookie.getName() + " " + cookie.getValue());
                     userIdFromJwt = UUID.fromString(jwtDecoder.decode(cookie.getValue()).getSubject());
                     break;
                 }
