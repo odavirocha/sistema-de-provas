@@ -486,7 +486,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       
       </details>
             <details>
-        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
       &nbsp;
 
       ```json
