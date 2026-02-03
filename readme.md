@@ -246,7 +246,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
   * #### Como gerar um novo Access Token válido `/auth/refresh`
     Essa rota recebe o Refresh Token.
-    
+
     Retorna via Cookie HttpOnly um novo Access Token e um novo Refresh Token.
 
 </details>
@@ -484,6 +484,19 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       }
       ```
       
+      </details>
+            <details>
+        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+      &nbsp;
+
+      ```json
+      {
+          "id": "1c24781e-9ea4-47eb-aae1-64f6a6d74944",
+          "totalCreatedQuestions": 3,
+          "message": "Questões criadas com sucesso!"
+      }
+      ```
+
       </details>
 
 * #### PATCH /question
