@@ -246,6 +246,7 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
   * #### Como gerar um novo Access Token válido `/auth/refresh`
     Essa rota recebe o Refresh Token.
+    
     Retorna via Cookie HttpOnly um novo Access Token e um novo Refresh Token.
 
 </details>
