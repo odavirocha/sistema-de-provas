@@ -21,6 +21,7 @@ import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.exception.TestNullNameException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.exception.UserNotFoundException;
+import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -106,6 +107,13 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidTokenException(InvalidTokenException ex) {
+        return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
+    }
+
+    @ExceptionHandler(UnexpectedTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidTokenException(UnexpectedTypeException ex) {
+        log.warn(ex.getMessage());
         return new ErrorResponse(ex.getMessage(), LocalDateTime.now().toString(), "BadRequest", 400);
     }
     
