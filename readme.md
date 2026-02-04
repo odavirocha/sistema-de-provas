@@ -125,6 +125,10 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ```bash
     ./mvnw clean install
     ```
+    ou
+    ```bash
+    mvn clean install
+    ```
 
   ### 3. Execute o projeto.
 
@@ -133,9 +137,13 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ```bash
     ./mvnw spring-boot:run
     ```
+    ou
+    ```bash
+    mvn spring-boot:run
+    ```
 
   Isso deixará a API disponível em http://localhost:8080/.
-  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API. Também é necessário copiar o CSRF Token armazenado nos cookies e envia-lo via Header X-XSRF-TOKEN.
 </details>
 
 
@@ -149,35 +157,27 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 - ### Passo a passo
 
-  ### 1. Escolha qual banco usar no `docker-compose.yml`.
-    - Para usar banco em nuvem.
+  ### 1. Escolha qual banco usar.
 
-      ```yaml
-      environment:
-        - SPRING_DATASOURCE_URL=${NEON_URL}
-        # - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
-        # - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-        # - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      ```
+    - Para usar banco em nuvem.
+    ```bash
+    docker compose -f docker-compose.yml -f docker-compose.dbext.yml up --build
+    ```
 
     - Para usar PostgreSQL Local.
-
-      ```yaml
-      environment:
-        # - SPRING_DATASOURCE_URL=${NEON_URL}
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
-        - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-        - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      ```
+    ```bash
+    docker compose -f docker-compose.yml -f docker-compose.dblocal.yml up --build
+    ```
+      
 
   ### 2. Execute o contâiner.
     Rode no terminal linux o comando:
     ```bash
-    docker compose up backend
+    docker compose up --build backend
     ```
 
   Isso deixará a API disponível em http://localhost:8080/.
-  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API. Também é necessário copiar o CSRF Token armazenado nos cookies e envia-lo via Header X-XSRF-TOKEN.
 
 </details>
 

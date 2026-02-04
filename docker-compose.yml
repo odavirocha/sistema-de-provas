@@ -3,30 +3,10 @@ services:
     build:
       context: .
     container_name: sistema-provas
-    image: sistema-provas
+    image: sistema-provas:latest
     ports:
       - "8080:8080"
-    ## Desabilitar depends_on se usar banco externo
-    depends_on:
-      - database
     environment:
-      ## Ativar se usar banco externo
-      # - SPRING_DATASOURCE_URL=${NEON_URL}
-      ## Desativar as 3 linhas se usar banco local
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SECRET_HMAC=4f8c2b9a1d6e7f08b3a5c9d4e2f10b7a
-  database:
-    image: postgres:17.7-alpine3.22
-    container_name: database-sistem-provas
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 volumes:
   pgdata:
