@@ -91,6 +91,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
       # Banco em nuvem
       NEON_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
+
+      #Secret key do CSRF Token
+      SECRET_HMAC="456bdfa9a1d6efsd9f7dj9jad9t23h4e2f100ada"
     ```
 
     Ou se preferir diretamente no arquivo `application.properties`:

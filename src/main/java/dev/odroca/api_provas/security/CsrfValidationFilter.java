@@ -86,7 +86,7 @@ public class CsrfValidationFilter extends OncePerRequestFilter {
                 return;
             }
         } catch (IllegalArgumentException e) {
-            log.warn("HEader X-XSRF-TOKEN mal formulado. IP: {}", request.getRemoteAddr());
+            log.warn("Header X-XSRF-TOKEN mal formulado. IP: {}", request.getRemoteAddr());
             throw new AccessDeniedException("CSRF Token inválido.");
         }
         throw new AccessDeniedException("CSRF Token inválido.");
