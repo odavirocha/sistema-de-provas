@@ -1,0 +1,5 @@
+services:
+  backend:
+    environment:
+      - EXT_URL=${EXT_URL}
+      - SPRING_PROFILES_ACTIVE=dev-ext

@@ -8,5 +8,6 @@ services:
       - "8080:8080"
     environment:
       - SECRET_HMAC=4f8c2b9a1d6e7f08b3a5c9d4e2f10b7a
+      - SPRING_PROFILES_ACTIVE=${PROFILE:-dev-local}
 volumes:
   pgdata:

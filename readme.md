@@ -90,33 +90,11 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
       POSTGRES_DB=banco_api_provas
 
       # Banco em nuvem
-      NEON_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
+      EXT_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
 
       #Secret key do CSRF Token
       SECRET_HMAC="456bdfa9a1d6efsd9f7dj9jad9t23h4e2f100ada"
     ```
-
-    Ou se preferir diretamente no arquivo `application.properties`:
-
-    <details>
-      <summary><strong> Opção 1: Banco local ou docker </strong> <sub> (expandir) </sub></summary>
-      <br>
-
-    ```
-      spring.datasource.url=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-      spring.datasource.username=${POSTGRES_USER}
-      spring.datasource.password=${POSTGRES_PASSWORD}
-    ```
-    </details>
-
-    <details>
-      <summary><strong> Opção 2: Banco na nuvem. </strong> <sub> (expandir) </sub></summary>
-      <br>
-    
-    ```
-      spring.datasource.url=${NEON_URL}
-    ```
-    </details>
 
   ### 2. Instale as dependências.
 
@@ -131,8 +109,9 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ```
 
   ### 3. Execute o projeto.
-
-    Rode no terminal o comando:
+    O projeto pode ser executado utilizando banco de dados local ou externo.
+    
+    Para usar banco de dados local rode no terminal o comando:
 
     ```bash
     ./mvnw spring-boot:run
@@ -140,6 +119,18 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
     ou
     ```bash
     mvn spring-boot:run
+    ```
+    
+    Para usar banco de dados externo rode no terminal o comando:
+
+    *O link do banco de dados deve ser configurado na .env*
+
+    ```bash
+    ./mvnw spring-boot:run -Dspring.profiles.active=dev-ext
+    ```
+    ou
+    ```bash
+    mvn spring-boot:run -Dspring.profiles.active=dev-ext
     ```
 
   Isso deixará a API disponível em http://localhost:8080/.
@@ -161,19 +152,12 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
     - Para usar banco em nuvem.
     ```bash
-    docker compose -f docker-compose.yml -f docker-compose.dbext.yml up --build
+    docker compose -f docker-compose.yml -f docker-compose.ext.yml up --build
     ```
 
     - Para usar PostgreSQL Local.
     ```bash
-    docker compose -f docker-compose.yml -f docker-compose.dblocal.yml up --build
-    ```
-      
-
-  ### 2. Execute o contâiner.
-    Rode no terminal linux o comando:
-    ```bash
-    docker compose up --build backend
+    docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
     ```
 
   Isso deixará a API disponível em http://localhost:8080/.

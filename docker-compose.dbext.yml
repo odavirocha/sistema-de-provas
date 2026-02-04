@@ -1,4 +1,0 @@
-services:
-  backend:
-    environment:
-      - SPRING_DATASOURCE_URL=${EXT_URL}
