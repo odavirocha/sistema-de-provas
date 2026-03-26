@@ -3,6 +3,7 @@ package dev.odroca.api_provas.security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -43,18 +45,17 @@ public class SecurityConfig {
 
     private final CookieToHeaderFilter cookieToHeaderFilter;
 
-    private final CsrfValidationFilter csrfValidationFilter;
+//    private final CsrfValidationFilter csrfValidationFilter;
 
-    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter, CsrfValidationFilter csrfValidationFilter) {
+    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter) {
         this.cookieToHeaderFilter = cookieToHeaderFilter;
-        this.csrfValidationFilter = csrfValidationFilter;
     }
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/auth/signup").permitAll()
@@ -71,7 +72,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/questions/{testId}").hasRole("USER")
                 .anyRequest().authenticated())
                 .addFilterBefore(cookieToHeaderFilter, BearerTokenAuthenticationFilter.class)
-                .addFilterBefore(csrfValidationFilter, CookieToHeaderFilter.class)
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -83,9 +83,9 @@ public class SecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(Arrays.asList("http://localhost:2709"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        config.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-XSRF-TOKEN"));
+        config.setAllowedOrigins(List.of("http://localhost:2709"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+        config.setAllowedHeaders(List.of("Content-Type", "Accept"));
         config.setAllowCredentials(true); // Permite receber credenciais (authorization headers, cookies, ...)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
