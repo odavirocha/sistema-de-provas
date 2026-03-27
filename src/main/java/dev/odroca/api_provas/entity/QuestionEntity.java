@@ -38,4 +38,16 @@ public class QuestionEntity {
     @Setter
     private Set<OptionEntity> options = new HashSet<>();
 
+    public QuestionEntity() {}
+
+    public QuestionEntity(TestEntity test, String question, Set<OptionEntity> options) {
+        this.test = test;
+        this.question = question;
+        this.options = options;
+    }
+
+    public QuestionEntity(String question, Set<OptionEntity> options) {
+        this.question = question;
+        this.options = options;
+    }
 }

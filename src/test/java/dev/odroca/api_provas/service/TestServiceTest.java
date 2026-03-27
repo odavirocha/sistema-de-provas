@@ -35,8 +35,8 @@ public class TestServiceTest {
     private TestService testService;
     
     @Test
-    @DisplayName("Deve criar uma prova quando tudo estiver OK.")
-    void testCreateTest() {
+    @DisplayName("Deve criar uma prova.")
+    void testCreateSuccessTest() {
         
         // Entidade criada no controller
         TestEntity controllerEntity = new TestEntity();
@@ -61,8 +61,8 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Deve deletar uma prova quando tudo estiver OK.")
-    void testDeleteTest() {
+    @DisplayName("Deve deletar uma prova.")
+    void testDeleteSuccessTest() {
 
         UUID id = UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7");
         when(testRepository.existsById(id)).thenReturn(true);
@@ -79,9 +79,8 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Espera uma exceção quando não achar a prova.")
-    void testDeleteExceptionTest() {
-
+    @DisplayName("Deve retornar TestNotFoundException quando não achar a prova.")
+    void testDeleteTestNotFoundExceptionTest() {
         UUID id = UUID.fromString("a35a647b-6a7d-4cdc-b92e-87c5be376ee7");
         when(testRepository.existsById(id)).thenReturn(false);
 
@@ -89,6 +88,14 @@ public class TestServiceTest {
 
         verify(testRepository, times(1)).existsById(id);
         verify(testRepository, never()).deleteById(any());
+    }
+
+    @Test
+    @DisplayName("Deve corrigir uma prova.")
+    void answerTestSuccessTest() {
+        TestEntity testEntity = TestFactory.buildTestEntity();
+
+
     }
 
 }

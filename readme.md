@@ -80,20 +80,16 @@ Esse sistema foi pensado para o usuário criar sua própria prova ou fazer a de 
 
 - ### Passo a passo
 
-  ### 1. Configure o banco de dados.
-    Crie um arquivo `env` na raiz do projeto:
+  ### 1. Configure as variáveis de ambiente.
 
-    ```.env
+    ```
       # Banco local
       POSTGRES_USER=postgres
       POSTGRES_PASSWORD=postgres
       POSTGRES_DB=banco_api_provas
 
-      # Banco em nuvem
+      # Banco externo
       EXT_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
-
-      #Secret key do CSRF Token
-      SECRET_HMAC="456bdfa9a1d6efsd9f7dj9jad9t23h4e2f100ada"
     ```
 
   ### 2. Instale as dependências.
