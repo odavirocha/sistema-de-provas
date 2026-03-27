@@ -64,7 +64,6 @@ public class TestController {
         List<TestResponseDTO> response = testService.getAllTestsForUser(userId, request);
         return new ResponseEntity<List<TestResponseDTO>>(response, HttpStatus.OK);
     }
-    
 
     @DeleteMapping("/{testId}")
     public ResponseEntity<DeleteTestResponseDTO> deleteTest(@PathVariable UUID testId) {
