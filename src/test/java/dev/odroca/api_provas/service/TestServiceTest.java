@@ -145,6 +145,22 @@ public class TestServiceTest {
     }
 
     @Test
+    @DisplayName("Deve corrigir uma prova, com uma questão errada.")
+    void answerTestWithWrongQuestionTest() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        UserEntity user = UserFactory.buildUserEntity();
+        TestEntity testEntity = TestFactory.buildTestEntity(user, testId);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTestWithOneWrongQuestion(testEntity);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(testEntity));
+
+        AnswerTestResponseDTO response = testService.answerTest(testId, requestTest);
+
+        assertEquals(2, response.getScore());
+        assertEquals("Prova finalizada.", response.getMessage());
+    }
+
+    @Test
     @DisplayName("Deve retornar InvalidAttributeException quando questionId for nulo")
     void answerTestInvalidAttributeExceptionForQuestionTest() {
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");

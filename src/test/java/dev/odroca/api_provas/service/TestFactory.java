@@ -20,8 +20,8 @@ public class TestFactory {
         return test;
     }
 
-    public static AnswerTestRequestDTO buildRequestTest(TestEntity godTest) {
-        List<QuestionAnswerModelDTO> answerQuestions = godTest.getQuestions().stream().map(question -> {
+    public static AnswerTestRequestDTO buildRequestTest(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
             UUID id = question.getId();
             UUID selectedOptionId = question.getOptions().stream()
             .filter(OptionEntity::getIsCorrect)
@@ -33,8 +33,8 @@ public class TestFactory {
         return new AnswerTestRequestDTO(answerQuestions);
     }
 
-    public static AnswerTestRequestDTO buildRequestTestWithoutOneQuestion(TestEntity godTest) {
-        List<QuestionAnswerModelDTO> answerQuestions = godTest.getQuestions().stream().map(question -> {
+    public static AnswerTestRequestDTO buildRequestTestWithoutOneQuestion(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
             UUID id = question.getId();
             UUID selectedOptionId = question.getOptions().stream()
             .filter(OptionEntity::getIsCorrect)
@@ -44,6 +44,23 @@ public class TestFactory {
         }).collect(Collectors.toList());
 
         answerQuestions.remove(2);
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWithOneWrongQuestion(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
+            UUID id = question.getId();
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(OptionEntity::getIsCorrect)
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
+
+            return new QuestionAnswerModelDTO(id, selectedOptionId);
+        }).collect(Collectors.toList());
+
+        UUID wrongId = answerQuestions.get(2).questionId();
+        answerQuestions.remove(2);
+        QuestionAnswerModelDTO wrongQuestion = new QuestionAnswerModelDTO(wrongId, UUID.fromString("397eec71-360d-4626-805c-6640be635690"));
+        answerQuestions.add(wrongQuestion);
         return new AnswerTestRequestDTO(answerQuestions);
     }
 }
