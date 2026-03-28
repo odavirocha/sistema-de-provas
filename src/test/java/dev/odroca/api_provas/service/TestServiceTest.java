@@ -25,6 +25,7 @@ import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidAttributeException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
+import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,16 +116,7 @@ public class TestServiceTest {
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
         TestEntity godTest = TestFactory.buildTestEntity(user, testId);
 
-        List<QuestionAnswerModelDTO> answerQuestions = godTest.getQuestions().stream().map(question -> {
-            UUID id = question.getId();
-            UUID selectedOptionId = question.getOptions().stream()
-            .filter(OptionEntity::getIsCorrect)
-            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
-
-            return new QuestionAnswerModelDTO(id, selectedOptionId);
-        }).toList();
-
-        AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(answerQuestions);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTest(godTest);
 
         when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(godTest));
 
@@ -155,6 +147,21 @@ public class TestServiceTest {
         AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(List.of(nullOption));
 
         assertThrows(InvalidAttributeException.class, () -> {
+            testService.answerTest(testId, requestTest);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve retornar TestNotFoundException quando não achar a prova")
+    void answerTestTestNotFoundExceptionTest() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        UserEntity user = UserFactory.buildUserEntity();
+        TestEntity godTest = TestFactory.buildTestEntity(user, testId);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTest(godTest);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.empty());
+
+        assertThrows(TestNotFoundException.class, () -> {
             testService.answerTest(testId, requestTest);
         });
     }
