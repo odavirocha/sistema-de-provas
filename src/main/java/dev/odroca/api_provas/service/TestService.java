@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.exception.InvalidAttributeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -86,11 +87,11 @@ public class TestService {
             .collect(Collectors.toList());
 
 //      Perguntas não respondidas (não foram enviadas)
-        List<QuestionEntity> questionsWrong = databaseQuestions.stream()
+        List<QuestionEntity> wrongQuestions = databaseQuestions.stream()
             .filter(question -> !requestQuestionsId.contains(question.getId()))
             .collect(Collectors.toList());
             
-        score -= questionsWrong.size();
+        score -= wrongQuestions.size();
 
         for (QuestionAnswerModelDTO requestQuestion : requestQuestions) {
             for (QuestionEntity databaseQuestion : questionsAvailable) {
@@ -123,26 +124,18 @@ public class TestService {
             }
         }
 
-        for (QuestionEntity wrongQuestion : questionsWrong) {
-            for (QuestionEntity databaseQuestion : questionsAvailable) {
-
-                UUID correctOption = databaseQuestion.getOptions().stream()
-                .filter(option -> option.getIsCorrect())
-                .map(option -> option.getId())
-                .findFirst().orElse(null);
-                
-                QuestionResultModelDTO question = new QuestionResultModelDTO(
-                    wrongQuestion.getId(),
-                    null,
-                    correctOption,
-                    false
-                );
-
-                questions.add(question);
-                break;
-            }
+        for (QuestionEntity wrongQuestion : wrongQuestions) {
+            UUID correctId = wrongQuestion.getOptions().stream().filter(OptionEntity::getIsCorrect)
+            .map(OptionEntity::getId).findFirst().orElseThrow(() -> new RuntimeException("Valor não encontrado."));
+            QuestionResultModelDTO question = new QuestionResultModelDTO(
+                wrongQuestion.getId(),
+                null,
+                correctId,
+                false
+            );
+            questions.add(question);
         }
- 
+
         return new AnswerTestResponseDTO(score, questions, "Prova finalizada.");
     }
     
