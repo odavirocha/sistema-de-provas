@@ -23,6 +23,7 @@ import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.UserEntity;
+import dev.odroca.api_provas.exception.InvalidAttributeException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -132,6 +133,30 @@ public class TestServiceTest {
         assertEquals(3, response.getQuestions().size());
         assertEquals(3, response.getScore());
         assertEquals( "Prova finalizada.", response.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve retornar InvalidAttributeException quando questionId for nulo")
+    void answerTestInvalidAttributeExceptionForQuestionTest() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        QuestionAnswerModelDTO nullQuestion = new QuestionAnswerModelDTO(null, UUID.fromString("de823a13-3c12-4cf7-b266-3d16abe98c94"));
+        AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(List.of(nullQuestion));
+
+        assertThrows(InvalidAttributeException.class, () -> {
+            testService.answerTest(testId, requestTest);
+        });
+    }
+
+    @Test
+    @DisplayName("Deve retornar InvalidAttributeException quando selectedOptionId for nulo")
+    void answerTestInvalidAttributeExceptionForOptionTest() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        QuestionAnswerModelDTO nullOption = new QuestionAnswerModelDTO(UUID.fromString("de823a13-3c12-4cf7-b266-3d16abe98c94"), null);
+        AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(List.of(nullOption));
+
+        assertThrows(InvalidAttributeException.class, () -> {
+            testService.answerTest(testId, requestTest);
+        });
     }
 
 }
