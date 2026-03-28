@@ -28,8 +28,7 @@ public class OptionEntity {
     @JoinColumn(name = "question_id")
     private QuestionEntity question;
 
-    public OptionEntity() {
-    }
+    public OptionEntity() {}
 
     public OptionEntity(String value, Boolean isCorrect) {
         this.value = value;

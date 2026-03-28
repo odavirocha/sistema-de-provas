@@ -54,7 +54,7 @@ public class TestController {
     }
 
     @PostMapping("/{testId}")
-    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody AnswerTestRequestDTO test) {
+    public ResponseEntity<AnswerTestResponseDTO> answerTest(@PathVariable UUID testId, @RequestBody @Valid AnswerTestRequestDTO test) {
         AnswerTestResponseDTO response = testService.answerTest(testId, test);
         return new ResponseEntity<AnswerTestResponseDTO>(response, HttpStatus.OK);
     }

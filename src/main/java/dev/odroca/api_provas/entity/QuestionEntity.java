@@ -50,4 +50,8 @@ public class QuestionEntity {
         this.question = question;
         this.options = options;
     }
+
+    public QuestionEntity(String question) {
+        this.question = question;
+    }
 }
