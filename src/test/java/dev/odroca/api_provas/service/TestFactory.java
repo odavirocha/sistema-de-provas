@@ -10,6 +10,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class TestFactory {
     public static TestEntity buildTestEntity(UserEntity user, UUID testId) {
@@ -29,6 +30,20 @@ public class TestFactory {
             return new QuestionAnswerModelDTO(id, selectedOptionId);
         }).toList();
 
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWithoutOneQuestion(TestEntity godTest) {
+        List<QuestionAnswerModelDTO> answerQuestions = godTest.getQuestions().stream().map(question -> {
+            UUID id = question.getId();
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(OptionEntity::getIsCorrect)
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
+
+            return new QuestionAnswerModelDTO(id, selectedOptionId);
+        }).collect(Collectors.toList());
+
+        answerQuestions.remove(2);
         return new AnswerTestRequestDTO(answerQuestions);
     }
 }

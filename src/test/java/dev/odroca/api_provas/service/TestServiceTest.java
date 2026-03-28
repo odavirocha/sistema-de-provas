@@ -114,16 +114,33 @@ public class TestServiceTest {
     void answerTestSuccessTest() {
         UserEntity user = UserFactory.buildUserEntity();
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
-        TestEntity godTest = TestFactory.buildTestEntity(user, testId);
+        TestEntity testEntity = TestFactory.buildTestEntity(user, testId);
 
-        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTest(godTest);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTest(testEntity);
 
-        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(godTest));
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(testEntity));
 
         AnswerTestResponseDTO response = testService.answerTest(testId, requestTest);
 
         assertEquals(3, response.getQuestions().size());
         assertEquals(3, response.getScore());
+        assertEquals( "Prova finalizada.", response.getMessage());
+    }
+
+    @Test
+    @DisplayName("Teste sem questão respondida")
+    void answerTestWithoutOneQuestionTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        TestEntity testEntity = TestFactory.buildTestEntity(user, testId);
+
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTestWithoutOneQuestion(testEntity);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(testEntity));
+
+        AnswerTestResponseDTO response = testService.answerTest(testId, requestTest);
+
+        assertEquals(2, response.getScore());
         assertEquals( "Prova finalizada.", response.getMessage());
     }
 
@@ -156,8 +173,8 @@ public class TestServiceTest {
     void answerTestTestNotFoundExceptionTest() {
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
         UserEntity user = UserFactory.buildUserEntity();
-        TestEntity godTest = TestFactory.buildTestEntity(user, testId);
-        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTest(godTest);
+        TestEntity testEntity = TestFactory.buildTestEntity(user, testId);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTest(testEntity);
 
         when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.empty());
 
