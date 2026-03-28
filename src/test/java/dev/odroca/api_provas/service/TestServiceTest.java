@@ -1,5 +1,6 @@
 package dev.odroca.api_provas.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,8 +10,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
+import dev.odroca.api_provas.dto.question.QuestionResultModelDTO;
+import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
+import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
+import dev.odroca.api_provas.entity.OptionEntity;
+import dev.odroca.api_provas.entity.QuestionEntity;
+import dev.odroca.api_provas.entity.UserEntity;
+import dev.odroca.api_provas.exception.OptionNotFoundException;
+import dev.odroca.api_provas.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,8 +43,11 @@ import dev.odroca.api_provas.repository.TestRepository;
 public class TestServiceTest {
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private TestRepository testRepository;
-    
+
     @InjectMocks
     private TestService testService;
     
@@ -93,9 +110,28 @@ public class TestServiceTest {
     @Test
     @DisplayName("Deve corrigir uma prova.")
     void answerTestSuccessTest() {
-        TestEntity testEntity = TestFactory.buildTestEntity();
+        UserEntity user = UserFactory.buildUserEntity();
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        TestEntity godTest = TestFactory.buildTestEntity(user, testId);
 
+        List<QuestionAnswerModelDTO> answerQuestions = godTest.getQuestions().stream().map(question -> {
+            UUID id = question.getId();
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(OptionEntity::getIsCorrect)
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
 
+            return new QuestionAnswerModelDTO(id, selectedOptionId);
+        }).toList();
+
+        AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(answerQuestions);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(godTest));
+
+        AnswerTestResponseDTO response = testService.answerTest(testId, requestTest);
+
+        assertEquals(3, response.getQuestions().size());
+        assertEquals(3, response.getScore());
+        assertEquals( "Prova finalizada.", response.getMessage());
     }
 
 }

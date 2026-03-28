@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import dev.odroca.api_provas.exception.InvalidAttributeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
@@ -62,24 +63,29 @@ public class TestService {
     
     @Transactional
     public AnswerTestResponseDTO answerTest(UUID testId, AnswerTestRequestDTO test) {
+        test.questions().forEach(question -> {
+            if (question.questionId() == null) throw new InvalidAttributeException("ID da questão inválido.");
+            if (question.selectedOptionId() == null) throw new InvalidAttributeException("ID da opção inválido.");
+        });
 
         TestEntity databaseTest = testRepository.findByIdWithQuestionsAndOptions(testId).orElseThrow(() -> new TestNotFoundException(testId));
         
         Set<QuestionEntity> databaseQuestions = databaseTest.getQuestions();
-        List<QuestionAnswerModelDTO> requestQuestions = test.getQuestions();
+        List<QuestionAnswerModelDTO> requestQuestions = test.questions();
 
         int score = databaseQuestions.size();
 
         List<QuestionResultModelDTO> questions = new ArrayList<>();
 
         Set<UUID> requestQuestionsId = requestQuestions.stream()
-            .map(question -> question.getQuestionId())
+            .map(question -> question.questionId())
             .collect(Collectors.toSet());
         
         List<QuestionEntity> questionsAvailable = databaseQuestions.stream()
             .filter(question -> requestQuestionsId.contains(question.getId()))
             .collect(Collectors.toList());
 
+//      Perguntas não respondidas (não foram enviadas)
         List<QuestionEntity> questionsWrong = databaseQuestions.stream()
             .filter(question -> !requestQuestionsId.contains(question.getId()))
             .collect(Collectors.toList());
@@ -88,27 +94,30 @@ public class TestService {
 
         for (QuestionAnswerModelDTO requestQuestion : requestQuestions) {
             for (QuestionEntity databaseQuestion : questionsAvailable) {
-                if (requestQuestion.getQuestionId().equals(databaseQuestion.getId())) {
+                if (requestQuestion.questionId().equals(databaseQuestion.getId())) {
                     
                     UUID correctOption = databaseQuestion.getOptions().stream()
                     .filter(option -> option.getIsCorrect())
                     .map(option -> option.getId())
                     .findFirst().orElse(null);
 
-                    QuestionResultModelDTO question = new QuestionResultModelDTO();
-
-                    question.setQuestionId(requestQuestion.getQuestionId());
-                    question.setSelectedOptionId(requestQuestion.getSelectedOptionId());
-                    question.setCorrectOptionId(correctOption);
-
-                    if (requestQuestion.getSelectedOptionId().equals(correctOption)) {
-                        question.setIsCorrect(true);
-                    } else {
-                        question.setIsCorrect(false);
-                        score--;
+                    if (requestQuestion.selectedOptionId().equals(correctOption)) {
+                        QuestionResultModelDTO question = new QuestionResultModelDTO(
+                        requestQuestion.questionId(),
+                        requestQuestion.selectedOptionId(),
+                        correctOption,
+                        true);
+                        questions.add(question);
+                        break;
                     }
 
+                    QuestionResultModelDTO question = new QuestionResultModelDTO(
+                    requestQuestion.questionId(),
+                    requestQuestion.selectedOptionId(),
+                    correctOption,
+                    false);
                     questions.add(question);
+                    score--;
                     break;
                 }
             }
@@ -122,13 +131,13 @@ public class TestService {
                 .map(option -> option.getId())
                 .findFirst().orElse(null);
                 
-                QuestionResultModelDTO question = new QuestionResultModelDTO();
+                QuestionResultModelDTO question = new QuestionResultModelDTO(
+                    wrongQuestion.getId(),
+                    null,
+                    correctOption,
+                    false
+                );
 
-                question.setQuestionId(wrongQuestion.getId());
-                question.setSelectedOptionId(null);
-                question.setCorrectOptionId(correctOption);
-                question.setIsCorrect(false);
-                
                 questions.add(question);
                 break;
             }

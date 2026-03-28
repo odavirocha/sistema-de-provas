@@ -48,6 +48,11 @@ public class TestEntity {
         this.questions = questions;
     }
 
+    public TestEntity(UserEntity user, String name) {
+        this.user = user;
+        this.name = name;
+    }
+
     public TestEntity(String name, Set<QuestionEntity> questions) {
         this.name = name;
         this.questions = questions;
