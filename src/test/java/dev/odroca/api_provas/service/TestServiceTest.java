@@ -128,7 +128,7 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Teste sem questão respondida")
+    @DisplayName("Teste corrigir uma prova, com uma questão não respondida")
     void answerTestWithoutOneQuestionTest() {
         UserEntity user = UserFactory.buildUserEntity();
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
