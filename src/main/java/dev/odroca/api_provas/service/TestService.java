@@ -7,7 +7,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import dev.odroca.api_provas.entity.OptionEntity;
-import dev.odroca.api_provas.exception.InvalidAttributeException;
+import dev.odroca.api_provas.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,6 @@ import dev.odroca.api_provas.dto.test.DeleteTestResponseDTO;
 import dev.odroca.api_provas.dto.test.TestResponseDTO;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.exception.TestNotFoundException;
-import dev.odroca.api_provas.exception.UnauthorizedException;
-import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.repository.TestRepository;
 import dev.odroca.api_provas.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
@@ -126,7 +123,7 @@ public class TestService {
 
         for (QuestionEntity wrongQuestion : wrongQuestions) {
             UUID correctId = wrongQuestion.getOptions().stream().filter(OptionEntity::getIsCorrect)
-            .map(OptionEntity::getId).findFirst().orElseThrow(() -> new RuntimeException("Valor não encontrado."));
+            .map(OptionEntity::getId).findFirst().orElseThrow(() -> new OptionNotFoundException("Nenhuma opção correta encontrada para a questão: " + wrongQuestion.getId()));
             QuestionResultModelDTO question = new QuestionResultModelDTO(
                 wrongQuestion.getId(),
                 null,
