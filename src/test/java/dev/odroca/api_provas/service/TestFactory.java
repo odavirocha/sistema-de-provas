@@ -12,6 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestFactory {
     public static TestEntity buildTestEntity(UserEntity user, UUID testId) {
@@ -21,11 +22,17 @@ public class TestFactory {
         return test;
     }
 
-
     public static TestEntity buildTestEntityWithoutOptionCorrect(UserEntity user, UUID testId) {
         TestEntity test = new TestEntity(user ,"Prova de teste");
         ReflectionTestUtils.setField(test, "id", testId);
         test.setQuestions(QuestionFactory.buildQuestionEntityWithoutOptionCorrect(test));
+        return test;
+    }
+
+    public static TestEntity buildTestEntityWithoutOptionCorrectNoSentQuestion(UserEntity user, UUID testId) {
+        TestEntity test = new TestEntity(user ,"Prova de teste");
+        ReflectionTestUtils.setField(test, "id", testId);
+        test.setQuestions(QuestionFactory.buildQuestionEntityWithoutOptionCorrectNoSentQuestion(test));
         return test;
     }
 
@@ -38,6 +45,18 @@ public class TestFactory {
 
             return new QuestionAnswerModelDTO(id, selectedOptionId);
         }).toList();
+
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWithoutOptionCorrectForQuestionNoSubmitted(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream()
+            .flatMap(question -> question.getOptions().stream()
+                .filter(OptionEntity::getIsCorrect)
+                .map(OptionEntity::getId)
+                .findFirst().stream()
+                    .map(selectedOptionId -> new QuestionAnswerModelDTO(question.getId(), selectedOptionId)))
+        .toList();
 
         return new AnswerTestRequestDTO(answerQuestions);
     }

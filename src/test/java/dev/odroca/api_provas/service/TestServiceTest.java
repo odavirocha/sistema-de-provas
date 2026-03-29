@@ -187,12 +187,25 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar OptionNotFoundException quando não houver nenhuma opção correta para a questão")
-    void answerTestOptionNotFoundExceptionTest() {
+    @DisplayName("Deve retornar OptionNotFoundException quando não houver nenhuma opção correta para uma questão enviada")
+    void answerTestOptionNotFoundExceptionSentQuestionTest() {
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
         UserEntity user = UserFactory.buildUserEntity();
         TestEntity test = TestFactory.buildTestEntityWithoutOptionCorrect(user, testId);
         AnswerTestRequestDTO requestTest = TestFactory.buildRequestTestWithoutOptionCorrect(test);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(test));
+
+        assertThrows(OptionNotFoundException.class, () -> testService.answerTest(testId, requestTest));
+    }
+
+    @Test
+    @DisplayName("Deve retornar OptionNotFoundException quando não houver nenhuma opção correta para uma questão não enviada")
+    void answerTestOptionNotFoundExceptionNoSentQuestionTest() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        UserEntity user = UserFactory.buildUserEntity();
+        TestEntity test = TestFactory.buildTestEntityWithoutOptionCorrectNoSentQuestion(user, testId);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTestWithoutOptionCorrectForQuestionNoSubmitted(test);
 
         when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(test));
 
