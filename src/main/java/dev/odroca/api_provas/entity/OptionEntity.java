@@ -35,6 +35,12 @@ public class OptionEntity {
         this.isCorrect = isCorrect;
     }
 
+    public OptionEntity(String value, Boolean isCorrect, QuestionEntity question) {
+        this.value = value;
+        this.isCorrect = isCorrect;
+        this.question = question;
+    }
+
     public UUID getId() {
         return id;
     }

@@ -19,6 +19,7 @@ import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidAttributeException;
+import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
@@ -161,8 +162,8 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Deve corrigir uma prova que todas as questões não existe no banco.")
-    void answerTestWhereAllQuestionsDoNotExist() {
+    @DisplayName("Deve corrigir uma prova, com questionId que não existem.")
+    void answerTestWhereAllQuestionsDoNotExistTest() {
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
         UserEntity user = UserFactory.buildUserEntity();
         TestEntity test = TestFactory.buildTestEntity(user, testId);
@@ -173,7 +174,6 @@ public class TestServiceTest {
         AnswerTestResponseDTO response = testService.answerTest(testId, requestTest);
 
         assertEquals(0, response.getScore());
-
     }
 
     @Test
@@ -183,9 +183,20 @@ public class TestServiceTest {
         QuestionAnswerModelDTO nullQuestion = new QuestionAnswerModelDTO(null, UUID.fromString("de823a13-3c12-4cf7-b266-3d16abe98c94"));
         AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(List.of(nullQuestion));
 
-        assertThrows(InvalidAttributeException.class, () -> {
-            testService.answerTest(testId, requestTest);
-        });
+        assertThrows(InvalidAttributeException.class, () -> testService.answerTest(testId, requestTest));
+    }
+
+    @Test
+    @DisplayName("Deve retornar OptionNotFoundException quando não houver nenhuma opção correta para a questão")
+    void answerTestOptionNotFoundExceptionTest() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        UserEntity user = UserFactory.buildUserEntity();
+        TestEntity test = TestFactory.buildTestEntityWithoutOptionCorrect(user, testId);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTestWithoutOptionCorrect(test);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(test));
+
+        assertThrows(OptionNotFoundException.class, () -> testService.answerTest(testId, requestTest));
     }
 
     @Test
@@ -195,9 +206,7 @@ public class TestServiceTest {
         QuestionAnswerModelDTO nullOption = new QuestionAnswerModelDTO(UUID.fromString("de823a13-3c12-4cf7-b266-3d16abe98c94"), null);
         AnswerTestRequestDTO requestTest = new AnswerTestRequestDTO(List.of(nullOption));
 
-        assertThrows(InvalidAttributeException.class, () -> {
-            testService.answerTest(testId, requestTest);
-        });
+        assertThrows(InvalidAttributeException.class, () -> testService.answerTest(testId, requestTest));
     }
 
     @Test
@@ -210,9 +219,7 @@ public class TestServiceTest {
 
         when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.empty());
 
-        assertThrows(TestNotFoundException.class, () -> {
-            testService.answerTest(testId, requestTest);
-        });
+        assertThrows(TestNotFoundException.class, () -> testService.answerTest(testId, requestTest));
     }
 
     @Test

@@ -21,6 +21,27 @@ public class TestFactory {
         return test;
     }
 
+
+    public static TestEntity buildTestEntityWithoutOptionCorrect(UserEntity user, UUID testId) {
+        TestEntity test = new TestEntity(user ,"Prova de teste");
+        ReflectionTestUtils.setField(test, "id", testId);
+        test.setQuestions(QuestionFactory.buildQuestionEntityWithoutOptionCorrect(test));
+        return test;
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWithoutOptionCorrect(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
+            UUID id = question.getId();
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(option -> !option.getIsCorrect())
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
+
+            return new QuestionAnswerModelDTO(id, selectedOptionId);
+        }).toList();
+
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
     public static AnswerTestRequestDTO buildRequestTest(TestEntity testEntity) {
         List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
             UUID id = question.getId();
@@ -76,4 +97,5 @@ public class TestFactory {
 
         return new AnswerTestRequestDTO(answerQuestions);
     }
+
 }

@@ -97,7 +97,7 @@ public class TestService {
                     UUID correctOption = databaseQuestion.getOptions().stream()
                     .filter(OptionEntity::getIsCorrect)
                     .map(OptionEntity::getId)
-                    .findFirst().orElse(null);
+                    .findFirst().orElseThrow(() -> new OptionNotFoundException("Nenhuma opção correta encontrada para a questão: " + requestQuestion.questionId()));
 
                     if (requestQuestion.selectedOptionId().equals(correctOption)) {
                         QuestionResultModelDTO question = new QuestionResultModelDTO(
