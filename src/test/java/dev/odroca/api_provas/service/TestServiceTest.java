@@ -12,27 +12,24 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
-import dev.odroca.api_provas.dto.question.QuestionResultModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
-import dev.odroca.api_provas.entity.OptionEntity;
-import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidAttributeException;
-import dev.odroca.api_provas.exception.OptionNotFoundException;
-import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.odroca.api_provas.dto.test.TestResponseDTO;
@@ -49,6 +46,9 @@ public class TestServiceTest {
 
     @Mock
     private TestRepository testRepository;
+
+    @Mock
+    private JwtDecoder jwtDecoder;
 
     @InjectMocks
     private TestService testService;
@@ -197,6 +197,37 @@ public class TestServiceTest {
         assertThrows(TestNotFoundException.class, () -> {
             testService.answerTest(testId, requestTest);
         });
+    }
+
+    @Test
+    @DisplayName("Deve retornar todas as provas de um usuário")
+    void getAllTestsForUserSuccessTest() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String cookieValue = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgwL2F1dGgvbG9naW4iLCJzdWIiOiIzOTdlZWM3MS0zNjBkLTQ2MjYtODA1Yy02NjQwYmU2MzU2OTAiLCJyb2xlIjpbIlVTRVIiXSwiZXhwIjoxNzc0NzQ3MzQwLCJpYXQiOjE3NzQ3NDcwNDB9.WjFyEZPwc_gWBvfM7mtKZFRxvRG93ay3WLvZcfhUUQqLc3QcZAgtQGH4R4u_CZ_wnGeYlY3GT1rVBiFXRkhBKmn9eYzzll5imWXUtJGfcXum4x8CmQUZSGUTywXtEIWSbv31-11q9zDFtMuAMXsHOMBvnaKqTrDBYzDhpIshQFN41NdOdKCCu3CgAKWDebX9zTk6T70n4J85X5MloTrn6bbWl_EGLpRk-NqbTYIsv7Jreop7MouoeOaJmmfiIR5M2363KcVEowKFkncBIlYf_OK_kd2Jkq9AKgUZMglpwRYIHHPCVuKdd4MtFhs5hPyMh-NJcFwonB89oA0ZdMUbtg";
+        request.setCookies(new Cookie("accessToken", cookieValue));
+
+        UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
+        UserEntity userEntity = UserFactory.buildUserEntity();
+
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        List<TestEntity> testEntities = List.of(
+            TestFactory.buildTestEntity(userEntity, testId)
+        );
+
+        Jwt jwt = Jwt.withTokenValue("accessToken")
+        .header("alg", "RS256")
+        .subject(userId.toString())
+        .build();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(testRepository.findAllByUserId(userId)).thenReturn(testEntities);
+        when(jwtDecoder.decode(cookieValue)).thenReturn(jwt);
+
+        List<TestResponseDTO> response = testService.getAllTestsForUser(userId, request);
+
+        assertEquals(testEntities.get(0).getId(), response.get(0).getTestId());
+        assertEquals(testEntities.get(0).getName(), response.get(0).getName());
+        assertEquals(testEntities.get(0).getQuestions().size(), response.get(0).getTotalQuestions());
     }
 
 }

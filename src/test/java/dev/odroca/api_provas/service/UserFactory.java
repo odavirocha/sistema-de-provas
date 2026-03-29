@@ -13,7 +13,7 @@ public class UserFactory {
         "$2a$10$AAykMIbXIXhWFmXucp8W/.Syvb9oejO4AiuF8QysFRmBxfxKSqeji",
         Role.USER
         );
-        ReflectionTestUtils.setField(user, "id", UUID.fromString("d50805e1-777c-47dc-9b85-8583e0b671ef"));
+        ReflectionTestUtils.setField(user, "id", UUID.fromString("397eec71-360d-4626-805c-6640be635690"));
         return user;
     }
 }
