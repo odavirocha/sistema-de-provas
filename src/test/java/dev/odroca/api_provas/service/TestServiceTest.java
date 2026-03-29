@@ -128,7 +128,7 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Teste corrigir uma prova, com uma questão não respondida")
+    @DisplayName("Deve corrigir uma prova, com uma questão não respondida")
     void answerTestWithoutOneQuestionTest() {
         UserEntity user = UserFactory.buildUserEntity();
         UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
@@ -158,6 +158,22 @@ public class TestServiceTest {
 
         assertEquals(2, response.getScore());
         assertEquals("Prova finalizada.", response.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve corrigir uma prova que todas as questões não existe no banco.")
+    void answerTestWhereAllQuestionsDoNotExist() {
+        UUID testId = UUID.fromString("e4d7425c-d89b-4483-b0a8-e53ade738603");
+        UserEntity user = UserFactory.buildUserEntity();
+        TestEntity test = TestFactory.buildTestEntity(user, testId);
+        AnswerTestRequestDTO requestTest = TestFactory.buildRequestTestWhereAllQuestionsDoNotExist(test);
+
+        when(testRepository.findByIdWithQuestionsAndOptions(testId)).thenReturn(Optional.of(test));
+
+        AnswerTestResponseDTO response = testService.answerTest(testId, requestTest);
+
+        assertEquals(0, response.getScore());
+
     }
 
     @Test

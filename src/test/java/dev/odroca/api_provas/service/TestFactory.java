@@ -2,6 +2,7 @@ package dev.odroca.api_provas.service;
 
 import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
+import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.entity.UserEntity;
@@ -61,6 +62,18 @@ public class TestFactory {
         answerQuestions.remove(2);
         QuestionAnswerModelDTO wrongQuestion = new QuestionAnswerModelDTO(wrongId, UUID.fromString("397eec71-360d-4626-805c-6640be635690"));
         answerQuestions.add(wrongQuestion);
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWhereAllQuestionsDoNotExist(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
+            UUID questionId = UUID.fromString("397eec71-360d-4626-805c-6640be635691");
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(OptionEntity::getIsCorrect)
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
+            return new QuestionAnswerModelDTO(questionId, selectedOptionId);
+        }).toList();
+
         return new AnswerTestRequestDTO(answerQuestions);
     }
 }
