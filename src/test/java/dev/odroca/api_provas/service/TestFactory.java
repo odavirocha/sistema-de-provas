@@ -2,6 +2,7 @@ package dev.odroca.api_provas.service;
 
 import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
+import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.entity.UserEntity;
@@ -11,6 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TestFactory {
     public static TestEntity buildTestEntity(UserEntity user, UUID testId) {
@@ -18,6 +20,45 @@ public class TestFactory {
         ReflectionTestUtils.setField(test, "id", testId);
         test.setQuestions(QuestionFactory.buildQuestionEntity(test));
         return test;
+    }
+
+    public static TestEntity buildTestEntityWithoutOptionCorrect(UserEntity user, UUID testId) {
+        TestEntity test = new TestEntity(user ,"Prova de teste");
+        ReflectionTestUtils.setField(test, "id", testId);
+        test.setQuestions(QuestionFactory.buildQuestionEntityWithoutOptionCorrect(test));
+        return test;
+    }
+
+    public static TestEntity buildTestEntityWithoutOptionCorrectNoSentQuestion(UserEntity user, UUID testId) {
+        TestEntity test = new TestEntity(user ,"Prova de teste");
+        ReflectionTestUtils.setField(test, "id", testId);
+        test.setQuestions(QuestionFactory.buildQuestionEntityWithoutOptionCorrectNoSentQuestion(test));
+        return test;
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWithoutOptionCorrect(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
+            UUID id = question.getId();
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(option -> !option.getIsCorrect())
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
+
+            return new QuestionAnswerModelDTO(id, selectedOptionId);
+        }).toList();
+
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
+    public static AnswerTestRequestDTO buildRequestTestWithoutOptionCorrectForQuestionNoSubmitted(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream()
+            .flatMap(question -> question.getOptions().stream()
+                .filter(OptionEntity::getIsCorrect)
+                .map(OptionEntity::getId)
+                .findFirst().stream()
+                    .map(selectedOptionId -> new QuestionAnswerModelDTO(question.getId(), selectedOptionId)))
+        .toList();
+
+        return new AnswerTestRequestDTO(answerQuestions);
     }
 
     public static AnswerTestRequestDTO buildRequestTest(TestEntity testEntity) {
@@ -63,4 +104,17 @@ public class TestFactory {
         answerQuestions.add(wrongQuestion);
         return new AnswerTestRequestDTO(answerQuestions);
     }
+
+    public static AnswerTestRequestDTO buildRequestTestWhereAllQuestionsDoNotExist(TestEntity testEntity) {
+        List<QuestionAnswerModelDTO> answerQuestions = testEntity.getQuestions().stream().map(question -> {
+            UUID questionId = UUID.fromString("397eec71-360d-4626-805c-6640be635691");
+            UUID selectedOptionId = question.getOptions().stream()
+            .filter(OptionEntity::getIsCorrect)
+            .map(OptionEntity::getId).findFirst().orElseThrow(OptionNotFoundException::new);
+            return new QuestionAnswerModelDTO(questionId, selectedOptionId);
+        }).toList();
+
+        return new AnswerTestRequestDTO(answerQuestions);
+    }
+
 }
