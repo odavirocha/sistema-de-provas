@@ -76,17 +76,17 @@ public class TestService {
         List<QuestionResultModelDTO> questions = new ArrayList<>();
 
         Set<UUID> requestQuestionsId = requestQuestions.stream()
-            .map(question -> question.questionId())
+            .map(QuestionAnswerModelDTO::questionId)
             .collect(Collectors.toSet());
         
         List<QuestionEntity> questionsAvailable = databaseQuestions.stream()
             .filter(question -> requestQuestionsId.contains(question.getId()))
-            .collect(Collectors.toList());
+            .toList();
 
 //      Perguntas não respondidas (não foram enviadas)
         List<QuestionEntity> wrongQuestions = databaseQuestions.stream()
             .filter(question -> !requestQuestionsId.contains(question.getId()))
-            .collect(Collectors.toList());
+            .toList();
             
         score -= wrongQuestions.size();
 
@@ -95,8 +95,8 @@ public class TestService {
                 if (requestQuestion.questionId().equals(databaseQuestion.getId())) {
                     
                     UUID correctOption = databaseQuestion.getOptions().stream()
-                    .filter(option -> option.getIsCorrect())
-                    .map(option -> option.getId())
+                    .filter(OptionEntity::getIsCorrect)
+                    .map(OptionEntity::getId)
                     .findFirst().orElse(null);
 
                     if (requestQuestion.selectedOptionId().equals(correctOption)) {
@@ -154,15 +154,13 @@ public class TestService {
 
         if (!userId.equals(userIdFromJwt)) throw new UnauthorizedException();
 
-        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException());
+        userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         List<TestEntity> testEntities = testRepository.findAllByUserId(userId);
 
-        List<TestResponseDTO> response = testEntities.stream()
+        return testEntities.stream()
             .map(testEntity -> new TestResponseDTO(testEntity.getId(), testEntity.getName(), testEntity.getQuestions().size()))
             .collect(Collectors.toList());
-
-        return  response; 
     }
     
 }
