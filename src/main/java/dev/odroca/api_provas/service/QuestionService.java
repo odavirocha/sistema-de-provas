@@ -48,16 +48,16 @@ public class QuestionService {
         
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
-        questionEntity.setQuestion(questionModel.getQuestion());
+        questionEntity.setQuestion(questionModel.question());
         
-        Set<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.getOptions());
+        Set<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.options());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
         
-        if (optionEntities.stream().noneMatch(option -> option.getIsCorrect())) {
+        if (optionEntities.stream().noneMatch(OptionEntity::getIsCorrect)) {
             throw new CorrectOptionNotFoundException();
         };
         
-        long listOptionsSize = optionEntities.stream().filter(option -> option.getIsCorrect()).count();
+        long listOptionsSize = optionEntities.stream().filter(OptionEntity::getIsCorrect).count();
         if ( listOptionsSize > 1 ) {
             throw new MultipleCorrectOptionsException();
         };
@@ -66,7 +66,7 @@ public class QuestionService {
         QuestionEntity saved = questionRepository.save(questionEntity);
         
         UUID correctionOptionId = saved.getOptions().stream()
-        .filter(option -> option.getIsCorrect())
+        .filter(OptionEntity::getIsCorrect)
         .findFirst()
         .get()
         .getId();
@@ -102,11 +102,11 @@ public class QuestionService {
         // Atualiza o enunciado
         databaseQuestion.setQuestion(requestQuestion.question());
 
-        if (requestQuestion.options().stream().noneMatch(option -> option.isCorrect())) {
+        if (requestQuestion.options().stream().noneMatch(UpdateOptionModelDTO::isCorrect)) {
             throw new CorrectOptionNotFoundException();
         }
 
-        long listLimit = requestQuestion.options().stream().filter(option -> option.isCorrect()).count();
+        long listLimit = requestQuestion.options().stream().filter(UpdateOptionModelDTO::isCorrect).count();
         if (listLimit > 1) throw new MultipleCorrectOptionsException();
 
         for (UpdateOptionModelDTO requestOption : requestQuestion.options()) {
