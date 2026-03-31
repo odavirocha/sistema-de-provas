@@ -3,6 +3,7 @@ package dev.odroca.api_provas.service;
 import java.util.Set;
 import java.util.UUID;
 
+import dev.odroca.api_provas.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +19,6 @@ import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
-import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
-import dev.odroca.api_provas.exception.QuestionNotFoundException;
-import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.QuestionRepository;
@@ -55,12 +52,12 @@ public class QuestionService {
         
         if (optionEntities.stream().noneMatch(OptionEntity::getIsCorrect)) {
             throw new CorrectOptionNotFoundException();
-        };
+        }
         
         long listOptionsSize = optionEntities.stream().filter(OptionEntity::getIsCorrect).count();
         if ( listOptionsSize > 1 ) {
             throw new MultipleCorrectOptionsException();
-        };
+        }
         
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
@@ -95,7 +92,6 @@ public class QuestionService {
     
     @Transactional
     public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
-
         QuestionEntity databaseQuestion = questionRepository.findByIdWithOptions(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));
         Set<OptionEntity> databaseOptions = databaseQuestion.getOptions();
 
@@ -110,13 +106,16 @@ public class QuestionService {
         if (listLimit > 1) throw new MultipleCorrectOptionsException();
 
         for (UpdateOptionModelDTO requestOption : requestQuestion.options()) {
+            boolean match = false;
             for (OptionEntity databaseOption : databaseOptions) {
                 if (databaseOption.getId().equals(requestOption.optionId())) {
                     databaseOption.setValue(requestOption.value());
                     databaseOption.setIsCorrect(requestOption.isCorrect());
+                    match = true;
                     break;
                 }
             }
+            if (!match) throw new OptionNotFoundException("Opção não encontrada."); // Falha ao encontrar um par.
         }
 
         QuestionEntity saved = questionRepository.save(databaseQuestion);
@@ -127,9 +126,8 @@ public class QuestionService {
     public Set<GetQuestionModelDTO> getAllQuestionsForTest(UUID testId) {
 
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        Set<GetQuestionModelDTO> questions = questionMapper.toDtoList(test.getQuestions());
 
-        return questions;
+        return questionMapper.toDtoList(test.getQuestions());
     }
 
 }

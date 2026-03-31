@@ -12,13 +12,10 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import dev.odroca.api_provas.exception.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,10 +38,6 @@ import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
-import dev.odroca.api_provas.exception.CorrectOptionNotFoundException;
-import dev.odroca.api_provas.exception.MultipleCorrectOptionsException;
-import dev.odroca.api_provas.exception.QuestionNotFoundException;
-import dev.odroca.api_provas.exception.TestNotFoundException;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
 import dev.odroca.api_provas.repository.OptionRepository;
@@ -77,9 +70,9 @@ public class QuestionServiceTest {
         Set<CreateOptionModelDTO> options = new HashSet<>();
         CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2?", options);
         
-        for (Integer i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
-            options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
+            options.add(new CreateOptionModelDTO(String.valueOf(i), isCorrect));
         }
 
         TestEntity testEntity = new TestEntity();
@@ -118,9 +111,9 @@ public class QuestionServiceTest {
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         Set<CreateOptionModelDTO> options = new HashSet<>();
         
-        for (Integer i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
-            options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
+            options.add(new CreateOptionModelDTO(String.valueOf(i), isCorrect));
         }
 
         CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2", options);
@@ -177,8 +170,8 @@ public class QuestionServiceTest {
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
         Set<CreateOptionModelDTO> options = new HashSet<>();
         
-        for (Integer i = 0; i < 5; i++) {
-            options.add(new CreateOptionModelDTO(i.toString(), false));
+        for (int i = 0; i < 5; i++) {
+            options.add(new CreateOptionModelDTO(String.valueOf(i), false));
         }
 
         CreateQuestionModelDTO question = new CreateQuestionModelDTO("Qual é a soma de 2+2?", options);
@@ -211,9 +204,9 @@ public class QuestionServiceTest {
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
 
         Set<CreateOptionModelDTO> options = new HashSet<>();
-        for (Integer i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             Boolean isCorrect = (i == 4);
-            options.add(new CreateOptionModelDTO(i.toString(), isCorrect));
+            options.add(new CreateOptionModelDTO(String.valueOf(i), isCorrect));
         }
 
         Set<CreateQuestionModelDTO> questions = new HashSet<>();
@@ -231,43 +224,28 @@ public class QuestionServiceTest {
     @Test
     @DisplayName("Deve retornar MultipleCorrectOptionsException quando tiver mais de uma opção correta.")
     void createQuestionsMultipleCorrectOptionsException() {
-
         UUID testId = UUID.fromString("5e6863bc-4f69-4a95-b672-c41296ec95a2");
-        
-        Set<CreateOptionModelDTO> optionsWrong = new HashSet<>();
-        optionsWrong.add(new CreateOptionModelDTO("Opção 1", true));
-        optionsWrong.add(new CreateOptionModelDTO("Opção 2", true));
-        optionsWrong.add(new CreateOptionModelDTO("Opção 3", false));
-        
-        Set<CreateOptionModelDTO> optionsCorrect = new HashSet<>();
-        optionsCorrect.add(new CreateOptionModelDTO("Opção 1", true));
-        optionsCorrect.add(new CreateOptionModelDTO("Opção 2", false));
-        optionsCorrect.add(new CreateOptionModelDTO("Opção 3", false));
 
-        Set<CreateQuestionModelDTO> questions = new HashSet<>();
-        questions.add(new CreateQuestionModelDTO("Questão 1?", optionsWrong));
-        questions.add(new CreateQuestionModelDTO("Questão 2?", optionsCorrect));
+        Set<CreateOptionModelDTO> optionsWrongModel = new HashSet<>();
+        optionsWrongModel.add(new CreateOptionModelDTO("Opção 1", true));
+        optionsWrongModel.add(new CreateOptionModelDTO("Opção 2", true));
+        optionsWrongModel.add(new CreateOptionModelDTO("Opção 3", false));
+
+        LinkedHashSet<CreateQuestionModelDTO> questions = new LinkedHashSet<>();
+        questions.add(new CreateQuestionModelDTO("Questão 1?", optionsWrongModel));
 
         CreateQuestionsRequestDTO questionsModel = new CreateQuestionsRequestDTO(questions);
 
         TestEntity test = new TestEntity();
-        Set<OptionEntity> optionsEntities1 = new HashSet<>();
-        optionsEntities1.add(new OptionEntity("Opção 1", true));
-        optionsEntities1.add(new OptionEntity("Opção 2", true));
-        optionsEntities1.add(new OptionEntity("Opção 3", false));
-
-        Set<OptionEntity> optionsEntities2 = new HashSet<>();
-        optionsEntities2.add(new OptionEntity("Opção 1", true));
-        optionsEntities2.add(new OptionEntity("Opção 2", false));
-        optionsEntities2.add(new OptionEntity("Opção 3", false));
+        Set<OptionEntity> optionsWrongEntities = new HashSet<>();
+        optionsWrongEntities.add(new OptionEntity("Opção 1", true));
+        optionsWrongEntities.add(new OptionEntity("Opção 2", true));
+        optionsWrongEntities.add(new OptionEntity("Opção 3", false));
 
         when(testRepository.findById(testId)).thenReturn(Optional.of(test));
-        when(optionMapper.createDtoToEntityList(any())).thenReturn(optionsEntities1, optionsEntities2);
+        when(optionMapper.createDtoToEntityList(optionsWrongModel)).thenReturn(optionsWrongEntities);
 
-        assertThrows(MultipleCorrectOptionsException.class, () -> {
-            questionService.createQuestions(testId, questionsModel);
-        });
-
+        assertThrows(MultipleCorrectOptionsException.class, () -> questionService.createQuestions(testId, questionsModel));
     }
 
     @Test
@@ -281,8 +259,8 @@ public class QuestionServiceTest {
         when(testRepository.findById(testId)).thenReturn(Optional.of(testEntity));
         
         Set<CreateOptionModelDTO> options = new HashSet<>();
-        for (Integer i = 0; i < 5; i++) {
-            options.add(new CreateOptionModelDTO(i.toString(), false));
+        for (int i = 0; i < 5; i++) {
+            options.add(new CreateOptionModelDTO(String.valueOf(i), false));
         }
 
         Set<CreateQuestionModelDTO> questions = new HashSet<>();
@@ -311,14 +289,14 @@ public class QuestionServiceTest {
         );
 
         Set<UpdateOptionModelDTO> requestOptions = new HashSet<>();
-        for (Integer i = 0; i < 4; i++) {
-            if (i.equals(2)) {
-                UpdateOptionModelDTO option = new UpdateOptionModelDTO(optionsId.get(i), i.toString(), true);
-                requestOptions.add(option);
+        for (int i = 0; i < 4; i++) {
+            UpdateOptionModelDTO option;
+            if (i == 2) {
+                option = new UpdateOptionModelDTO(optionsId.get(i), String.valueOf(i), true);
             } else {
-                UpdateOptionModelDTO option = new UpdateOptionModelDTO(optionsId.get(i), i.toString(), false);
-                requestOptions.add(option);
+                option = new UpdateOptionModelDTO(optionsId.get(i), String.valueOf(i), false);
             }
+            requestOptions.add(option);
         }
         UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("Enunciado: 1+1?", requestOptions);
 
@@ -327,12 +305,12 @@ public class QuestionServiceTest {
         databaseQuestion.setQuestion("Enunciado: 2+1?");
 
         Set<OptionEntity> databaseOptions = new HashSet<>();
-        for (Integer i = 0; i < 4; i++) {
-            OptionEntity option = new OptionEntity(i.toString(), false);
+        for (int i = 0; i < 4; i++) {
+            OptionEntity option = new OptionEntity(String.valueOf(i), false);
             ReflectionTestUtils.setField(option, "id", optionsId.get(i));
-            if (i.equals(3)) {
-                option.setIsCorrect(true);
-            }
+
+            if (i == 3) option.setIsCorrect(true);
+
             databaseOptions.add(option);
         }
         databaseQuestion.setOptions(databaseOptions);
@@ -370,8 +348,8 @@ public class QuestionServiceTest {
             UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
         );
         Set<UpdateOptionModelDTO> options = new HashSet<>();
-        for (Integer i = 0; i < 4; i++) {
-            options.add(new UpdateOptionModelDTO(optionsId.get(i), i.toString(), false));
+        for (int i = 0; i < 4; i++) {
+            options.add(new UpdateOptionModelDTO(optionsId.get(i), String.valueOf(i), false));
         }
 
         UpdateQuestionRequestDTO questionRequestDTO = new UpdateQuestionRequestDTO("1+1", options);
@@ -396,8 +374,8 @@ public class QuestionServiceTest {
             UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
             UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
         );
-        for (Integer i = 0; i < 4; i++) {
-            options.add(new UpdateOptionModelDTO(optionsId.get(i), i.toString(), false));
+        for (int i = 0; i < 4; i++) {
+            options.add(new UpdateOptionModelDTO(optionsId.get(i), String.valueOf(i), false));
         }
 
         UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("1+1", options);
@@ -417,7 +395,6 @@ public class QuestionServiceTest {
     @Test
     @DisplayName("Deve retornar MultipleCorrectOptionsException quando existir mais uma resposta correta.") 
     void updateQuestionMultipleCorrectOptionsException() {
-
         UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
         Set<UpdateOptionModelDTO> options = new HashSet<>();
         List<UUID> optionsId = List.of(
@@ -426,8 +403,8 @@ public class QuestionServiceTest {
             UUID.fromString("4b8f5e4a-892e-41e2-ab58-b9e7dd907b70"),
             UUID.fromString("0034398d-c602-43ba-9aff-6f0081244b30")
         );
-        for (Integer i = 0; i < 4; i++) {
-            UpdateOptionModelDTO option = new UpdateOptionModelDTO(optionsId.get(i), i.toString(), true);
+        for (int i = 0; i < 4; i++) {
+            UpdateOptionModelDTO option = new UpdateOptionModelDTO(optionsId.get(i), String.valueOf(i), true);
             options.add(option);
         }
 
@@ -443,6 +420,38 @@ public class QuestionServiceTest {
         assertThrows(MultipleCorrectOptionsException.class, () -> {
             questionService.updateQuestion(questionId, requestQuestion);
         });  
+    }
+
+
+    @Test
+    @DisplayName("Deve retornar OptionNotFoundException quando não achar o id da questão no banco")
+    void updateQuestionOptionNotFoundExceptionTest() {
+        UUID questionId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
+
+        Set<UpdateOptionModelDTO> requestOptions = Set.of(
+            new UpdateOptionModelDTO(UUID.randomUUID(), "1", false),
+            new UpdateOptionModelDTO(UUID.randomUUID(), "2", true),
+            new UpdateOptionModelDTO(UUID.randomUUID(), "3", false),
+            new UpdateOptionModelDTO(UUID.randomUUID(), "4", false)
+        );
+
+        Set<OptionEntity> databaseOptions = Set.of(
+            new OptionEntity("1+1", false),
+            new OptionEntity("1+1", true),
+            new OptionEntity("1+1", false),
+            new OptionEntity("1+1", false)
+        );
+
+        for (OptionEntity option: databaseOptions) {
+            ReflectionTestUtils.setField(option, "id", UUID.randomUUID());
+        }
+
+        UpdateQuestionRequestDTO requestQuestion = new UpdateQuestionRequestDTO("1+1?", requestOptions);
+        QuestionEntity databaseQuestion = new QuestionEntity("1+1", databaseOptions);
+
+        when(questionRepository.findByIdWithOptions(questionId)).thenReturn(Optional.of(databaseQuestion));
+
+        assertThrows(OptionNotFoundException.class, () -> questionService.updateQuestion(questionId, requestQuestion));
     }
 
     @Test
@@ -466,18 +475,18 @@ public class QuestionServiceTest {
         ReflectionTestUtils.setField(databaseTest, "name", "Prova de teste 01");
         ReflectionTestUtils.setField(databaseTest, "questions", questions);
 
-        for (Integer i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
 
             OptionEntity optionEntity = new OptionEntity();
             Boolean isCorrect = (i == 4);
             optionEntity.setIsCorrect(isCorrect);
-            optionEntity.setValue(i.toString());
+            optionEntity.setValue(String.valueOf(i));
             ReflectionTestUtils.setField(optionEntity, "id", idsFromRequest.get(i));
 
             options.add(optionEntity);
         }
         
-        for (Integer i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
 
             QuestionEntity questionEntity = new QuestionEntity();
             questionEntity.setQuestion(i + " + " + i);
@@ -487,16 +496,11 @@ public class QuestionServiceTest {
         }
 
         Set<GetOptionModelDTO> optionsConverted = options.stream()
-        .map(option -> {
-            GetOptionModelDTO optionConverted = new GetOptionModelDTO(option.getId(), option.getValue(), option.getIsCorrect());
-            return optionConverted;
-        }).collect(Collectors.toSet());
+        .map(option -> new GetOptionModelDTO(option.getId(), option.getValue(), option.getIsCorrect())).collect(Collectors.toSet());
 
         Set<GetQuestionModelDTO> questionsConverted = questions.stream()
-        .map(question -> {
-            GetQuestionModelDTO questionConverted = new GetQuestionModelDTO(question.getId(), question.getQuestion(), optionsConverted);
-            return questionConverted;
-        }).collect(Collectors.toSet());
+        .map(question -> new GetQuestionModelDTO(question.getId(), question.getQuestion(), optionsConverted)
+        ).collect(Collectors.toSet());
 
 
         when(testRepository.findById(testId)).thenReturn(Optional.of(databaseTest));
@@ -509,16 +513,12 @@ public class QuestionServiceTest {
 
     @Test
     @DisplayName("Deve retornar TestNotFoundException quando tudo não achar uma prova.")
-    void getAllQuestionsForTestTestNotFoundException() {
-
+    void getAllQuestionsForTestTestNotFoundExceptionTest() {
         UUID testId = UUID.fromString("e7baa643-6ee6-4ffc-b41b-4aa248b4c144");
 
         when(testRepository.findById(testId)).thenReturn(Optional.empty());
 
-        assertThrows(TestNotFoundException.class, () -> {
-            questionService.getAllQuestionsForTest(testId);
-        });
-        
+        assertThrows(TestNotFoundException.class, () -> questionService.getAllQuestionsForTest(testId));
     }
 
 }
