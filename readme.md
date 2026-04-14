@@ -72,9 +72,9 @@
   <summary><strong> ⚙️ Como rodar manualmente. </strong> <sub> (expandir) </sub></summary>
 
 -  ### Pré-requisitos
-    - Java 17+
-    - Maven
-    - PostgreSQL
+  - Java 17+
+  - Maven
+  - PostgreSQL
 
 - ### Passo a passo
 
@@ -82,53 +82,41 @@
 
     ```
       # Banco local
-      POSTGRES_USER=postgres
-      POSTGRES_PASSWORD=postgres
-      POSTGRES_DB=banco_api_provas
+      POSTGRES_USER="root"
+      POSTGRES_PASSWORD="root"
+      POSTGRES_DB="nome_do_banco"
 
       # Banco externo
       EXT_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
     ```
 
-  ### 2. Instale as dependências.
+  ### 2. Execute o projeto.
+  **O projeto pode ser executado utilizando banco de dados local ou externo.**
 
-    Rode no terminal o comando:
+    <br>
 
-    ```bash
-    ./mvnw clean install
-    ```
-    ou
-    ```bash
-    mvn clean install
-    ```
-
-  ### 3. Execute o projeto.
-    O projeto pode ser executado utilizando banco de dados local ou externo.
-    
-    Para usar banco de dados local rode no terminal o comando:
+  Para usar banco de dados local rode no terminal o comando:
 
     ```bash
-    ./mvnw spring-boot:run
+    ./mvnw spring-boot:run -Dspring.profiles.active=dev-local
     ```
-    ou
+  ou
     ```bash
-    mvn spring-boot:run
+    mvn spring-boot:run -Dspring.profiles.active=dev-local
     ```
-    
-    Para usar banco de dados externo rode no terminal o comando:
 
-    *O link do banco de dados deve ser configurado na .env*
+  Para usar banco de dados externo rode no terminal o comando:
 
     ```bash
     ./mvnw spring-boot:run -Dspring.profiles.active=dev-ext
     ```
-    ou
+  ou
     ```bash
     mvn spring-boot:run -Dspring.profiles.active=dev-ext
     ```
 
-  Isso deixará a API disponível em http://localhost:8080/.
-  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API. Também é necessário copiar o CSRF Token armazenado nos cookies e envia-lo via Header X-XSRF-TOKEN.
+  A API estará API disponível em http://localhost:8080/.
+  >   ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insomnia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
 </details>
 
 
@@ -144,18 +132,24 @@
 
   ### 1. Escolha qual banco usar.
 
-    - Para usar banco em nuvem.
+  - Para usar banco em nuvem.
     ```bash
-    docker compose -f docker-compose.yml -f docker-compose.ext.yml up --build
+    docker compose -f docker-compose.ext.yml up -d
     ```
 
-    - Para usar PostgreSQL Local.
+  - Para usar PostgreSQL Local.
     ```bash
-    docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
+    docker compose up -d
     ```
 
-  Isso deixará a API disponível em http://localhost:8080/.
-  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API. Também é necessário copiar o CSRF Token armazenado nos cookies e envia-lo via Header X-XSRF-TOKEN.
+    <br>
+
+  A API estará API disponível em http://localhost:8080/.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insomnia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+
+  O banco de dados estará disponível em `postgresql://localhost:5432/nome_do_banco`
+
+  > ♦️Nome deve ter sido definido nas variáveis de ambiente! Use ferramentas como [pgAdmin](https://www.pgadmin.org/) ou [Dbeaver](https://dbeaver.io/) para acessar o banco de dados.
 
 </details>
 
@@ -319,20 +313,20 @@
     </details>
 
 * #### DELETE /test
-    
-    - #### Deleta uma prova `/test/${testId}`
 
-      <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+  - #### Deleta uma prova `/test/${testId}`
 
-      ``` json
-      {
-        "id": "dae17f4c-3b63-4ce6-92eb-7ce4c950b496",
-        "message": "Prova deletada com sucesso!"
-      }
-      ```
-      </details>
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ``` json
+    {
+      "id": "dae17f4c-3b63-4ce6-92eb-7ce4c950b496",
+      "message": "Prova deletada com sucesso!"
+    }
+    ```
+    </details>
 
 </details>
 
@@ -341,476 +335,445 @@
 
 * #### POST /question
 
-    - #### Como criar uma questão `/questions/{testId}`
+  - #### Como criar uma questão `/questions/{testId}`
 
-      <details>
-        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+      <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
 
-      ```json
-      {
-        "question": {
-          "question": "Quanto é 1+1?",
-          "options": [
-            {"value": "1", "isCorrect": false},
-            {"value": "2", "isCorrect": true},
-            {"value": "3", "isCorrect": false},
-            {"value": "4", "isCorrect": false}
-          ]
-        }
-      }
-      ```
-      
-      </details>
-
-      <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
-
-      ```json
-      {
-        "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+    ```json
+    {
+      "question": {
         "question": "Quanto é 1+1?",
-        "totalOptions": 4,
-        "correctOptionId": "d8bebc0f-16f2-4fb3-840f-5b106f0a78d8",
-        "message": "Questão criada com sucesso!"
-      }
-      ```
-      
-      </details>
-
-    - #### Como criar varias questões `/questions/{testId}/batch`
-
-      <details>
-        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
-
-      ```json
-      {
-        "questions": [
-            {
-              "question": "Quanto é 1+1?",
-              "options": [
-                {"value": "1", "isCorrect": false},
-                {"value": "2", "isCorrect": true},
-                {"value": "3", "isCorrect": false},
-                {"value": "4", "isCorrect": false}
-              ]
-            },
-            {
-              "question": "Quanto é 1+2?",
-              "options": [
-                {"value": "1", "isCorrect": false},
-                {"value": "2", "isCorrect": false},
-                {"value": "3", "isCorrect": true},
-                {"value": "4", "isCorrect": false}
-              ]
-            },
-            {
-              "question": "Quanto é 1+3?",
-              "options": [
-                {"value": "1", "isCorrect": false},
-                {"value": "2", "isCorrect": false},
-                {"value": "3", "isCorrect": false},
-                {"value": "4", "isCorrect": true}
-              ]
-            }
+        "options": [
+          {"value": "1", "isCorrect": false},
+          {"value": "2", "isCorrect": true},
+          {"value": "3", "isCorrect": false},
+          {"value": "4", "isCorrect": false}
         ]
       }
-      ```
-      
-      </details>
-            <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    }
+    ```
 
-      ```json
-      {
-          "id": "1c24781e-9ea4-47eb-aae1-64f6a6d74944",
-          "totalCreatedQuestions": 3,
-          "message": "Questões criadas com sucesso!"
-      }
-      ```
+    </details>
 
-      </details>
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ```json
+    {
+      "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+      "question": "Quanto é 1+1?",
+      "totalOptions": 4,
+      "correctOptionId": "d8bebc0f-16f2-4fb3-840f-5b106f0a78d8",
+      "message": "Questão criada com sucesso!"
+    }
+    ```
+
+    </details>
+
+  - #### Como criar varias questões `/questions/{testId}/batch`
+
+    <details>
+      <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ```json
+    {
+      "questions": [
+          {
+            "question": "Quanto é 1+1?",
+            "options": [
+              {"value": "1", "isCorrect": false},
+              {"value": "2", "isCorrect": true},
+              {"value": "3", "isCorrect": false},
+              {"value": "4", "isCorrect": false}
+            ]
+          },
+          {
+            "question": "Quanto é 1+2?",
+            "options": [
+              {"value": "1", "isCorrect": false},
+              {"value": "2", "isCorrect": false},
+              {"value": "3", "isCorrect": true},
+              {"value": "4", "isCorrect": false}
+            ]
+          },
+          {
+            "question": "Quanto é 1+3?",
+            "options": [
+              {"value": "1", "isCorrect": false},
+              {"value": "2", "isCorrect": false},
+              {"value": "3", "isCorrect": false},
+              {"value": "4", "isCorrect": true}
+            ]
+          }
+      ]
+    }
+    ```
+
+    </details>
+          <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ```json
+    {
+        "id": "1c24781e-9ea4-47eb-aae1-64f6a6d74944",
+        "totalCreatedQuestions": 3,
+        "message": "Questões criadas com sucesso!"
+    }
+    ```
+
+    </details>
 
 * #### PATCH /question
-    - #### Como editar uma questão `/questions/{questionId}`
+  - #### Como editar uma questão `/questions/{questionId}`
 
-      <details>
-        <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+      <summary><strong> Examplo de requisição 📤 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
 
-      ```json
-      {
-        "question": "Quanto é 10+10?",
-        "options": [
-          {"value": "100", "isCorrect": false},
-          {"value": "20", "isCorrect": true},
-          {"value": "200", "isCorrect": false},
-          {"value": "10", "isCorrect": false}
-        ]
-      }
-      ```
+    ```json
+    {
+      "question": "Quanto é 10+10?",
+      "options": [
+        {"value": "100", "isCorrect": false},
+        {"value": "20", "isCorrect": true},
+        {"value": "200", "isCorrect": false},
+        {"value": "10", "isCorrect": false}
+      ]
+    }
+    ```
 
-      </details>
-      
-      <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    </details>
 
-      ```json
-      {
-        "questionId": "486fce7b-2012-4a88-b23b-5cc353060643",
-        "message": "Questão alterada com sucesso!"
-      }
-      ```
-      
-      </details>
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ```json
+    {
+      "questionId": "486fce7b-2012-4a88-b23b-5cc353060643",
+      "message": "Questão alterada com sucesso!"
+    }
+    ```
+
+    </details>
 
 * #### GET /question
-    - #### Retorna todas as questões de uma prova `/questions/{testId}`
-      
-      <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+  - #### Retorna todas as questões de uma prova `/questions/{testId}`
 
-      ```json
-      [
-        {
-          "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
-          "question": "Questão número 6",
-          "options": [
-            {
-              "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
-              "value": "4",
-              "isCorrect": false
-            },
-            {
-              "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
-              "value": "5",
-              "isCorrect": true
-            }
-          ]
-        },
-        {
-          "id": "44d02fe8-3388-485a-95ca-a16703d25585",
-          "question": "Quanto é 1+1?",
-          "options": [
-            {
-              "id": "f9f9711f-86a2-47a2-b7e3-f149f449bead",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "ef6ba040-7354-4d6d-a566-489a41bfaf97",
-              "value": "2",
-              "isCorrect": true
-            },
-            {
-              "id": "f24b21c2-7c3a-4f1b-8a75-47d6696882d1",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "b2d489e2-66fd-413a-b451-b8f7631d9b1a",
-              "value": "4",
-              "isCorrect": false
-            }
-          ]
-        },
-        {
-          "id": "eb0a987f-dd0a-47cc-a912-0d54e79881bf",
-          "question": "Quanto é 1+2?",
-          "options": [
-            {
-              "id": "64d1e3ad-917f-42fd-94fa-47ec3da5ad44",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "651ff639-27af-4295-888d-3be53dbf7b06",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "763c1673-79ac-4d45-a3a0-866b7cb24011",
-              "value": "3",
-              "isCorrect": true
-            },
-            {
-              "id": "67f3e8e5-50ce-47f7-aa84-f2edf5daae2b",
-              "value": "4",
-              "isCorrect": false
-            }
-          ]
-        },
-        {
-          "id": "1c380efd-ede0-4570-a8cf-ad91783b068e",
-          "question": "Quanto é 1+3?",
-          "options": [
-            {
-              "id": "88fcd2df-4a2d-4839-ae68-68f3fcbd69c5",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "b857b1de-84b8-4232-b125-60e4823afd3e",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "79c97807-d33a-4031-8bdc-7aace96824bd",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "fa7139a4-aa58-408c-9018-7d274aedd029",
-              "value": "4",
-              "isCorrect": true
-            }
-          ]
-        },
-        {
-          "id": "486fce7b-2012-4a88-b23b-5cc353060643",
-          "question": "Quanto é 10+10?",
-          "options": [
-            {
-              "id": "5c96eba8-508c-4277-9c7a-974b1abac323",
-              "value": "100",
-              "isCorrect": false
-            },
-            {
-              "id": "69a724ec-17f2-49b4-9898-255b40864b89",
-              "value": "20",
-              "isCorrect": true
-            },
-            {
-              "id": "66df9e69-f667-4ee0-987f-9608a3c66c6a",
-              "value": "200",
-              "isCorrect": false
-            },
-            {
-              "id": "7998dad5-ab11-4778-901b-e26f32561e69",
-              "value": "10",
-              "isCorrect": false
-            }
-          ]
-        }
-      ]
-      ```
-      
-      </details>
-      
-    - #### Retorna todas as questões de uma prova `/question/{testId}`
-      
-      <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
 
-      ```json
-      [
-        {
-          "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
-          "question": "Questão número 6",
-          "options": [
-            {
-              "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
-              "value": "4",
-              "isCorrect": false
-            },
-            {
-              "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
-              "value": "5",
-              "isCorrect": true
-            }
-          ]
-        },
-        {
-          "id": "44d02fe8-3388-485a-95ca-a16703d25585",
-          "question": "Quanto é 1+1?",
-          "options": [
-            {
-              "id": "f9f9711f-86a2-47a2-b7e3-f149f449bead",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "ef6ba040-7354-4d6d-a566-489a41bfaf97",
-              "value": "2",
-              "isCorrect": true
-            },
-            {
-              "id": "f24b21c2-7c3a-4f1b-8a75-47d6696882d1",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "b2d489e2-66fd-413a-b451-b8f7631d9b1a",
-              "value": "4",
-              "isCorrect": false
-            }
-          ]
-        },
-        {
-          "id": "eb0a987f-dd0a-47cc-a912-0d54e79881bf",
-          "question": "Quanto é 1+2?",
-          "options": [
-            {
-              "id": "64d1e3ad-917f-42fd-94fa-47ec3da5ad44",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "651ff639-27af-4295-888d-3be53dbf7b06",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "763c1673-79ac-4d45-a3a0-866b7cb24011",
-              "value": "3",
-              "isCorrect": true
-            },
-            {
-              "id": "67f3e8e5-50ce-47f7-aa84-f2edf5daae2b",
-              "value": "4",
-              "isCorrect": false
-            }
-          ]
-        },
-        {
-          "id": "1c380efd-ede0-4570-a8cf-ad91783b068e",
-          "question": "Quanto é 1+3?",
-          "options": [
-            {
-              "id": "88fcd2df-4a2d-4839-ae68-68f3fcbd69c5",
-              "value": "1",
-              "isCorrect": false
-            },
-            {
-              "id": "b857b1de-84b8-4232-b125-60e4823afd3e",
-              "value": "2",
-              "isCorrect": false
-            },
-            {
-              "id": "79c97807-d33a-4031-8bdc-7aace96824bd",
-              "value": "3",
-              "isCorrect": false
-            },
-            {
-              "id": "fa7139a4-aa58-408c-9018-7d274aedd029",
-              "value": "4",
-              "isCorrect": true
-            }
-          ]
-        },
-        {
-          "id": "486fce7b-2012-4a88-b23b-5cc353060643",
-          "question": "Quanto é 10+10?",
-          "options": [
-            {
-              "id": "5c96eba8-508c-4277-9c7a-974b1abac323",
-              "value": "100",
-              "isCorrect": false
-            },
-            {
-              "id": "69a724ec-17f2-49b4-9898-255b40864b89",
-              "value": "20",
-              "isCorrect": true
-            },
-            {
-              "id": "66df9e69-f667-4ee0-987f-9608a3c66c6a",
-              "value": "200",
-              "isCorrect": false
-            },
-            {
-              "id": "7998dad5-ab11-4778-901b-e26f32561e69",
-              "value": "10",
-              "isCorrect": false
-            }
-          ]
-        }
-      ]
-      ```
-      
-      </details>
-
-* #### DELETE /question
-    - #### Deleta uma questão `/question/{questionId}`
-      
-      <details>
-        <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
-      &nbsp;
-
-      ```json
+    ```json
+    [
       {
         "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
-        "message": "Questão deletada com sucesso!"
+        "question": "Questão número 6",
+        "options": [
+          {
+            "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
+            "value": "2",
+            "isCorrect": false
+          },
+          {
+            "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
+            "value": "3",
+            "isCorrect": false
+          },
+          {
+            "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
+            "value": "4",
+            "isCorrect": false
+          },
+          {
+            "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+            "value": "5",
+            "isCorrect": true
+          }
+        ]
+      },
+      {
+        "id": "44d02fe8-3388-485a-95ca-a16703d25585",
+        "question": "Quanto é 1+1?",
+        "options": [
+          {
+            "id": "f9f9711f-86a2-47a2-b7e3-f149f449bead",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "ef6ba040-7354-4d6d-a566-489a41bfaf97",
+            "value": "2",
+            "isCorrect": true
+          },
+          {
+            "id": "f24b21c2-7c3a-4f1b-8a75-47d6696882d1",
+            "value": "3",
+            "isCorrect": false
+          },
+          {
+            "id": "b2d489e2-66fd-413a-b451-b8f7631d9b1a",
+            "value": "4",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "eb0a987f-dd0a-47cc-a912-0d54e79881bf",
+        "question": "Quanto é 1+2?",
+        "options": [
+          {
+            "id": "64d1e3ad-917f-42fd-94fa-47ec3da5ad44",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "651ff639-27af-4295-888d-3be53dbf7b06",
+            "value": "2",
+            "isCorrect": false
+          },
+          {
+            "id": "763c1673-79ac-4d45-a3a0-866b7cb24011",
+            "value": "3",
+            "isCorrect": true
+          },
+          {
+            "id": "67f3e8e5-50ce-47f7-aa84-f2edf5daae2b",
+            "value": "4",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "1c380efd-ede0-4570-a8cf-ad91783b068e",
+        "question": "Quanto é 1+3?",
+        "options": [
+          {
+            "id": "88fcd2df-4a2d-4839-ae68-68f3fcbd69c5",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "b857b1de-84b8-4232-b125-60e4823afd3e",
+            "value": "2",
+            "isCorrect": false
+          },
+          {
+            "id": "79c97807-d33a-4031-8bdc-7aace96824bd",
+            "value": "3",
+            "isCorrect": false
+          },
+          {
+            "id": "fa7139a4-aa58-408c-9018-7d274aedd029",
+            "value": "4",
+            "isCorrect": true
+          }
+        ]
+      },
+      {
+        "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+        "question": "Quanto é 10+10?",
+        "options": [
+          {
+            "id": "5c96eba8-508c-4277-9c7a-974b1abac323",
+            "value": "100",
+            "isCorrect": false
+          },
+          {
+            "id": "69a724ec-17f2-49b4-9898-255b40864b89",
+            "value": "20",
+            "isCorrect": true
+          },
+          {
+            "id": "66df9e69-f667-4ee0-987f-9608a3c66c6a",
+            "value": "200",
+            "isCorrect": false
+          },
+          {
+            "id": "7998dad5-ab11-4778-901b-e26f32561e69",
+            "value": "10",
+            "isCorrect": false
+          }
+        ]
       }
-      ```
-      
-      </details>
+    ]
+    ```
 
-</details>
+    </details>
 
----
+  - #### Retorna todas as questões de uma prova `/question/{testId}`
 
-### Variáveis de ambiente no VSCode (.env)
-No vscode eu tive que dizer para o projeto onde estava as variaveis de ambiente, então se estiver usando VSCode essa seção pode ser útil.
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
 
-<details>
-  <summary><strong> Se necessário </strong> <sub> (expandir) </sub></summary>
-&nbsp;
+    ```json
+    [
+      {
+        "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+        "question": "Questão número 6",
+        "options": [
+          {
+            "id": "1f8a0fd2-1992-49bc-b2d9-be97609b653c",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "e84e89bf-cb4d-4de0-95ce-2c4ea9e555b8",
+            "value": "2",
+            "isCorrect": false
+          },
+          {
+            "id": "b9fdc438-6fbb-4165-ae29-c38b30087110",
+            "value": "3",
+            "isCorrect": false
+          },
+          {
+            "id": "bdd3c697-94da-4032-a7c1-deef3eb9f14b",
+            "value": "4",
+            "isCorrect": false
+          },
+          {
+            "id": "de823a13-3c12-4cf7-b266-3d16abe98c94",
+            "value": "5",
+            "isCorrect": true
+          }
+        ]
+      },
+      {
+        "id": "44d02fe8-3388-485a-95ca-a16703d25585",
+        "question": "Quanto é 1+1?",
+        "options": [
+          {
+            "id": "f9f9711f-86a2-47a2-b7e3-f149f449bead",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "ef6ba040-7354-4d6d-a566-489a41bfaf97",
+            "value": "2",
+            "isCorrect": true
+          },
+          {
+            "id": "f24b21c2-7c3a-4f1b-8a75-47d6696882d1",
+            "value": "3",
+            "isCorrect": false
+          },
+          {
+            "id": "b2d489e2-66fd-413a-b451-b8f7631d9b1a",
+            "value": "4",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "eb0a987f-dd0a-47cc-a912-0d54e79881bf",
+        "question": "Quanto é 1+2?",
+        "options": [
+          {
+            "id": "64d1e3ad-917f-42fd-94fa-47ec3da5ad44",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "651ff639-27af-4295-888d-3be53dbf7b06",
+            "value": "2",
+            "isCorrect": false
+          },
+          {
+            "id": "763c1673-79ac-4d45-a3a0-866b7cb24011",
+            "value": "3",
+            "isCorrect": true
+          },
+          {
+            "id": "67f3e8e5-50ce-47f7-aa84-f2edf5daae2b",
+            "value": "4",
+            "isCorrect": false
+          }
+        ]
+      },
+      {
+        "id": "1c380efd-ede0-4570-a8cf-ad91783b068e",
+        "question": "Quanto é 1+3?",
+        "options": [
+          {
+            "id": "88fcd2df-4a2d-4839-ae68-68f3fcbd69c5",
+            "value": "1",
+            "isCorrect": false
+          },
+          {
+            "id": "b857b1de-84b8-4232-b125-60e4823afd3e",
+            "value": "2",
+            "isCorrect": false
+          },
+          {
+            "id": "79c97807-d33a-4031-8bdc-7aace96824bd",
+            "value": "3",
+            "isCorrect": false
+          },
+          {
+            "id": "fa7139a4-aa58-408c-9018-7d274aedd029",
+            "value": "4",
+            "isCorrect": true
+          }
+        ]
+      },
+      {
+        "id": "486fce7b-2012-4a88-b23b-5cc353060643",
+        "question": "Quanto é 10+10?",
+        "options": [
+          {
+            "id": "5c96eba8-508c-4277-9c7a-974b1abac323",
+            "value": "100",
+            "isCorrect": false
+          },
+          {
+            "id": "69a724ec-17f2-49b4-9898-255b40864b89",
+            "value": "20",
+            "isCorrect": true
+          },
+          {
+            "id": "66df9e69-f667-4ee0-987f-9608a3c66c6a",
+            "value": "200",
+            "isCorrect": false
+          },
+          {
+            "id": "7998dad5-ab11-4778-901b-e26f32561e69",
+            "value": "10",
+            "isCorrect": false
+          }
+        ]
+      }
+    ]
+    ```
 
-Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuração para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
+    </details>
 
-```json
-{
-  "version": "0.2.0",
-  "configurations": [
+* #### DELETE /question
+  - #### Deleta uma questão `/question/{questionId}`
+
+    <details>
+      <summary><strong> Examplo de resposta 📥 </strong> <sub> (expandir) </sub></summary>
+    &nbsp;
+
+    ```json
     {
-      "type": "java",
-      "name": "Spring Boot App",
-      "request": "launch",
-      "mainClass": "dev.odroca.api_provas.ApiProvasApplication",
-      "projectName": "api_provas",
-      "envFile": "${workspaceFolder}/.env"
+      "id": "9fa7c520-38d9-453c-957f-6b0f0cc8a293",
+      "message": "Questão deletada com sucesso!"
     }
-  ]
-}
-```
+    ```
 
-*O arquivo .env deve ficar na raiz do projeto para ser lido pelo launch.json e pelo docker — se estiver com PostgreSQL via docker.*
+    </details>
 
 </details>
 
