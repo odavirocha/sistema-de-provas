@@ -8,7 +8,5 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17.0.17_10-jre-alpine-3.22
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-USER appuser
 EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -76,47 +76,59 @@
     - Maven
     - PostgreSQL
 
-  - ### Passo a passo
+- ### Passo a passo
 
-    ### 1. Configure as variáveis de ambiente.
+  ### 1. Configure as variáveis de ambiente.
 
-      ```
-        # Banco local
-        POSTGRES_USER=postgres
-        POSTGRES_PASSWORD=postgres
-        POSTGRES_DB=banco_api_provas
+    ```
+      # Banco local
+      POSTGRES_USER=postgres
+      POSTGRES_PASSWORD=postgres
+      POSTGRES_DB=banco_api_provas
 
-        # Banco externo
-        EXT_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
-      ```
+      # Banco externo
+      EXT_URL="jdbc:postgresql://botdksj:pAkkwOgh123@ep-divine-pond-1a2b3c4d.us-east-2.aws.neon.tech/app_database?sslmode=require"
+    ```
 
-    ### 2. Execute o projeto.
-      **O projeto pode ser executado utilizando banco de dados local ou externo.**
-  
-      <br>
+  ### 2. Instale as dependências.
+
+    Rode no terminal o comando:
+
+    ```bash
+    ./mvnw clean install
+    ```
+    ou
+    ```bash
+    mvn clean install
+    ```
+
+  ### 3. Execute o projeto.
+    O projeto pode ser executado utilizando banco de dados local ou externo.
     
-      Para usar banco de dados local rode no terminal o comando:
+    Para usar banco de dados local rode no terminal o comando:
 
-      ```bash
-      ./mvnw spring-boot:run -Dspring.profiles.active=dev-local
-      ```
-      ou
-      ```bash
-      mvn spring-boot:run -Dspring.profiles.active=dev-local
-      ```
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+    ou
+    ```bash
+    mvn spring-boot:run
+    ```
     
-      Para usar banco de dados externo rode no terminal o comando:
+    Para usar banco de dados externo rode no terminal o comando:
 
-      ```bash
-      ./mvnw spring-boot:run -Dspring.profiles.active=dev-ext
-      ```
-      ou
-      ```bash
-      mvn spring-boot:run -Dspring.profiles.active=dev-ext
-      ```
+    *O link do banco de dados deve ser configurado na .env*
 
-    A API estará API disponível em http://localhost:8080/.
-    >   ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insomnia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+    ```bash
+    ./mvnw spring-boot:run -Dspring.profiles.active=dev-ext
+    ```
+    ou
+    ```bash
+    mvn spring-boot:run -Dspring.profiles.active=dev-ext
+    ```
+
+  Isso deixará a API disponível em http://localhost:8080/.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API. Também é necessário copiar o CSRF Token armazenado nos cookies e envia-lo via Header X-XSRF-TOKEN.
 </details>
 
 
@@ -134,22 +146,16 @@
 
     - Para usar banco em nuvem.
     ```bash
-    docker compose -f docker-compose.ext.yml up -d
+    docker compose -f docker-compose.yml -f docker-compose.ext.yml up --build
     ```
 
     - Para usar PostgreSQL Local.
     ```bash
-    docker compose up -d
+    docker compose -f docker-compose.yml -f docker-compose.local.yml up --build
     ```
-  
-    <br>
 
-    A API estará API disponível em http://localhost:8080/.
-    > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insomnia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
-  
-    O banco de dados estará disponível em `postgresql://localhost:5454/nome_do_banco`
-
-    > ♦️Nome deve ter sido definido nas variáveis de ambiente! Use ferramentas como [pgAdmin](https://www.pgadmin.org/) ou [Dbeaver](https://dbeaver.io/) para acessar o banco de dados.
+  Isso deixará a API disponível em http://localhost:8080/.
+  > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insmonia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API. Também é necessário copiar o CSRF Token armazenado nos cookies e envia-lo via Header X-XSRF-TOKEN.
 
 </details>
 
@@ -774,6 +780,37 @@
       ```
       
       </details>
+
+</details>
+
+---
+
+### Variáveis de ambiente no VSCode (.env)
+No vscode eu tive que dizer para o projeto onde estava as variaveis de ambiente, então se estiver usando VSCode essa seção pode ser útil.
+
+<details>
+  <summary><strong> Se necessário </strong> <sub> (expandir) </sub></summary>
+&nbsp;
+
+Para se conectar ao banco de dados sem expor a URL de conexão, eu tive que por essa configuração para o projeto conseguir ler o arquivo ".env" em `.vscode/launch.json`.
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot App",
+      "request": "launch",
+      "mainClass": "dev.odroca.api_provas.ApiProvasApplication",
+      "projectName": "api_provas",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
+```
+
+*O arquivo .env deve ficar na raiz do projeto para ser lido pelo launch.json e pelo docker — se estiver com PostgreSQL via docker.*
 
 </details>
 
