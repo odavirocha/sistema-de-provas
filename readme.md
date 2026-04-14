@@ -142,12 +142,14 @@
     docker compose up -d
     ```
   
-    _Caso utilize não especifique qual banco usar, será usado banco de dados local._
-
     <br>
 
     A API estará API disponível em http://localhost:8080/.
     > ♦️ A API está configurada para aceitar requisições apenas de http://localhost:2709/. Se acessar a API por um navegador em outra porta, será bloqueado. Use ferramentas como [Insomnia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/) para testar a API.
+  
+    O banco de dados estará disponível em `postgresql://localhost:5454/nome_do_banco`
+
+    > ♦️Nome deve ter sido definido nas variáveis de ambiente! Use ferramentas como [pgAdmin](https://www.pgadmin.org/) ou [Dbeaver](https://dbeaver.io/) para acessar o banco de dados.
 
 </details>
 
