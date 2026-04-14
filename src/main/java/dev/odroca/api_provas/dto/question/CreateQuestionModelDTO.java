@@ -9,14 +9,9 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
-@Getter
-public class CreateQuestionModelDTO {
-
+public record CreateQuestionModelDTO(
     @NotBlank(message = "O campo 'question' não pode estar em branco.")
-    private String question;
-    
+    String question,
     @NotEmpty(message = "O campo 'options' não pode ser vazio.")
-    private Set<@Valid CreateOptionModelDTO> options;
-    
-}
+    Set<@Valid CreateOptionModelDTO> options
+) {}

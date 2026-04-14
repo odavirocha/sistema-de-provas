@@ -20,6 +20,7 @@ import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidAttributeException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
+import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
@@ -237,10 +238,11 @@ public class TestServiceTest {
 
     @Test
     @DisplayName("Deve retornar todas as provas de um usuário")
-    void getAllTestsForUserSuccessTest() {
+    void getAllTestsForUserCookiesSuccessTest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        String cookieValue = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgwL2F1dGgvbG9naW4iLCJzdWIiOiIzOTdlZWM3MS0zNjBkLTQ2MjYtODA1Yy02NjQwYmU2MzU2OTAiLCJyb2xlIjpbIlVTRVIiXSwiZXhwIjoxNzc0NzQ3MzQwLCJpYXQiOjE3NzQ3NDcwNDB9.WjFyEZPwc_gWBvfM7mtKZFRxvRG93ay3WLvZcfhUUQqLc3QcZAgtQGH4R4u_CZ_wnGeYlY3GT1rVBiFXRkhBKmn9eYzzll5imWXUtJGfcXum4x8CmQUZSGUTywXtEIWSbv31-11q9zDFtMuAMXsHOMBvnaKqTrDBYzDhpIshQFN41NdOdKCCu3CgAKWDebX9zTk6T70n4J85X5MloTrn6bbWl_EGLpRk-NqbTYIsv7Jreop7MouoeOaJmmfiIR5M2363KcVEowKFkncBIlYf_OK_kd2Jkq9AKgUZMglpwRYIHHPCVuKdd4MtFhs5hPyMh-NJcFwonB89oA0ZdMUbtg";
-        request.setCookies(new Cookie("accessToken", cookieValue));
+        String accessTokenValue = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgwL2F1dGgvbG9naW4iLCJzdWIiOiIzOTdlZWM3MS0zNjBkLTQ2MjYtODA1Yy02NjQwYmU2MzU2OTAiLCJyb2xlIjpbIlVTRVIiXSwiZXhwIjoxNzc0NzQ3MzQwLCJpYXQiOjE3NzQ3NDcwNDB9.WjFyEZPwc_gWBvfM7mtKZFRxvRG93ay3WLvZcfhUUQqLc3QcZAgtQGH4R4u_CZ_wnGeYlY3GT1rVBiFXRkhBKmn9eYzzll5imWXUtJGfcXum4x8CmQUZSGUTywXtEIWSbv31-11q9zDFtMuAMXsHOMBvnaKqTrDBYzDhpIshQFN41NdOdKCCu3CgAKWDebX9zTk6T70n4J85X5MloTrn6bbWl_EGLpRk-NqbTYIsv7Jreop7MouoeOaJmmfiIR5M2363KcVEowKFkncBIlYf_OK_kd2Jkq9AKgUZMglpwRYIHHPCVuKdd4MtFhs5hPyMh-NJcFwonB89oA0ZdMUbtg";
+        String randomToken = UUID.randomUUID().toString();
+        request.setCookies(new Cookie("accessToken", accessTokenValue), new Cookie("randomToken", randomToken));
 
         UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
         UserEntity userEntity = UserFactory.buildUserEntity();
@@ -257,13 +259,33 @@ public class TestServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
         when(testRepository.findAllByUserId(userId)).thenReturn(testEntities);
-        when(jwtDecoder.decode(cookieValue)).thenReturn(jwt);
+        when(jwtDecoder.decode(accessTokenValue)).thenReturn(jwt);
 
         List<TestResponseDTO> response = testService.getAllTestsForUser(userId, request);
 
         assertEquals(testEntities.get(0).getId(), response.get(0).getTestId());
         assertEquals(testEntities.get(0).getName(), response.get(0).getName());
         assertEquals(testEntities.get(0).getQuestions().size(), response.get(0).getTotalQuestions());
+    }
+
+    @Test
+    @DisplayName("Deve retornar UnauthorizedException quando acha o cookie 'accessToken'")
+    void getAllTestsForUserUnauthorizedExceptionWithoutAccessTokenTest() {
+        UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String randomToken = UUID.randomUUID().toString();
+        request.setCookies(new Cookie("randomToken", randomToken));
+
+        assertThrows(UnauthorizedException.class, () -> testService.getAllTestsForUser(userId, request));
+    }
+
+    @Test
+    @DisplayName("Deve retornar UnauthorizedException quando o cookie é nulo")
+    void getAllTestsForUserUnauthorizedExceptionWithNullCookieTest() {
+        UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+
+        assertThrows(UnauthorizedException.class, () -> testService.getAllTestsForUser(userId, request));
     }
 
 }

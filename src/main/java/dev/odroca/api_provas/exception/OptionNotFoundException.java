@@ -8,10 +8,6 @@ public class OptionNotFoundException extends RuntimeException {
         super("Um ou mais IDs fornecidos não foram encontrado.");
     }
 
-    public OptionNotFoundException(UUID optionId) {
-        super("Opção não encontrada com ID: " + optionId);
-    }
-
     public OptionNotFoundException(String message) {
         super(message);
     }

@@ -6,8 +6,30 @@ services:
     image: sistema-provas:latest
     ports:
       - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
     environment:
-      - SECRET_HMAC=4f8c2b9a1d6e7f08b3a5c9d4e2f10b7a
-      - SPRING_PROFILES_ACTIVE=${PROFILE:-dev-local}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_PROFILES_ACTIVE=dev-local
+
+  database:
+    image: postgres:17.7-alpine3.22
+    container_name: database-sistema-provas
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 volumes:
   pgdata:
