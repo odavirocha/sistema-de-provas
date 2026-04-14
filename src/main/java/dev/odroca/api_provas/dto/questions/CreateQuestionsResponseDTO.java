@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public record CreateQuestionsResponseDTO(
-    UUID id,
-    int totalCreatedQuestions,
-    String message
+UUID id,
+int totalCreatedQuestions,
+String message
 ) {}
