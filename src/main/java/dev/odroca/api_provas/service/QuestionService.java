@@ -27,7 +27,7 @@ import dev.odroca.api_provas.repository.TestRepository;
 @Service
 @Transactional(readOnly = true)
 public class QuestionService {
-    
+
     @Autowired
     private TestRepository testRepository;
     @Autowired
@@ -40,56 +40,56 @@ public class QuestionService {
 
     @Transactional
     public CreateQuestionResponseDTO createQuestion(UUID testId, CreateQuestionModelDTO questionModel) {
-        
+
         TestEntity test = testRepository.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        
+
         QuestionEntity questionEntity = new QuestionEntity();
         questionEntity.setTest(test);
         questionEntity.setQuestion(questionModel.question());
-        
+
         Set<OptionEntity> optionEntities = optionMapper.createDtoToEntityList(questionModel.options());
         optionEntities.forEach(option -> option.setQuestion(questionEntity));
-        
+
         if (optionEntities.stream().noneMatch(OptionEntity::getIsCorrect)) {
             throw new CorrectOptionNotFoundException();
         }
-        
+
         long listOptionsSize = optionEntities.stream().filter(OptionEntity::getIsCorrect).count();
         if ( listOptionsSize > 1 ) {
             throw new MultipleCorrectOptionsException();
         }
-        
+
         questionEntity.setOptions(optionEntities);
         QuestionEntity saved = questionRepository.save(questionEntity);
-        
+
         UUID correctionOptionId = saved.getOptions().stream()
         .filter(OptionEntity::getIsCorrect)
         .findFirst()
         .get()
         .getId();
-        
+
         return new CreateQuestionResponseDTO(
-            saved.getId(),
-            saved.getQuestion(),
-            saved.getOptions().size(),
-            correctionOptionId,
-            "Questão criada com sucesso!"
+        saved.getId(),
+        saved.getQuestion(),
+        saved.getOptions().size(),
+        correctionOptionId,
+        "Questão criada com sucesso!"
         );
     }
-        
+
     @Transactional
     public CreateQuestionsResponseDTO createQuestions(UUID testId, CreateQuestionsRequestDTO questionsModel) {
         int totalQuestions = 0;
-        
+
         // Transforma cada questão em uma entidade QuestionModelDTO
         for (CreateQuestionModelDTO question : questionsModel.getQuestions()) {
             createQuestion(testId, question);
             totalQuestions++;
         }
-        
+
         return new CreateQuestionsResponseDTO(testId, totalQuestions, "Questões criadas com sucesso!");
     }
-    
+
     @Transactional
     public UpdateQuestionResponseDTO updateQuestion(UUID questionId, UpdateQuestionRequestDTO requestQuestion) {
         QuestionEntity databaseQuestion = questionRepository.findByIdWithOptions(questionId).orElseThrow(() -> new QuestionNotFoundException(questionId));

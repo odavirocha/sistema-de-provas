@@ -4,14 +4,10 @@ import dev.odroca.api_provas.dto.option.CreateOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsRequestDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
-import dev.odroca.api_provas.mapper.OptionMapper;
-import dev.odroca.api_provas.repository.QuestionRepository;
-import dev.odroca.api_provas.repository.TestRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
