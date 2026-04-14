@@ -1,5 +1,11 @@
 services:
   backend:
+    build:
+      context: .
+    container_name: sistema-provas
+    image: sistema-provas:latest
+    ports:
+      - "8080:8080"
     environment:
       - EXT_URL=${EXT_URL}
       - SPRING_PROFILES_ACTIVE=dev-ext
