@@ -241,8 +241,8 @@ public class TestServiceTest {
     void getAllTestsForUserSuccessTest() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         String accessTokenValue = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDgwL2F1dGgvbG9naW4iLCJzdWIiOiIzOTdlZWM3MS0zNjBkLTQ2MjYtODA1Yy02NjQwYmU2MzU2OTAiLCJyb2xlIjpbIlVTRVIiXSwiZXhwIjoxNzc0NzQ3MzQwLCJpYXQiOjE3NzQ3NDcwNDB9.WjFyEZPwc_gWBvfM7mtKZFRxvRG93ay3WLvZcfhUUQqLc3QcZAgtQGH4R4u_CZ_wnGeYlY3GT1rVBiFXRkhBKmn9eYzzll5imWXUtJGfcXum4x8CmQUZSGUTywXtEIWSbv31-11q9zDFtMuAMXsHOMBvnaKqTrDBYzDhpIshQFN41NdOdKCCu3CgAKWDebX9zTk6T70n4J85X5MloTrn6bbWl_EGLpRk-NqbTYIsv7Jreop7MouoeOaJmmfiIR5M2363KcVEowKFkncBIlYf_OK_kd2Jkq9AKgUZMglpwRYIHHPCVuKdd4MtFhs5hPyMh-NJcFwonB89oA0ZdMUbtg";
-        String randomToken = UUID.randomUUID().toString();
-        request.setCookies(new Cookie("accessToken", accessTokenValue), new Cookie("randomToken", randomToken));
+        String randomCookieValue = UUID.randomUUID().toString();
+        request.setCookies(new Cookie("accessToken", accessTokenValue), new Cookie("randomCookie", randomCookieValue));
 
         UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
         UserEntity userEntity = UserFactory.buildUserEntity();
@@ -269,7 +269,7 @@ public class TestServiceTest {
     }
 
     @Test
-    @DisplayName("Deve retornar UnauthorizedException quando o cookie é nulo.")
+    @DisplayName("Deve retornar UnauthorizedException quando o accessToken não é enviado.")
     void getAllTestsForUserUnauthorizedExceptionTest() {
         UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
         MockHttpServletRequest request = new MockHttpServletRequest();

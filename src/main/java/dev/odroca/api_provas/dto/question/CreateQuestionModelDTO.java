@@ -6,12 +6,10 @@ import dev.odroca.api_provas.dto.option.CreateOptionModelDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 public record CreateQuestionModelDTO(
-@NotBlank(message = "O campo 'question' não pode estar em branco.")
-String question,
-@NotEmpty(message = "O campo 'options' não pode ser vazio.")
-Set<@Valid CreateOptionModelDTO> options
+    @NotBlank(message = "O campo 'question' não pode estar em branco.")
+    String question,
+    @NotEmpty(message = "O campo 'options' não pode ser vazio.")
+    Set<@Valid CreateOptionModelDTO> options
 ) {}
