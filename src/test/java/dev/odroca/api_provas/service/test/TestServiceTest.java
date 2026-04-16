@@ -1,6 +1,5 @@
-package dev.odroca.api_provas.service;
+package dev.odroca.api_provas.service.test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,6 +21,9 @@ import dev.odroca.api_provas.exception.InvalidAttributeException;
 import dev.odroca.api_provas.exception.OptionNotFoundException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.repository.UserRepository;
+import dev.odroca.api_provas.service.TestService;
+import dev.odroca.api_provas.service.utils.TestFactory;
+import dev.odroca.api_provas.service.utils.UserFactory;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -266,6 +268,17 @@ public class TestServiceTest {
         assertEquals(testEntities.get(0).getId(), response.get(0).getTestId());
         assertEquals(testEntities.get(0).getName(), response.get(0).getName());
         assertEquals(testEntities.get(0).getQuestions().size(), response.get(0).getTotalQuestions());
+    }
+
+    @Test
+    @DisplayName("Deve retornar UnauthorizedException quando não enviar o Access Token")
+    void getAllTestsForUserWithoutAccessTokenTest() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        String randomCookieValue = UUID.randomUUID().toString();
+        request.setCookies(new Cookie("randomCookie", randomCookieValue));
+
+        UUID userId = UUID.fromString("397eec71-360d-4626-805c-6640be635690");
+        assertThrows(UnauthorizedException.class, () -> testService.getAllTestsForUser(userId, request));
     }
 
     @Test

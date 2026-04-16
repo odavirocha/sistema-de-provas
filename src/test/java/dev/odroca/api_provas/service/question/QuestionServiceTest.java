@@ -1,12 +1,9 @@
-package dev.odroca.api_provas.service;
+package dev.odroca.api_provas.service.question;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -16,12 +13,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import dev.odroca.api_provas.exception.*;
+import dev.odroca.api_provas.service.QuestionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -34,13 +31,11 @@ import dev.odroca.api_provas.dto.question.GetQuestionModelDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionRequestDTO;
 import dev.odroca.api_provas.dto.question.UpdateQuestionResponseDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsRequestDTO;
-import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.mapper.OptionMapper;
 import dev.odroca.api_provas.mapper.QuestionMapper;
-import dev.odroca.api_provas.repository.OptionRepository;
 import dev.odroca.api_provas.repository.QuestionRepository;
 import dev.odroca.api_provas.repository.TestRepository;
 

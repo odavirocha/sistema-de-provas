@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.odroca.api_provas.dto.users.RequestAddRoles;
-import dev.odroca.api_provas.dto.users.ResponseAddRoles;
+import dev.odroca.api_provas.dto.users.RequestAddRole;
+import dev.odroca.api_provas.dto.users.ResponseAddRole;
 import dev.odroca.api_provas.service.UserService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +25,9 @@ public class UsersController {
     private UserService userService;
 
     @PatchMapping("/role/{userId}")
-    public ResponseEntity<ResponseAddRoles> addRole(@PathVariable UUID userId, @RequestBody RequestAddRoles request) {
-        ResponseAddRoles response = userService.addRole(userId, request);
-        return new ResponseEntity<ResponseAddRoles>(response, HttpStatus.CREATED);
+    public ResponseEntity<ResponseAddRole> addRole(@PathVariable UUID userId, @RequestBody RequestAddRole request) {
+        ResponseAddRole response = userService.addRole(userId, request);
+        return new ResponseEntity<ResponseAddRole>(response, HttpStatus.CREATED);
     }
 
 }

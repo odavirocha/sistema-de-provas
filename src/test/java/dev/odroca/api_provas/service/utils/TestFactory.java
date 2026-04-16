@@ -1,8 +1,7 @@
-package dev.odroca.api_provas.service;
+package dev.odroca.api_provas.service.utils;
 
 import dev.odroca.api_provas.dto.question.QuestionAnswerModelDTO;
 import dev.odroca.api_provas.dto.test.AnswerTestRequestDTO;
-import dev.odroca.api_provas.dto.test.AnswerTestResponseDTO;
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.TestEntity;
 import dev.odroca.api_provas.entity.UserEntity;
@@ -12,7 +11,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TestFactory {
     public static TestEntity buildTestEntity(UserEntity user, UUID testId) {

@@ -1,9 +1,10 @@
-package dev.odroca.api_provas.service;
+package dev.odroca.api_provas.service.question;
 
 import dev.odroca.api_provas.dto.option.CreateOptionModelDTO;
 import dev.odroca.api_provas.dto.question.CreateQuestionModelDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsRequestDTO;
 import dev.odroca.api_provas.dto.questions.CreateQuestionsResponseDTO;
+import dev.odroca.api_provas.service.QuestionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

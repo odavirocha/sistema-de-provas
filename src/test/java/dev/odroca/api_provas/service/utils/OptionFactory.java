@@ -1,4 +1,4 @@
-package dev.odroca.api_provas.service;
+package dev.odroca.api_provas.service.utils;
 
 import dev.odroca.api_provas.entity.OptionEntity;
 import dev.odroca.api_provas.entity.QuestionEntity;
