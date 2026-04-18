@@ -23,14 +23,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,9 +46,9 @@ public class AuthServiceTest {
     @Mock
     JwtEncoder jwt;
     @Mock
-    BCryptPasswordEncoder bcrypt;
-    @Mock
     CookieUtil cookie;
+    @Mock
+    BCryptPasswordEncoder bcrypt;
 
     @Test
     @DisplayName("Deve fazer criar uma conta com sucesso")

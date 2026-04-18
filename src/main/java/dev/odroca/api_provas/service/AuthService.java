@@ -84,9 +84,7 @@ public class AuthService {
 
         Optional<RefreshTokenEntity> existingRefreshToken = refreshService.verifyExistRefreshTokenOfUser(user.getId());
 
-        if (existingRefreshToken.isPresent()) {
-            refreshService.deleteRefreshToken(existingRefreshToken.get().getRefreshToken());
-        }
+        existingRefreshToken.ifPresent(refreshTokenEntity -> refreshService.deleteRefreshToken(refreshTokenEntity.getRefreshToken()));
 
         RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
 
