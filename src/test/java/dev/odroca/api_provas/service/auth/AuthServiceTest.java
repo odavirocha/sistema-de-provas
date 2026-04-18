@@ -77,6 +77,28 @@ public class AuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar sucesso ao fazer login")
+    void loginFirstTimeSuccessTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        LoginRequestDTO request = new LoginRequestDTO("example@test.com", "123@123!abc");
+        MockHttpServletResponse responseServlet = new MockHttpServletResponse();
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenFactory.buildRefreshTokenEntity(user);
+
+        Jwt jwtMock = mock(Jwt.class);
+
+        when(jwtMock.getTokenValue()).thenReturn("token-falso");
+        when(jwt.encode(any(JwtEncoderParameters.class))).thenReturn(jwtMock);
+        when(userRepository.findByEmail(request.email())).thenReturn(Optional.of(user));
+        when(bcrypt.matches(request.password(), user.getPassword())).thenReturn(true);
+        when(refreshService.verifyExistRefreshTokenOfUser(user.getId())).thenReturn(Optional.of(refreshTokenEntity)); // Assumindo que já fez o primeiro login
+        when(refreshService.createRefreshToken(eq(user), any(Instant.class))).thenReturn(refreshTokenEntity);
+
+        LoginResponseDTO response = authService.login(request, responseServlet);
+
+        assertEquals(user.getId().toString(), response.userId());
+    }
+
+    @Test
     @DisplayName("Deve retornar sucesso ao fazer login pela primeira vez")
     void loginSuccessTest() {
         UserEntity user = UserFactory.buildUserEntity();
