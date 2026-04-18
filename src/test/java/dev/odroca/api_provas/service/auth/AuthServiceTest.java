@@ -4,12 +4,14 @@ import dev.odroca.api_provas.dto.login.LoginRequestDTO;
 import dev.odroca.api_provas.dto.login.LoginResponseDTO;
 import dev.odroca.api_provas.dto.signup.SignupRequestDTO;
 import dev.odroca.api_provas.dto.signup.SignupResponseDTO;
+import dev.odroca.api_provas.entity.RefreshTokenEntity;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.EmailAlreadyExistsException;
 import dev.odroca.api_provas.exception.InvalidCredentialsException;
 import dev.odroca.api_provas.repository.UserRepository;
 import dev.odroca.api_provas.service.AuthService;
 import dev.odroca.api_provas.service.RefreshTokenService;
+import dev.odroca.api_provas.service.utils.RefreshTokenFactory;
 import dev.odroca.api_provas.service.utils.UserFactory;
 import dev.odroca.api_provas.utils.CookieUtil;
 import org.junit.jupiter.api.DisplayName;
@@ -75,24 +77,25 @@ public class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("Deve retornar sucesso ao fazer login pela primeira vez")
     void loginSuccessTest() {
+        UserEntity user = UserFactory.buildUserEntity();
         LoginRequestDTO request = new LoginRequestDTO("example@test.com", "123@123!abc");
         MockHttpServletResponse responseServlet = new MockHttpServletResponse();
-        UserEntity user = UserFactory.buildUserEntity();
+        RefreshTokenEntity refreshToken = RefreshTokenFactory.buildRefreshTokenEntity(user);
 
         Jwt jwtMock = mock(Jwt.class);
+
         when(jwtMock.getTokenValue()).thenReturn("token-falso");
         when(jwt.encode(any(JwtEncoderParameters.class))).thenReturn(jwtMock);
-
-        when(jwt.encode(any(JwtEncoderParameters.class))).thenReturn(jwtMock);
-
         when(userRepository.findByEmail(request.email())).thenReturn(Optional.of(user));
         when(bcrypt.matches(request.password(), user.getPassword())).thenReturn(true);
+        when(refreshService.verifyExistRefreshTokenOfUser(user.getId())).thenReturn(Optional.empty()); // Assumindo que é o primeiro login
+        when(refreshService.createRefreshToken(eq(user), any(Instant.class))).thenReturn(refreshToken);
 
         LoginResponseDTO response = authService.login(request, responseServlet);
 
-        assertEquals("397eec71-360d-4626-805c-6640be635690", response.userId());
+        assertEquals(user.getId().toString(), response.userId());
     }
 
     @Test

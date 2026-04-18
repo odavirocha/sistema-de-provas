@@ -13,11 +13,13 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "refresh_token_table")
-@Data
+@Getter
+@Setter
 public class RefreshTokenEntity {
 
     @Id
@@ -35,5 +37,13 @@ public class RefreshTokenEntity {
     
     @Column(name = "issued_at", nullable = false)
     Instant issuedAt;
-    
+
+    public RefreshTokenEntity() {}
+
+    public RefreshTokenEntity(UserEntity user, Instant expiryDate, Instant issuedAt) {
+        this.user = user;
+        this.expiryDate = expiryDate;
+        this.issuedAt = issuedAt;
+    }
+
 }
