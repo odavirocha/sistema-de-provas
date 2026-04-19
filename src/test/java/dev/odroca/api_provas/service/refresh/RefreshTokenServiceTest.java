@@ -118,4 +118,20 @@ public class RefreshTokenServiceTest {
 
         assertThrows(InvalidTokenException.class, () -> refreshService.refresh(request, response));
     }
+
+    @Test
+    @DisplayName("Deve verificar se o usuário tem um refresh token")
+    void verifyExistRefreshTokenOfUserSuccessTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        UUID userId = user.getId();
+
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenFactory.buildRefreshTokenEntity(user);
+
+        when(refreshRepository.findByUserId(userId)).thenReturn(Optional.of(refreshTokenEntity));
+
+        Optional<RefreshTokenEntity> response = refreshService.verifyExistRefreshTokenOfUser(userId);
+
+        verify(refreshRepository, times(1)).findByUserId(userId);
+        assertEquals(UUID.fromString("397eec71-360d-4626-805c-6640be635672"), response.get().getRefreshToken());
+    }
 }
