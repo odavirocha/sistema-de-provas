@@ -51,7 +51,7 @@ public class RefreshTokenService {
 
         if (refreshTokenCookie == null) throw new UnauthorizedException();
 
-        RefreshTokenEntity refreshTokenEntity = refreshRepository.findByRefreshToken(UUID.fromString(refreshTokenCookie)).orElseThrow(() -> new UnauthorizedException());
+        RefreshTokenEntity refreshTokenEntity = refreshRepository.findByRefreshToken(UUID.fromString(refreshTokenCookie)).orElseThrow(UnauthorizedException::new);
 
         Instant timeNow = Instant.now();
 

@@ -16,4 +16,11 @@ public class RefreshTokenFactory {
         return refreshToken;
     }
 
+    public static RefreshTokenEntity buildRefreshTokenEntityExpired(UserEntity user) {
+        RefreshTokenEntity refreshToken = new RefreshTokenEntity(user, Instant.now().minusSeconds((3600 * 24 * 7)), Instant.now());
+        ReflectionTestUtils.setField(refreshToken, "refreshToken", UUID.fromString("397eec71-360d-4626-805c-6640be635672"));
+
+        return refreshToken;
+    }
+
 }
