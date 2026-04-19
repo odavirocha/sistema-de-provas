@@ -86,4 +86,18 @@ public class RefreshTokenServiceTest {
         assertThrows(UnauthorizedException.class, () -> refreshService.refresh(request, response));
     }
 
+
+    @Test
+    @DisplayName("Deve retornar UnauthorizedException quando refresh token do cookie for inválido")
+    void refreshUnauthorizedExceptionInvalidRefreshTokenTest() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        Cookie refreshToken = new Cookie("refreshToken", "1c465b2a-f088-48a6-a20f-cb54b3d4f5");
+        request.setCookies(refreshToken);
+
+        when(refreshRepository.findByRefreshToken(UUID.fromString(refreshToken.getValue()))).thenThrow(UnauthorizedException.class);
+
+        assertThrows(UnauthorizedException.class, () -> refreshService.refresh(request, response));
+    }
 }
