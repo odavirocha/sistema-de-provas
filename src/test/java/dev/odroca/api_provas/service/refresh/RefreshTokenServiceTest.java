@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -120,7 +121,7 @@ public class RefreshTokenServiceTest {
     }
 
     @Test
-    @DisplayName("Deve verificar se o usuário tem um refresh token")
+    @DisplayName("Deve verificar se o usuário tem um refresh token e retorna um")
     void verifyExistRefreshTokenOfUserSuccessTest() {
         UserEntity user = UserFactory.buildUserEntity();
         UUID userId = user.getId();
@@ -132,6 +133,21 @@ public class RefreshTokenServiceTest {
         Optional<RefreshTokenEntity> response = refreshService.verifyExistRefreshTokenOfUser(userId);
 
         verify(refreshRepository, times(1)).findByUserId(userId);
+        assertTrue(response.isPresent());
         assertEquals(UUID.fromString("397eec71-360d-4626-805c-6640be635672"), response.get().getRefreshToken());
+    }
+
+    @Test
+    @DisplayName("Deve verificar se o usuário tem um refresh token e não retorna um")
+    void verifyExistRefreshTokenOfUserWithoutRefreshTokenTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        UUID userId = user.getId();
+
+        when(refreshRepository.findByUserId(userId)).thenReturn(Optional.empty());
+
+        Optional<RefreshTokenEntity> response = refreshService.verifyExistRefreshTokenOfUser(userId);
+
+        verify(refreshRepository, times(1)).findByUserId(userId);
+        assertThat(response).isEmpty();
     }
 }
