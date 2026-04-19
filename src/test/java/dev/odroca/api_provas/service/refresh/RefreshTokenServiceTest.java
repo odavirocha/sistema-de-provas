@@ -2,6 +2,7 @@ package dev.odroca.api_provas.service.refresh;
 
 import dev.odroca.api_provas.entity.RefreshTokenEntity;
 import dev.odroca.api_provas.entity.UserEntity;
+import dev.odroca.api_provas.exception.InvalidTokenException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
 import dev.odroca.api_provas.repository.RefreshTokenRepository;
 import dev.odroca.api_provas.service.RefreshTokenService;
@@ -99,5 +100,22 @@ public class RefreshTokenServiceTest {
         when(refreshRepository.findByRefreshToken(UUID.fromString(refreshToken.getValue()))).thenThrow(UnauthorizedException.class);
 
         assertThrows(UnauthorizedException.class, () -> refreshService.refresh(request, response));
+    }
+
+    @Test
+    @DisplayName("Deve retornar InvalidTokenException quando refresh token estiver expirado")
+    void refreshInvalidTokenExceptionExpiredRefreshTokenTest() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        Cookie refreshToken = new Cookie("refreshToken", "1c465b2a-f088-48a6-a20f-cb54b3d4f571");
+        request.setCookies(refreshToken);
+
+        UserEntity user = UserFactory.buildUserEntity();
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenFactory.buildRefreshTokenEntityExpired(user);
+
+        when(refreshRepository.findByRefreshToken(UUID.fromString(refreshToken.getValue()))).thenReturn(Optional.of(refreshTokenEntity));
+
+        assertThrows(InvalidTokenException.class, () -> refreshService.refresh(request, response));
     }
 }
