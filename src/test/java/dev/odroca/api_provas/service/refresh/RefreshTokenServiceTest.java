@@ -4,6 +4,7 @@ import dev.odroca.api_provas.entity.RefreshTokenEntity;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidTokenException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
+import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.repository.RefreshTokenRepository;
 import dev.odroca.api_provas.service.RefreshTokenService;
 import dev.odroca.api_provas.service.utils.RefreshTokenFactory;
@@ -25,6 +26,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -117,5 +119,68 @@ public class RefreshTokenServiceTest {
         when(refreshRepository.findByRefreshToken(UUID.fromString(refreshToken.getValue()))).thenReturn(Optional.of(refreshTokenEntity));
 
         assertThrows(InvalidTokenException.class, () -> refreshService.refresh(request, response));
+    }
+
+    @Test
+    @DisplayName("Deve verificar se o usuário tem um refresh token e retorna um")
+    void verifyExistRefreshTokenOfUserSuccessTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        UUID userId = user.getId();
+
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenFactory.buildRefreshTokenEntity(user);
+
+        when(refreshRepository.findByUserId(userId)).thenReturn(Optional.of(refreshTokenEntity));
+
+        Optional<RefreshTokenEntity> response = refreshService.verifyExistRefreshTokenOfUser(userId);
+
+        verify(refreshRepository, times(1)).findByUserId(userId);
+        assertTrue(response.isPresent());
+        assertEquals(UUID.fromString("397eec71-360d-4626-805c-6640be635672"), response.get().getRefreshToken());
+    }
+
+    @Test
+    @DisplayName("Deve verificar se o usuário tem um refresh token e não retorna um")
+    void verifyExistRefreshTokenOfUserWithoutRefreshTokenTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        UUID userId = user.getId();
+
+        when(refreshRepository.findByUserId(userId)).thenReturn(Optional.empty());
+
+        Optional<RefreshTokenEntity> response = refreshService.verifyExistRefreshTokenOfUser(userId);
+
+        verify(refreshRepository, times(1)).findByUserId(userId);
+        assertThat(response).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Deve retornar sucesso ao criar um refresh token")
+    void createRefreshTokenSuccessTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenFactory.buildRefreshTokenEntity(user);
+
+        when(refreshRepository.save(any(RefreshTokenEntity.class))).thenReturn(refreshTokenEntity);
+
+        RefreshTokenEntity response = refreshService.createRefreshToken(user);
+
+        verify(refreshRepository, times(1)).save(any(RefreshTokenEntity.class));
+        assertEquals(user.getId(), response.getUser().getId());
+        assertEquals(refreshTokenEntity.getRefreshToken(), response.getRefreshToken());
+    }
+
+    @Test
+    @DisplayName("Deve retornar UserNotFoundException quando o usuário for nulo")
+    void createRefreshTokenUserNotFoundExceptionTest() {
+        assertThrows(UserNotFoundException.class, () -> refreshService.createRefreshToken(null));
+    }
+
+    @Test
+    @DisplayName("Deve deletar um refresh token")
+    void deleteRefreshToken() {
+        UUID token = UUID.fromString("397eec71-360d-4626-805c-6640be635672");
+
+        refreshService.deleteRefreshToken(token);
+
+        verify(refreshRepository, times(1)).deleteById(token);
+        verify(refreshRepository, times(1)).flush();
     }
 }

@@ -86,7 +86,7 @@ public class AuthService {
 
         existingRefreshToken.ifPresent(refreshTokenEntity -> refreshService.deleteRefreshToken(refreshTokenEntity.getRefreshToken()));
 
-        RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user, Instant.now().plusSeconds(refreshTokenExpireIn));
+        RefreshTokenEntity refreshToken = refreshService.createRefreshToken(user);
 
         cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn, true);
         cookie.addCookie(response, "refreshToken", refreshToken.getRefreshToken().toString(), refreshTokenExpireIn, true); // 7 Dias
