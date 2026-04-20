@@ -88,7 +88,7 @@ public class AuthServiceTest {
         when(userRepository.findByEmail(request.email())).thenReturn(Optional.of(user));
         when(bcrypt.matches(request.password(), user.getPassword())).thenReturn(true);
         when(refreshService.verifyExistRefreshTokenOfUser(user.getId())).thenReturn(Optional.of(refreshTokenEntity)); // Assumindo que já fez o primeiro login
-        when(refreshService.createRefreshToken(eq(user), any(Instant.class))).thenReturn(refreshTokenEntity);
+        when(refreshService.createRefreshToken(eq(user))).thenReturn(refreshTokenEntity);
 
         LoginResponseDTO response = authService.login(request, responseServlet);
 
@@ -110,7 +110,7 @@ public class AuthServiceTest {
         when(userRepository.findByEmail(request.email())).thenReturn(Optional.of(user));
         when(bcrypt.matches(request.password(), user.getPassword())).thenReturn(true);
         when(refreshService.verifyExistRefreshTokenOfUser(user.getId())).thenReturn(Optional.empty()); // Assumindo que é o primeiro login
-        when(refreshService.createRefreshToken(eq(user), any(Instant.class))).thenReturn(refreshToken);
+        when(refreshService.createRefreshToken(eq(user))).thenReturn(refreshToken);
 
         LoginResponseDTO response = authService.login(request, responseServlet);
 

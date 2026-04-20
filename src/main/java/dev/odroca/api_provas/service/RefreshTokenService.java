@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import dev.odroca.api_provas.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -73,7 +74,7 @@ public class RefreshTokenService {
             .build();
 
         String accessToken = jwt.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-        String refreshToken = createRefreshToken(user, timeNow.plusSeconds(refreshTokenExpireIn)).getRefreshToken().toString();
+        String refreshToken = createRefreshToken(user).getRefreshToken().toString();
 
         cookie.addCookie(response, "accessToken", accessToken, accessTokenExpireIn, true);
         cookie.addCookie(response, "refreshToken", refreshToken, refreshTokenExpireIn, true);
@@ -84,10 +85,13 @@ public class RefreshTokenService {
     }
 
     @Transactional
-    public RefreshTokenEntity createRefreshToken(UserEntity user, Instant expiryDate) {
+    public RefreshTokenEntity createRefreshToken(UserEntity user) {
+
+        if (user == null) throw new UserNotFoundException();
 
         Instant timeNow = Instant.now();
-            
+        Instant expiryDate = timeNow.plusSeconds((3600 * 24 * 7));
+
         RefreshTokenEntity tokenEntity = new RefreshTokenEntity();
     
         tokenEntity.setUser(user);

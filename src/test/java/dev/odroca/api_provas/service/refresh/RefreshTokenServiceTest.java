@@ -4,6 +4,7 @@ import dev.odroca.api_provas.entity.RefreshTokenEntity;
 import dev.odroca.api_provas.entity.UserEntity;
 import dev.odroca.api_provas.exception.InvalidTokenException;
 import dev.odroca.api_provas.exception.UnauthorizedException;
+import dev.odroca.api_provas.exception.UserNotFoundException;
 import dev.odroca.api_provas.repository.RefreshTokenRepository;
 import dev.odroca.api_provas.service.RefreshTokenService;
 import dev.odroca.api_provas.service.utils.RefreshTokenFactory;
@@ -22,6 +23,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -150,4 +152,26 @@ public class RefreshTokenServiceTest {
         verify(refreshRepository, times(1)).findByUserId(userId);
         assertThat(response).isEmpty();
     }
+
+    @Test
+    @DisplayName("Deve retornar sucesso ao criar um refresh token")
+    void createRefreshTokenSuccessTest() {
+        UserEntity user = UserFactory.buildUserEntity();
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenFactory.buildRefreshTokenEntity(user);
+
+        when(refreshRepository.save(any(RefreshTokenEntity.class))).thenReturn(refreshTokenEntity);
+
+        RefreshTokenEntity response = refreshService.createRefreshToken(user);
+
+        verify(refreshRepository, times(1)).save(any(RefreshTokenEntity.class));
+        assertEquals(user.getId(), response.getUser().getId());
+        assertEquals(refreshTokenEntity.getRefreshToken(), response.getRefreshToken());
+    }
+
+    @Test
+    @DisplayName("Deve retornar UserNotFoundException quando o usuário for nulo")
+    void createRefreshTokenUserNotFoundExceptionTest() {
+        assertThrows(UserNotFoundException.class, () -> refreshService.createRefreshToken(null));
+    }
+
 }
