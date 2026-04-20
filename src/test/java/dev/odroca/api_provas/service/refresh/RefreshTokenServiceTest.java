@@ -23,7 +23,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 
-import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -174,4 +173,14 @@ public class RefreshTokenServiceTest {
         assertThrows(UserNotFoundException.class, () -> refreshService.createRefreshToken(null));
     }
 
+    @Test
+    @DisplayName("Deve deletar um refresh token")
+    void deleteRefreshToken() {
+        UUID token = UUID.fromString("397eec71-360d-4626-805c-6640be635672");
+
+        refreshService.deleteRefreshToken(token);
+
+        verify(refreshRepository, times(1)).deleteById(token);
+        verify(refreshRepository, times(1)).flush();
+    }
 }
